@@ -18,8 +18,10 @@ model User {
     createdAt      DateTime  @default(now())
     updatedAt      DateTime  @updatedAt
 
-    accounts Account[]
-    sessions Session[]
+    accounts      Account[]
+    createdThemes Theme[]         @relation("ThemeOwner")
+    likedThemes   UserLikeTheme[]
+    savedThemes   UserSaveTheme[]
 }
 
 model Account {
@@ -42,20 +44,69 @@ model Account {
     @@index([userId])
 }
 
-model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Theme {
+    id        String   @id @default(cuid())
+    color_1   String
+    color_2   String
+    color_3   String
+    color_4   String
+    font_1    String
+    font_2    String
+    userId    String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    prompt    String
+    isPrivate Boolean
+
+    user    User            @relation("ThemeOwner", fields: [userId], references: [id], onDelete: Cascade)
+    likedBy UserLikeTheme[]
+    savedBy UserSaveTheme[]
+    tags    ThemeTag[]
 
     @@index([userId])
 }
 
-model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+model UserLikeTheme {
+    userId  String
+    themeId String
 
-    @@unique([identifier, token])
+    user  User  @relation(fields: [userId], references: [id])
+    theme Theme @relation(fields: [themeId], references: [id])
+
+    @@id([userId, themeId])
+    @@index([themeId])
+    @@index([userId])
+}
+
+model UserSaveTheme {
+    userId  String
+    themeId String
+
+    user  User  @relation(fields: [userId], references: [id])
+    theme Theme @relation(fields: [themeId], references: [id])
+
+    @@id([userId, themeId])
+    @@index([themeId])
+    @@index([userId])
+}
+
+model Tag {
+    id   String @id @default(cuid())
+    name String
+
+    themes ThemeTag[]
+
+    @@unique([name])
+}
+
+model ThemeTag {
+    tagId   String
+    themeId String
+
+    tag   Tag   @relation(fields: [tagId], references: [id])
+    theme Theme @relation(fields: [themeId], references: [id])
+
+    @@id([tagId, themeId])
+    @@index([themeId])
+    @@index([tagId])
 }

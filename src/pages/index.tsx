@@ -1,10 +1,12 @@
 import { signOut, useSession } from "next-auth/react";
 import { Inter } from "next/font/google";
+import { useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const { data: session } = useSession();
+  console.log(session);
 
   return (
     <main
