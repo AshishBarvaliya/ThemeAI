@@ -12,11 +12,16 @@ model User {
     id             String    @id @default(cuid())
     name           String
     email          String    @unique
+    username       String?
+    title          String?
+    location       String?
+    organization   String?
     emailVerified  DateTime?
     hashedPassword String?
     image          String?
     createdAt      DateTime  @default(now())
     updatedAt      DateTime  @updatedAt
+    pupa           Int       @default(0)
 
     accounts      Account[]
     createdThemes Theme[]         @relation("ThemeOwner")
@@ -38,27 +43,36 @@ model Account {
     id_token          String? @db.Text
     session_state     String?
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [id])
 
     @@unique([provider, providerAccountId])
     @@index([userId])
 }
 
 model Theme {
-    id        String   @id @default(cuid())
-    color_1   String
-    color_2   String
-    color_3   String
-    color_4   String
-    font_1    String
-    font_2    String
-    userId    String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    prompt    String
-    isPrivate Boolean
+    id             String   @id @default(cuid())
+    name           String
+    description    String?
+    userId         String
+    color_1        String
+    color_1_reason String
+    color_2        String
+    color_2_reason String
+    color_3        String
+    color_3_reason String
+    color_4        String
+    color_4_reason String
+    font_1         String
+    font_1_reason  String
+    font_2         String
+    font_2_reason  String
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+    prompt         String?
+    isPrivate      Boolean
+    isAIGenerated  Boolean
 
-    user    User            @relation("ThemeOwner", fields: [userId], references: [id], onDelete: Cascade)
+    user    User            @relation("ThemeOwner", fields: [userId], references: [id])
     likedBy UserLikeTheme[]
     savedBy UserSaveTheme[]
     tags    ThemeTag[]
@@ -69,6 +83,7 @@ model Theme {
 model UserLikeTheme {
     userId  String
     themeId String
+    likedAt DateTime @default(now())
 
     user  User  @relation(fields: [userId], references: [id])
     theme Theme @relation(fields: [themeId], references: [id])
@@ -81,6 +96,7 @@ model UserLikeTheme {
 model UserSaveTheme {
     userId  String
     themeId String
+    savedAt DateTime @default(now())
 
     user  User  @relation(fields: [userId], references: [id])
     theme Theme @relation(fields: [themeId], references: [id])
@@ -91,8 +107,9 @@ model UserSaveTheme {
 }
 
 model Tag {
-    id   String @id @default(cuid())
-    name String
+    id        String   @id @default(cuid())
+    name      String
+    createdAt DateTime @default(now())
 
     themes ThemeTag[]
 

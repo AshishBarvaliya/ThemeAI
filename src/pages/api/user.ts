@@ -1,13 +1,15 @@
 import { prisma } from "@/config/db";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
 import bcrypt from "bcrypt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./auth/[...nextauth]";
+import { tileThemeProps } from "@/constants/theme";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const session = await getSession({ req });
+  const session = await getServerSession(req, res, authOptions);
   if (req.method === "GET") {
     const userId = req.query.id;
     if (!userId) {
@@ -22,9 +24,23 @@ export default async function handler(
               name: true,
               email: true,
               image: true,
-              likedThemes: true,
-              savedThemes: true,
-              createdThemes: true,
+              likedThemes: {
+                select: {
+                  theme: {
+                    select: tileThemeProps,
+                  },
+                },
+              },
+              savedThemes: {
+                select: {
+                  theme: {
+                    select: tileThemeProps,
+                  },
+                },
+              },
+              createdThemes: {
+                select: tileThemeProps,
+              },
             },
           });
 
@@ -42,23 +58,25 @@ export default async function handler(
               id: true,
               name: true,
               image: true,
-              likedThemes: true,
-              savedThemes: true,
+              likedThemes: {
+                select: {
+                  theme: {
+                    select: tileThemeProps,
+                  },
+                },
+              },
+              savedThemes: {
+                select: {
+                  theme: {
+                    select: tileThemeProps,
+                  },
+                },
+              },
               createdThemes: {
                 where: {
                   isPrivate: false,
                 },
-                select: {
-                  id: true,
-                  color_1: true,
-                  color_2: true,
-                  color_3: true,
-                  color_4: true,
-                  font_1: true,
-                  font_2: true,
-                  prompt: true,
-                  tags: true,
-                },
+                select: tileThemeProps,
               },
             },
           });
@@ -74,7 +92,8 @@ export default async function handler(
   }
   if (req.method === "POST") {
     const body = await req.body;
-    const { name, email, password } = body;
+    const { username, name, title, organization, location, email, password } =
+      body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ error: "Missing Fields" });
@@ -95,7 +114,11 @@ export default async function handler(
     const user = await prisma.user.create({
       data: {
         name,
+        username,
         email,
+        title,
+        organization,
+        location,
         hashedPassword,
       },
     });
