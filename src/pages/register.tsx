@@ -13,7 +13,7 @@ export default function Register() {
   const registerUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     axios
-      .post("/api/register", data)
+      .post("/api/user", data)
       .then(() =>
         addToast({ title: "User has been registered!", type: "success" })
       )

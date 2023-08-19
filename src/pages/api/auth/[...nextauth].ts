@@ -4,8 +4,6 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/config/db";
 import bcrypt from "bcrypt";
-import { use } from "react";
-import { useSession } from "next-auth/react";
 
 const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -66,7 +64,25 @@ const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  callbacks: {},
-};
+  callbacks: {
+    jwt: ({ token, user }) => {
+      if (user) {
+        return {
+          ...token,
+          id: user.id,
+        }
+      }
+      return token;
+    },
+    session: ({ session, token }) => {
+      return {
+        ...session, user: {
+          ...session.user,
+          id: token.id
+        }
+      };
+    },
+  }
+}
 
-export default NextAuth(authOptions);
+export default NextAuth(authOptions)
