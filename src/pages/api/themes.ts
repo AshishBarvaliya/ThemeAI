@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/config/db";
-import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./auth/[...nextauth]";
+import { themeProps, tileThemeProps } from "@/constants/theme";
 
 interface TagProps {
   id?: string;
@@ -11,13 +13,20 @@ interface ThemeProps {
   id: string;
   name: string;
   color_1: string;
+  color_1_reason: string;
   color_2: string;
+  color_2_reason: string;
   color_3: string;
+  color_3_reason: string;
   color_4: string;
+  color_4_reason: string;
   font_1: string;
+  font_1_reason: string;
   font_2: string;
+  font_2_reason: string;
   prompt: string;
   isPrivate: boolean;
+  isAIGenerated: boolean;
   tags: TagProps[];
 }
 
@@ -25,7 +34,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const session = await getSession({ req });
+  const session = await getServerSession(req, res, authOptions);
 
   if (req.method === "GET") {
     const themeId = req.query.id;
@@ -33,6 +42,7 @@ export default async function handler(
       try {
         const theme = await prisma.theme.findUnique({
           where: { id: themeId as string },
+          select: themeProps,
         });
         if (!theme) {
           return res.status(404).json({ error: "Theme not found" });
@@ -45,6 +55,10 @@ export default async function handler(
       try {
         const themes = await prisma.theme.findMany({
           where: { isPrivate: false },
+          select: tileThemeProps,
+          orderBy: {
+            createdAt: "desc",
+          },
         });
         res.status(200).json(themes);
       } catch (error) {
@@ -56,14 +70,22 @@ export default async function handler(
   if (req.method === "POST") {
     if (session) {
       const {
+        name,
         color_1,
+        color_1_reason,
         color_2,
+        color_2_reason,
         color_3,
+        color_3_reason,
         color_4,
+        color_4_reason,
         font_1,
+        font_1_reason,
         font_2,
+        font_2_reason,
         prompt,
         isPrivate,
+        isAIGenerated,
         tags,
       }: ThemeProps = req.body;
 
@@ -87,14 +109,22 @@ export default async function handler(
         const theme = await prisma.theme.create({
           data: {
             userId: session.user.id,
+            name,
             color_1,
+            color_1_reason,
             color_2,
+            color_2_reason,
             color_3,
+            color_3_reason,
             color_4,
+            color_4_reason,
             font_1,
+            font_1_reason,
             font_2,
+            font_2_reason,
             prompt,
             isPrivate,
+            isAIGenerated,
             tags: {
               create: resolvedTags.map((tag) => ({
                 tag: { connect: { id: tag.id } },

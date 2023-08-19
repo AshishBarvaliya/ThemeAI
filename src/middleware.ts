@@ -1,13 +1,24 @@
+import { getSession } from "next-auth/react";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
-  const userToken = request.cookies.get("next-auth.session-token")?.value;
+export async function middleware(request: NextRequest) {
+  const requestForNextAuth = {
+    headers: {
+      cookie: request.headers.get("cookie"),
+    },
+  };
 
-  if (!userToken) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  const session = await getSession({ req: requestForNextAuth as any });
+
+  if (session) {
+    return NextResponse.next();
+  } else {
+    const signInPage = "/login";
+    const signInUrl = new URL(signInPage, request.nextUrl.origin);
+    signInUrl.searchParams.append("callbackUrl", request.url);
+    return NextResponse.redirect(signInUrl);
   }
-  return NextResponse.redirect(new URL("/", request.url));
 }
 
 export const config = {
