@@ -1,3 +1,4 @@
+import Layout from "@/components/Layout/Layout";
 import { ToastProvider } from "@/hooks/useToast";
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
@@ -7,7 +8,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <SessionProvider session={pageProps.session}>
       <ToastProvider>
-        <Component {...pageProps} />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </ToastProvider>
     </SessionProvider>
   );
