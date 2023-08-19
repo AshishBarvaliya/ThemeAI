@@ -70,19 +70,20 @@ const authOptions: NextAuthOptions = {
         return {
           ...token,
           id: user.id,
-        }
+        };
       }
       return token;
     },
     session: ({ session, token }) => {
       return {
-        ...session, user: {
+        ...session,
+        user: {
           ...session.user,
-          id: token.id
-        }
+          id: token.id,
+        },
       };
     },
-  }
-}
+  },
+};
 
-export default NextAuth(authOptions)
+export default NextAuth(authOptions);
