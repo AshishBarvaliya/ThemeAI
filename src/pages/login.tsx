@@ -1,24 +1,16 @@
 import { useState, useEffect } from "react";
-import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { getSession, signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useToast } from "@/hooks/useToast";
+import { NextApiResponse } from "next";
 
-export default function Login() {
-  const session = useSession();
+export default function Login({ session }: any) {
   const router = useRouter();
   const { addToast } = useToast();
   const [data, setData] = useState({
     email: "",
     password: "",
   });
-
-  console.log(session);
-
-  useEffect(() => {
-    if (session?.status === "authenticated") {
-      router.push("/");
-    }
-  }, [session, router]);
 
   const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,6 +27,7 @@ export default function Login() {
           title: "Logged in successfully!",
           type: "success",
         });
+        router.push("/admin/dashboard");
       }
     });
   };
@@ -138,4 +131,14 @@ export default function Login() {
       </div>
     </>
   );
+}
+
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context);
+
+  return {
+    props: {
+      session,
+    },
+  };
 }
