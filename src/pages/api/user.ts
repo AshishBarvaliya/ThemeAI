@@ -24,6 +24,12 @@ export default async function handler(
               name: true,
               email: true,
               image: true,
+              username: true,
+              pupa: true,
+              purchaseHistory: true,
+              title: true,
+              organization: true,
+              location: true,
               likedThemes: {
                 select: {
                   theme: {
@@ -58,6 +64,10 @@ export default async function handler(
               id: true,
               name: true,
               image: true,
+              title: true,
+              username: true,
+              organization: true,
+              location: true,
               likedThemes: {
                 select: {
                   theme: {

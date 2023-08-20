@@ -9,24 +9,26 @@ datasource db {
 }
 
 model User {
-    id             String    @id @default(cuid())
-    name           String
-    email          String    @unique
-    username       String?
-    title          String?
-    location       String?
-    organization   String?
-    emailVerified  DateTime?
-    hashedPassword String?
-    image          String?
-    createdAt      DateTime  @default(now())
-    updatedAt      DateTime  @updatedAt
-    pupa           Int       @default(0)
+    id               String    @id @default(cuid())
+    name             String
+    email            String    @unique
+    username         String?
+    title            String?
+    location         String?
+    organization     String?
+    emailVerified    DateTime?
+    hashedPassword   String?
+    image            String?
+    createdAt        DateTime  @default(now())
+    updatedAt        DateTime  @updatedAt
+    stripeCustomerId String?
+    pupa             Int       @default(0)
 
-    accounts      Account[]
-    createdThemes Theme[]         @relation("ThemeOwner")
-    likedThemes   UserLikeTheme[]
-    savedThemes   UserSaveTheme[]
+    accounts        Account[]
+    createdThemes   Theme[]         @relation("ThemeOwner")
+    likedThemes     UserLikeTheme[]
+    savedThemes     UserSaveTheme[]
+    purchaseHistory Purchase[]
 }
 
 model Account {
@@ -126,4 +128,16 @@ model ThemeTag {
     @@id([tagId, themeId])
     @@index([themeId])
     @@index([tagId])
+}
+
+model Purchase {
+    id               String   @id @default(cuid())
+    createdAt        DateTime @default(now())
+    stripeSessionId  String
+    stripeCustomerId String
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+
+    @@index([userId])
 }

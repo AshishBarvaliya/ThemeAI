@@ -1,9 +1,8 @@
 import axios from "axios";
 
-export const toggleThemeLike = async (userId: string, themeId: string) => {
+export const toggleThemeLike = async (themeId: string) => {
   try {
     const response = await axios.post("/api/likeTheme", {
-      userId,
       themeId,
     });
     console.log(response);
@@ -12,10 +11,9 @@ export const toggleThemeLike = async (userId: string, themeId: string) => {
   }
 };
 
-export const toggleThemeSave = async (userId: string, themeId: string) => {
+export const toggleThemeSave = async (themeId: string) => {
   try {
     const response = await axios.post("/api/saveTheme", {
-      userId,
       themeId,
     });
     console.log(response);
