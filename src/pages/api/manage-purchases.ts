@@ -1,5 +1,3 @@
-// pages/api/savePurchase.js
-
 import { prisma } from "@/config/db";
 import stripe from "@/config/stripe";
 import { NextApiRequest, NextApiResponse } from "next";
