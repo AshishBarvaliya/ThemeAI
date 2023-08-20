@@ -1,9 +1,13 @@
+import { buyPupa, managePurchase } from "@/services/stripe";
 import { getThemeById, getThemes, postTheme } from "@/services/theme";
 import { toggleThemeLike, toggleThemeSave } from "@/services/toggle";
 import { getUser } from "@/services/user";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/router";
 
 export default function Dashboard() {
+  const router = useRouter();
+
   return (
     <div className="mt-40">
       Dashboard
@@ -30,25 +34,29 @@ export default function Dashboard() {
       </button>
       <button
         className="m-6"
-        onClick={() =>
-          toggleThemeLike(
-            "clle7kyd60000t7vgwys43514",
-            "clli96o7z0001t7nk3eom3cjh"
-          )
-        }
+        onClick={() => toggleThemeLike("clli96o7z0001t7nk3eom3cjh")}
       >
         Toggle Like
       </button>
       <button
         className="m-6"
-        onClick={() =>
-          toggleThemeSave(
-            "clle7kyd60000t7vgwys43514",
-            "clli96o7z0001t7nk3eom3cjh"
-          )
-        }
+        onClick={() => toggleThemeSave("clli96o7z0001t7nk3eom3cjh")}
       >
         Toggle Save
+      </button>
+      <button className="m-6" onClick={() => buyPupa()}>
+        Buy Pupa
+      </button>
+      <button
+        className="m-6"
+        onClick={() => {
+          if (router.query.session_id) {
+            console.log(router.query.session_id);
+            managePurchase(router.query.session_id as string);
+          }
+        }}
+      >
+        Manage Purchase
       </button>
     </div>
   );
