@@ -2,18 +2,14 @@ import { buyPupa, managePurchase } from "@/services/stripe";
 import { getThemeById, getThemes, postTheme } from "@/services/theme";
 import { toggleThemeLike, toggleThemeSave } from "@/services/toggle";
 import { getUser } from "@/services/user";
-import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 
 export default function Dashboard() {
   const router = useRouter();
 
   return (
-    <div className="mt-40">
+    <div className="relative top-24">
       Dashboard
-      <button className="m-6" onClick={() => signOut()}>
-        Sign Out
-      </button>
       <button className="m-6" onClick={postTheme}>
         Post Theme
       </button>
