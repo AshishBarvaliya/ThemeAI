@@ -62,8 +62,8 @@ const Header = () => {
   };
 
   return (
-    <div className="absolute flex z-10 2xl:max-w-screen-2xl max-w-screen-xl mx-auto w-full top-0 justify-between left-1/2 -translate-x-1/2 py-4">
-      <Link href="/">
+    <div className="fixed flex z-10 2xl:max-w-screen-2xl max-w-screen-xl mx-auto w-full top-0 justify-between left-1/2 -translate-x-1/2 py-4">
+      <Link href="/admin/dashboard">
         <Image src="/logo.svg" alt="butterfly logo" width={150} height={100} />
       </Link>
 
