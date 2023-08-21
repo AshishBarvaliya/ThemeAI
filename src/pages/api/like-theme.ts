@@ -24,11 +24,37 @@ export default async function handler(
           await prisma.userLikeTheme.delete({
             where: { userId_themeId: { userId: session.user.id, themeId } },
           });
+
           res.status(202).json({ like: existingLike });
         } else {
+          const theme = await prisma.theme.findUnique({
+            where: { id: themeId as string },
+            select: {
+              id: true,
+              userId: true,
+            },
+          });
+
+          if (!theme) {
+            return res.status(404).json({ error: "Theme not found" });
+          }
+
           const like = await prisma.userLikeTheme.create({
             data: { userId: session.user.id, themeId },
           });
+
+          if (session.user.id !== theme.userId) {
+            await prisma.notification.create({
+              data: {
+                recipientId: theme.userId,
+                read: false,
+                type: "LIKE",
+                notifierId: session.user.id,
+                themeId,
+              },
+            });
+          }
+
           res.status(201).json({ like });
         }
       } catch (error) {

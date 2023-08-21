@@ -26,9 +26,34 @@ export default async function handler(
           });
           res.status(202).json({ save: existingSave });
         } else {
+          const theme = await prisma.theme.findUnique({
+            where: { id: themeId as string },
+            select: {
+              id: true,
+              userId: true,
+            },
+          });
+
+          if (!theme) {
+            return res.status(404).json({ error: "Theme not found" });
+          }
+
           const save = await prisma.userSaveTheme.create({
             data: { userId: session.user.id, themeId },
           });
+
+          if (session.user.id !== theme.userId) {
+            await prisma.notification.create({
+              data: {
+                recipientId: theme.userId,
+                read: false,
+                type: "SAVE",
+                notifierId: session.user.id,
+                themeId,
+              },
+            });
+          }
+
           res.status(201).json({ save });
         }
       } catch (error) {
