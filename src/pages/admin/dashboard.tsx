@@ -1,7 +1,8 @@
 import { buyPupa, managePurchase } from "@/services/stripe";
 import { getThemeById, getThemes, postTheme } from "@/services/theme";
 import { toggleThemeLike, toggleThemeSave } from "@/services/toggle";
-import { getUser } from "@/services/user";
+import { getUser, toggleFollowing } from "@/services/user";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 
 export default function Dashboard() {
@@ -53,6 +54,12 @@ export default function Dashboard() {
         }}
       >
         Manage Purchase
+      </button>
+      <button
+        className="m-6"
+        onClick={() => toggleFollowing("clli5kos500007ou0ghjzrko9")}
+      >
+        Toggle Following
       </button>
     </div>
   );
