@@ -9,11 +9,8 @@ export default function Dashboard() {
   const router = useRouter();
 
   return (
-    <div className="mt-40">
+    <div className="relative top-24">
       Dashboard
-      <button className="m-6" onClick={() => signOut()}>
-        Sign Out
-      </button>
       <button className="m-6" onClick={postTheme}>
         Post Theme
       </button>
