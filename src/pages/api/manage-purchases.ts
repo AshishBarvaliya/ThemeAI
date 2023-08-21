@@ -1,5 +1,3 @@
-// pages/api/savePurchase.js
-
 import { prisma } from "@/config/db";
 import stripe from "@/config/stripe";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -11,10 +9,22 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== "POST") {
-    return res.status(405).end();
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   const { sessionId } = req.body;
+
+  if (!sessionId) {
+    return res.status(400).json({ error: "Session not found" });
+  }
+
+  const existingSession = await prisma.purchase.findMany({
+    where: { stripeSessionId: sessionId },
+  });
+
+  if (existingSession.length > 0) {
+    return res.status(400).json({ error: "Session already exists" });
+  }
 
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
