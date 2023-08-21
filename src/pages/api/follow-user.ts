@@ -37,11 +37,23 @@ export default async function handler(
               },
             },
           });
+
           res.status(202).json({ follow: existingFollower });
         } else {
-          const follow = await prisma.follow.create({
-            data: { followerId: session.user.id, followingId: userId },
-          });
+          const [follow] = await prisma.$transaction([
+            prisma.follow.create({
+              data: { followerId: session.user.id, followingId: userId },
+            }),
+            prisma.notification.create({
+              data: {
+                recipientId: userId,
+                read: false,
+                type: "FOLLOW",
+                notifierId: session.user.id,
+              },
+            }),
+          ]);
+
           res.status(201).json({ follow });
         }
       } catch (error) {

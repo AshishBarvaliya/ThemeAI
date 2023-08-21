@@ -75,6 +75,8 @@ export default async function handler(
                     },
                   },
                 },
+                notifications: true,
+                activities: true,
               },
             });
 
