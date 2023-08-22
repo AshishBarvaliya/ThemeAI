@@ -23,6 +23,7 @@ model User {
     updatedAt        DateTime  @updatedAt
     stripeCustomerId String?
     pupa             Int       @default(0)
+    experience       Int       @default(0)
 
     accounts        Account[]
     createdThemes   Theme[]         @relation("ThemeOwner")

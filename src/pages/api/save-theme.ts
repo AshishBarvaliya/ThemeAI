@@ -42,6 +42,13 @@ export default async function handler(
             data: { userId: session.user.id, themeId },
           });
 
+          await prisma.user.update({
+            where: { id: theme.userId },
+            data: {
+              experience: { increment: 15 },
+            },
+          });
+
           if (session.user.id !== theme.userId) {
             await prisma.notification.create({
               data: {
