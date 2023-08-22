@@ -38,20 +38,6 @@ export default async function handler(
       return;
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: session.metadata?.userId },
-      select: {
-        id: true,
-        pupa: true,
-      },
-    });
-
-    if (!user) {
-      return res
-        .status(400)
-        .json({ error: "Not a valid prisma user not found" });
-    }
-
     await prisma.purchase.create({
       data: {
         stripeSessionId: session.id,
@@ -61,9 +47,11 @@ export default async function handler(
     });
 
     await prisma.user.update({
-      where: { id: user.id },
+      where: { id: session.metadata?.userId },
       data: {
-        pupa: user.pupa + parseInt(N_PUPA),
+        pupa: {
+          increment: Number(N_PUPA),
+        },
       },
     });
 

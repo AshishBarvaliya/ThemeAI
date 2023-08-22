@@ -106,36 +106,43 @@ export default async function handler(
       const resolvedTags = await Promise.all(tagPromises);
 
       try {
-        const theme = await prisma.theme.create({
+        await prisma.user.update({
+          where: {
+            id: session.user.id,
+          },
           data: {
-            userId: session.user.id,
-            name,
-            color_1,
-            color_1_reason,
-            color_2,
-            color_2_reason,
-            color_3,
-            color_3_reason,
-            color_4,
-            color_4_reason,
-            font_1,
-            font_1_reason,
-            font_2,
-            font_2_reason,
-            prompt,
-            isPrivate,
-            isAIGenerated,
-            tags: {
-              create: resolvedTags.map((tag) => ({
-                tag: { connect: { id: tag.id } },
-              })),
+            experience: {
+              increment: 10,
+            },
+            createdThemes: {
+              create: {
+                name,
+                color_1,
+                color_1_reason,
+                color_2,
+                color_2_reason,
+                color_3,
+                color_3_reason,
+                color_4,
+                color_4_reason,
+                font_1,
+                font_1_reason,
+                font_2,
+                font_2_reason,
+                prompt,
+                isPrivate,
+                isAIGenerated,
+                tags: {
+                  create: resolvedTags.map((tag) => ({
+                    tag: { connect: { id: tag.id } },
+                  })),
+                },
+              },
             },
           },
-          include: {
-            tags: true,
-          },
         });
-        res.status(201).json(theme);
+
+        res.status(201).json({ message: "Theme have been created" });
       } catch (error) {
         res.status(500).json({ error: "Failed to create theme" });
       }

@@ -26,6 +26,7 @@ export default async function handler(
                 email: true,
                 image: true,
                 username: true,
+                experience: true,
                 pupa: true,
                 purchaseHistory: {
                   select: {
@@ -97,6 +98,7 @@ export default async function handler(
                 title: true,
                 username: true,
                 organization: true,
+                experience: true,
                 location: true,
                 likedThemes: {
                   select: {
@@ -154,6 +156,7 @@ export default async function handler(
               title: true,
               username: true,
               organization: true,
+              experience: true,
               location: true,
               createdThemes: {
                 where: {
