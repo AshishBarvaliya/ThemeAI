@@ -11,15 +11,7 @@ export const authorisedMenu = [
 
 export const menu = [
   {
-    path: "/tools",
+    path: "",
     label: "Tools",
-  },
-  {
-    path: "/colors-matter",
-    label: "Why does colors matter?",
-  },
-  {
-    path: "/colors-matter",
-    label: "Why AI?",
   },
 ];
