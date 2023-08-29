@@ -1,4 +1,4 @@
-import Layout from "@/components/Layout/Layout";
+import Layout from "@/components/layout";
 import { ToastProvider } from "@/hooks/useToast";
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";

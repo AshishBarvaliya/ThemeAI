@@ -1,9 +1,9 @@
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { Button } from "../ui/button";
+import React, { useState } from "react";
+import { Button } from "./ui/button";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { authorisedMenu, menu } from "@/constants/navigation";
+import { menu } from "@/constants/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
 import {
   Dialog,
@@ -12,10 +12,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from "./ui/dialog";
 import { useToast } from "@/hooks/useToast";
 import Google from "@/assets/icons/Google";
-import { Separator } from "../ui/separator";
+import { Separator } from "./ui/separator";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,10 +23,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+} from "./ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 const Header = () => {
   const router = useRouter();
@@ -56,15 +55,15 @@ const Header = () => {
           title: "Logged in successfully!",
           type: "success",
         });
-        router.push("/admin/dashboard");
+        router.push("/dashboard");
       }
     });
   };
 
   return (
-    <div className="fixed flex z-10 2xl:max-w-screen-2xl max-w-screen-xl mx-auto w-full top-0 justify-between left-1/2 -translate-x-1/2 py-4">
-      <Link href="/admin/dashboard">
-        <Image src="/logo.svg" alt="butterfly logo" width={150} height={100} />
+    <div className="absolute max-w-screen-2xl flex border-b border-primary-foreground w-full justify-between py-4 px-7 h-[96px]">
+      <Link href="/dashboard">
+        <Image src="/logo.png" alt="butterfly logo" width={150} height={62} />
       </Link>
 
       <ul className="flex items-center gap-8">
@@ -77,10 +76,7 @@ const Header = () => {
         ))}
 
         {router.pathname === "/" && (
-          <Button
-            className="bg-[#ffd069] text-[#23344a"
-            onClick={() => router.push("/admin/dashboard")}
-          >
+          <Button className="" onClick={() => router.push("/dashboard")}>
             Launch
           </Button>
         )}
