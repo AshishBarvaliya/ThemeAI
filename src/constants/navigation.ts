@@ -1,17 +1,21 @@
 export const authorisedMenu = [
   {
     path: "",
-    label: "",
+    label: "Generate Theme",
   },
   {
     path: "",
-    label: "",
+    label: "Buy Pupa",
   },
 ];
 
-export const menu = [
+export const landingMenu = [
   {
     path: "",
     label: "Tools",
+  },
+  {
+    path: "about-us",
+    label: "About Us",
   },
 ];

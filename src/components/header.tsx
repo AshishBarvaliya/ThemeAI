@@ -1,21 +1,10 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { menu } from "@/constants/navigation";
-import { signIn, signOut, useSession } from "next-auth/react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
-import { useToast } from "@/hooks/useToast";
-import Google from "@/assets/icons/Google";
-import { Separator } from "./ui/separator";
+import { landingMenu } from "@/constants/navigation";
+import { signOut, useSession } from "next-auth/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,144 +15,99 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { LoginDialog } from "./login-dialog";
+import Logo from "@/assets/svgs/logo";
+import {
+  VerificationDialog,
+  VerificationDialogProps,
+} from "./verification-dialog";
+import { RegisterDialog } from "./register-dialog";
+import { UserProfileDialog } from "./user-profile-dialog";
 
 const Header = () => {
   const router = useRouter();
+  const { status, data: session } = useSession();
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [singupOpen, setSingupOpen] = useState(false);
+  const [userProfileOpen, setUserProfileOpen] = useState(false);
 
-  const session = useSession();
-  console.log(session);
-
-  const { addToast } = useToast();
-
-  const [data, setData] = useState({
-    email: "",
-    password: "",
+  const [verifyDialogState, setVerifyDialogState] = useState<{
+    open: boolean;
+    type: VerificationDialogProps["type"];
+  }>({
+    open: false,
+    type: "pleaseVerify",
   });
 
-  const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    signIn("credentials", { ...data, redirect: false }).then((callback) => {
-      if (callback?.error) {
-        addToast({
-          title: callback.error,
-          type: "error",
-        });
-      }
+  const isAuthenticated = status === "authenticated";
 
-      if (callback?.ok && !callback?.error) {
-        addToast({
-          title: "Logged in successfully!",
-          type: "success",
-        });
-        router.push("/dashboard");
-      }
-    });
-  };
+  useEffect(() => {
+    if (router.asPath === "/themes?signin=1") {
+      setLoginOpen(true);
+      router.push("/themes", undefined, { shallow: true });
+    } else if (router.asPath === "/themes?signup=1") {
+      setSingupOpen(true);
+      router.push("/themes", undefined, { shallow: true });
+    } else if (router.asPath === "/themes?verify=0&error=invalid") {
+      setVerifyDialogState({
+        open: true,
+        type: "invalid",
+      });
+    } else if (router.asPath === "/themes?verify=0&error=expired") {
+      setVerifyDialogState({
+        open: true,
+        type: "expired",
+      });
+    } else if (router.asPath === "/themes?verify=0&error=verified") {
+      setVerifyDialogState({
+        open: true,
+        type: "alreadyVerified",
+      });
+    } else if (router.asPath === "/themes?verify=1") {
+      setVerifyDialogState({ open: true, type: "verified" });
+    }
+  }, [router]);
+
+  useEffect(() => {
+    if (
+      status === "authenticated" &&
+      !session?.user.isActived &&
+      router.asPath === "/themes"
+    ) {
+      setVerifyDialogState({ open: true, type: "pleaseVerify" });
+    }
+  }, [status]);
 
   return (
-    <div className="absolute max-w-screen-2xl flex border-b border-primary-foreground w-full justify-between py-4 px-7 h-[96px]">
-      <Link href="/dashboard">
+    <div className="absolute max-w-screen-2xl flex border-b border-border w-full justify-between py-4 px-7 h-[96px]">
+      <Link href="/themes" className="flex">
         <Image src="/logo.png" alt="butterfly logo" width={150} height={62} />
+        <Logo />
       </Link>
 
       <ul className="flex items-center gap-8">
-        {menu.map((item, index) => (
-          <li key={index}>
-            <Link className="text-[#23344a]" href={item.path}>
-              {item.label}
-            </Link>
-          </li>
-        ))}
-
         {router.pathname === "/" && (
-          <Button className="" onClick={() => router.push("/dashboard")}>
-            Launch
-          </Button>
-        )}
-
-        {session.status === "unauthenticated" && router.pathname !== "/" ? (
-          <div>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  type="button"
-                  className="rounded-lg bg-[#ffd069] hover:bg-[#23344a] hover:text-[#ffd069] text-[#23344a] px-3 py-2"
+          <>
+            {landingMenu.map((item, index) => (
+              <li key={index}>
+                <Link
+                  className="text-primary-foreground text-lg"
+                  href={item.path}
                 >
-                  Sign In
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="p-10 rounded-lg">
-                <DialogHeader>
-                  <DialogTitle>Sign In</DialogTitle>
-                  <DialogDescription>
-                    Don`t have an account?{" "}
-                    <Link href="" className="underline text-[#23344a]">
-                      Create an account
-                    </Link>
-                  </DialogDescription>
-                </DialogHeader>
-                <div>
-                  <form onSubmit={loginUser}>
-                    <div className="mt-2">
-                      <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        autoComplete="email"
-                        value={data.email}
-                        placeholder="Username"
-                        onChange={(e) =>
-                          setData({ ...data, email: e.target.value })
-                        }
-                        required
-                        className="outline-none block w-full rounded-t-lg border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-[#ffd069] sm:text-sm sm:leading-6 px-5 py-2"
-                      />
-                      <input
-                        id="password"
-                        name="password"
-                        type="password"
-                        autoComplete="current-password"
-                        required
-                        value={data.password}
-                        placeholder="Password"
-                        onChange={(e) =>
-                          setData({ ...data, password: e.target.value })
-                        }
-                        className="outline-none block w-full rounded-b-lg border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-[#ffd069] sm:text-sm sm:leading-6 px-5 py-2"
-                      />
-                    </div>
-                    <Link
-                      href=""
-                      className="underline my-4 block text-[#23344a]"
-                    >
-                      Forgot Password?
-                    </Link>
-                    <div>
-                      <Button
-                        type="submit"
-                        className="flex w-full justify-center rounded-lg  px-3 py-2 text-sm font-semibold leading-6 "
-                      >
-                        Sign in
-                      </Button>
-                    </div>
-                  </form>
-                  <div className="flex items-center gap-3 my-6 justify-between">
-                    <Separator className="w-full shrink" />
-                    OR
-                    <Separator className="w-full shrink" />
-                  </div>
-                  <button
-                    onClick={() => signIn("google")}
-                    className="flex w-full justify-between items-center rounded-lg py-2 text-sm font-semibold leading-6 text-[#23344a] ring-1 ring-inset ring-gray-300 px-5"
-                  >
-                    <Google className="flex flex-0 flex-grow-0 flex-shrink-0 flex-auto" />{" "}
-                    <span className="flex-1 text-center">
-                      Continue with Google
-                    </span>
-                  </button>
-                </div>
-              </DialogContent>
-            </Dialog>
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+            <Button className="" onClick={() => router.push("/themes")}>
+              Launch
+            </Button>
+          </>
+        )}
+        {!isAuthenticated && router.pathname !== "/" ? (
+          <div>
+            <Button type="button" onClick={() => setLoginOpen(true)}>
+              Sign In
+            </Button>
           </div>
         ) : (
           router.pathname !== "/" && (
@@ -175,11 +119,11 @@ const Header = () => {
                 >
                   <Avatar className="h-8 w-8 ">
                     <AvatarImage
-                      src={session.data?.user.image}
+                      src={session?.user.image}
                       alt="profile image"
                     />
                     <AvatarFallback className="bg-[#ffd069] text-[#23344a]">
-                      {session.data?.user.name?.split(" ")[0][0]}
+                      {session?.user.name?.split(" ")[0][0]}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -188,10 +132,10 @@ const Header = () => {
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">
-                      {session.data?.user.name}
+                      {session?.user.name}
                     </p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      {session.data?.user.email}
+                      {session?.user.email}
                     </p>
                   </div>
                 </DropdownMenuLabel>
@@ -213,6 +157,20 @@ const Header = () => {
           )
         )}
       </ul>
+      <LoginDialog
+        open={loginOpen}
+        setOpen={setLoginOpen}
+        setSingupOpen={setSingupOpen}
+      />
+      <RegisterDialog open={singupOpen} setOpen={setSingupOpen} />
+      <VerificationDialog
+        open={verifyDialogState.open}
+        setVerifyDialogState={setVerifyDialogState}
+        type={verifyDialogState.type}
+        setLoginOpen={setLoginOpen}
+        setUserProfileOpen={setUserProfileOpen}
+      />
+      <UserProfileDialog open={userProfileOpen} setOpen={setUserProfileOpen} />
     </div>
   );
 };

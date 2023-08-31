@@ -17,6 +17,7 @@ model User {
     location         String?
     organization     String?
     emailVerified    DateTime?
+    isActived        DateTime? @default(now())
     hashedPassword   String?
     image            String?
     createdAt        DateTime  @default(now())
@@ -25,15 +26,16 @@ model User {
     pupa             Int       @default(0)
     experience       Int       @default(0)
 
-    accounts        Account[]
-    createdThemes   Theme[]         @relation("ThemeOwner")
-    likedThemes     UserLikeTheme[]
-    savedThemes     UserSaveTheme[]
-    purchaseHistory Purchase[]
-    following       Follow[]        @relation("UserFollowing")
-    followers       Follow[]        @relation("UserFollowers")
-    notifications   Notification[]  @relation("ReceiverNotification")
-    activities      Notification[]  @relation("NotifierNotification")
+    accounts           Account[]
+    createdThemes      Theme[]             @relation("ThemeOwner")
+    likedThemes        UserLikeTheme[]
+    savedThemes        UserSaveTheme[]
+    purchaseHistory    Purchase[]
+    following          Follow[]            @relation("UserFollowing")
+    followers          Follow[]            @relation("UserFollowers")
+    notifications      Notification[]      @relation("ReceiverNotification")
+    activities         Notification[]      @relation("NotifierNotification")
+    verificationTokens VerificationToken[]
 }
 
 model Account {
@@ -53,6 +55,17 @@ model Account {
     user User @relation(fields: [userId], references: [id])
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
+}
+
+model VerificationToken {
+    id        String   @id @default(cuid())
+    token     String   @unique
+    expiresAt DateTime
+    userId    String
+
+    user User @relation(fields: [userId], references: [id])
+
     @@index([userId])
 }
 
@@ -154,8 +167,7 @@ model Follow {
     followerId  String
     followingId String
 
-    follower User @relation("UserFollowing", fields: [followerId], references: [id])
-
+    follower  User @relation("UserFollowing", fields: [followerId], references: [id])
     following User @relation("UserFollowers", fields: [followingId], references: [id])
 
     @@unique([followerId, followingId])

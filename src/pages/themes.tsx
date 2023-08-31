@@ -4,7 +4,7 @@ import { toggleThemeLike, toggleThemeSave } from "@/services/toggle";
 import { getUser, toggleFollowing } from "@/services/user";
 import { useRouter } from "next/router";
 
-export default function Dashboard() {
+export default function Themes() {
   const router = useRouter();
 
   return (
@@ -12,7 +12,7 @@ export default function Dashboard() {
       <div className="relative top-24 2xl:max-w-screen-2xl max-w-screen-xl mx-auto flex">
         <div className="basis-1/6 ">sidebar</div>
         <div className="basis-5/6">
-          Dashboard
+          themes
           <button onClick={postTheme}>Post Theme</button>
           <button onClick={getThemes}>Get All Theme</button>
           <button onClick={() => getThemeById("clli96o7z0001t7nk3eom3cjh")}>

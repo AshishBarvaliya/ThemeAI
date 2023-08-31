@@ -59,17 +59,22 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === "development",
   pages: {
-    signIn: "/login",
+    signIn: "/themes?signin=1",
   },
   session: {
     strategy: "jwt",
   },
   callbacks: {
-    jwt: ({ token, user }) => {
+    jwt: ({ token, user }: any) => {
       if (user) {
         return {
           ...token,
           id: user.id,
+          pupa: user.pupa,
+          isActived: user.isActived,
+          location: user.location,
+          organization: user.organization,
+          title: user.title,
         };
       }
       return token;
@@ -80,6 +85,11 @@ export const authOptions: NextAuthOptions = {
         user: {
           ...session.user,
           id: token.id,
+          pupa: token.pupa,
+          isActived: token.isActived,
+          location: token.location,
+          organization: token.organization,
+          title: token.title,
         },
       };
     },
