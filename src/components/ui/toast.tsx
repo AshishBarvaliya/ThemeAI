@@ -119,7 +119,7 @@ const ToastComponent: React.FC<Props> = ({ toast }) => {
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <div className="w-full max-w-sm bg-white rounded-lg shadow-lg pointer-events-auto">
+        <div className="w-full border-border border max-w-sm bg-white rounded-lg shadow-lg pointer-events-auto">
           <div className="overflow-hidden rounded-lg shadow-xs">
             <div className="p-4">
               <div className="flex items-start">

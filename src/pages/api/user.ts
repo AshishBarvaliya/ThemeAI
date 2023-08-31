@@ -185,8 +185,7 @@ export default async function handler(
   }
   if (req.method === "POST") {
     const body = await req.body;
-    const { username, name, title, organization, location, email, password } =
-      body;
+    const { name, email, password } = body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ error: "Missing Fields" });
@@ -203,19 +202,54 @@ export default async function handler(
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    try {
+      const user = await prisma.user.create({
+        data: {
+          name,
+          email,
+          hashedPassword,
+          isActived: null,
+        },
+      });
+      return res.status(201).json({ user });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create user" });
+    }
+  }
+  if (req.method === "PUT") {
+    if (!session) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const body = await req.body;
+    const { title, organization, location } = body;
 
-    const user = await prisma.user.create({
-      data: {
-        name,
-        username,
-        email,
-        title,
-        organization,
-        location,
-        hashedPassword,
-      },
-    });
-
-    return res.status(201).json({ user });
+    try {
+      const user = await prisma.user.update({
+        where: {
+          id: session?.user?.id,
+        },
+        data: {
+          title,
+          organization,
+          location,
+        },
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          title: true,
+          username: true,
+          organization: true,
+          experience: true,
+          location: true,
+          isActived: true,
+        },
+      });
+      return res.status(200).json({ user });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update user" });
+    }
+  } else {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 }

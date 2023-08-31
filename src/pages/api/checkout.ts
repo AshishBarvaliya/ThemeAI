@@ -69,8 +69,8 @@ export default async function handler(
         customer: stripeCustomerId,
         mode: "payment",
         success_url:
-          "http://localhost:3000/admin/dashboard?session_id={CHECKOUT_SESSION_ID}",
-        cancel_url: "http://localhost:3000/admin/dashboard",
+          "http://localhost:3000/themes?session_id={CHECKOUT_SESSION_ID}",
+        cancel_url: "http://localhost:3000/themes",
       });
 
       res.status(200).json({ url: stripeSession.url });
