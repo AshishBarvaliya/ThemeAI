@@ -36,6 +36,7 @@ model User {
     notifications      Notification[]      @relation("ReceiverNotification")
     activities         Notification[]      @relation("NotifierNotification")
     verificationTokens VerificationToken[]
+    resetPasswords     ResetPassword[]
 }
 
 model Account {
@@ -59,6 +60,17 @@ model Account {
 }
 
 model VerificationToken {
+    id        String   @id @default(cuid())
+    token     String   @unique
+    expiresAt DateTime
+    userId    String
+
+    user User @relation(fields: [userId], references: [id])
+
+    @@index([userId])
+}
+
+model ResetPassword {
     id        String   @id @default(cuid())
     token     String   @unique
     expiresAt DateTime

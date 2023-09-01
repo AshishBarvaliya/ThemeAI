@@ -7,6 +7,7 @@ import { Button } from "./ui/button";
 import Typography from "./ui/typography";
 import { MailCheck, MailMinus, MailQuestion } from "lucide-react";
 import { sendVerificationEmail } from "@/services/user";
+import { useRouter } from "next/router";
 
 export interface VerificationDialogProps {
   open: boolean;
@@ -34,6 +35,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
   setUserProfileOpen,
   setLoginOpen,
 }) => {
+  const router = useRouter();
   const { addToast } = useToast();
   const { status, data: session } = useSession();
   const [loading, setLoading] = useState(false);
@@ -48,7 +50,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
   const sendMail = async () => {
     if (isAuthenticated) {
       setLoading(true);
-      sendVerificationEmail(session?.user.id as string)
+      sendVerificationEmail()
         .then(() => {
           addToast({
             title: "Verification email has been sent successfully",
@@ -64,6 +66,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
         .finally(() => {
           setVerifyDialogState((prev) => ({ open: false, type: prev.type }));
           setLoading(false);
+          router.push("/themes", undefined, { shallow: true });
         });
     }
   };
@@ -75,7 +78,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
       description:
         "We're sorry, but the verification link you clicked appears to be invalid. If you copied and pasted the link, please make sure you did so completely. Alternatively, you may request a new verification email.",
       bg: "bg-destructive",
-      button: isAuthenticated ? "resend" : "signin",
+      button: "resend",
     },
     expired: {
       icon: <MailMinus className="w-8 h-8 text-primary-foreground" />,
@@ -83,7 +86,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
       description:
         "Oops! The verification link you clicked has expired. For security reasons, verification links are time-sensitive. Please request a new verification email.",
       bg: "bg-destructive",
-      button: isAuthenticated ? "resend" : "signin",
+      button: "resend",
     },
     alreadyVerified: {
       icon: <MailCheck className="w-8 h-8 text-primary-foreground" />,
@@ -103,7 +106,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
         </>
       ),
       bg: "bg-warning",
-      button: isAuthenticated ? "resend" : "signin",
+      button: "resend",
     },
     verificationRequired: {
       icon: <MailQuestion className="w-8 h-8 text-primary-foreground" />,
@@ -111,7 +114,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
       description:
         "To fully activate your account and access all features, you'll need to verify your email address. Please check your inbox (or spam folder) for the verification email we sent and click the button to complete the process.",
       bg: "bg-warning",
-      button: isAuthenticated ? "resend" : "signin",
+      button: "resend",
     },
     verified: {
       icon: <MailCheck className="w-8 h-8 text-primary-foreground" />,
@@ -126,9 +129,10 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
   return (
     <Dialog
       open={open}
-      onOpenChange={(toggle) =>
-        setVerifyDialogState((prev) => ({ open: toggle, type: prev.type }))
-      }
+      onOpenChange={(toggle) => {
+        setVerifyDialogState((prev) => ({ open: toggle, type: prev.type }));
+        router.push("/themes", undefined, { shallow: true });
+      }}
     >
       <DialogContent className="p-10 border border-border bg-white rounded-none">
         <div className="flex flex-col items-center">
@@ -147,7 +151,23 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
             <Button
               className="w-full mt-6"
               disabled={loading}
-              onClick={sendMail}
+              onClick={() => {
+                if (isAuthenticated) {
+                  sendMail();
+                } else {
+                  setLoading(true);
+                  addToast({
+                    title: "Please sign in first to resend verification email",
+                    type: "warning",
+                  });
+                  setLoading(false);
+                  setVerifyDialogState((prev) => ({
+                    open: false,
+                    type: prev.type,
+                  }));
+                  setLoginOpen(true);
+                }
+              }}
             >
               {loading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Sending..." : "Resend Verification Email"}

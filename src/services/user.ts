@@ -26,16 +26,32 @@ export const toggleFollowing = async (userId: string) => {
   }
 };
 
-export const sendVerificationEmail = async (userId: string) => {
+export const sendVerificationEmail = async () => {
   const apiUrl = `/api/send-verification-email`;
 
   try {
-    const response = await axios.post(apiUrl, {
-      userId,
-    });
+    const response = await axios.post(apiUrl);
 
     console.log(response);
   } catch (error) {
     console.log("Failed to send verification email");
   }
+};
+
+export const sendPasswordResetEmail = async (email: string) => {
+  const apiUrl = `/api/reset-password`;
+
+  return axios.post(apiUrl, {
+    email,
+  });
+};
+
+export const updatePassword = async (password: string, token?: string) => {
+  const apiUrl = token
+    ? `/api/update-password?token=${token}`
+    : `/api/update-password`;
+
+  return axios.put(apiUrl, {
+    password,
+  });
 };

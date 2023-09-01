@@ -1,11 +1,9 @@
 import { prisma } from "@/config/db";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./auth/[...nextauth]";
 import { randomUUID } from "crypto";
 
-const VERIFICATION_MAIL_LIMIT = parseInt(
-  process.env.VERIFICATION_MAIL_LIMIT || "0"
+const FORGOT_PASSWORD_MAIL_LIMIT = parseInt(
+  process.env.FORGOT_PASSWORD_MAIL_LIMIT || "0"
 );
 const EMAIL_LINK_EXPIRY = parseInt(process.env.EMAIL_LINK_EXPIRY || "0");
 
@@ -13,37 +11,42 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const session = await getServerSession(req, res, authOptions);
   if (req.method === "POST") {
-    if (session?.user.id) {
+    const { email } = req.body;
+    if (email) {
       const user = await prisma.user.findUnique({
         where: {
-          id: session?.user.id,
+          email,
         },
         select: {
+          id: true,
           isActived: true,
           _count: {
             select: {
-              verificationTokens: true,
+              resetPasswords: true,
             },
           },
         },
       });
 
-      if (user?.isActived) {
-        return res.status(404).json({ error: "User is already verified" });
+      if (!user) {
+        return res
+          .status(201)
+          .json({ messsage: "Reset password mail has been sent" });
       }
 
-      if (user?._count?.verificationTokens === VERIFICATION_MAIL_LIMIT) {
-        return res
-          .status(404)
-          .json({ error: "Verification mail limit reached" });
+      if (!user?.isActived) {
+        return res.status(404).json({ error: "User is not verified" });
+      }
+
+      if (user?._count?.resetPasswords === FORGOT_PASSWORD_MAIL_LIMIT) {
+        return res.status(404).json({ error: "Forgot password limit reached" });
       }
 
       try {
-        await prisma.verificationToken.create({
+        await prisma.resetPassword.create({
           data: {
-            userId: session?.user.id,
+            userId: user.id,
             token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
             expiresAt: new Date(
               new Date().getTime() + 60000 * EMAIL_LINK_EXPIRY
@@ -55,12 +58,12 @@ export default async function handler(
 
         return res
           .status(201)
-          .json({ messsage: "Verification mail has been sent" });
+          .json({ messsage: "Reset password mail has been sent" });
       } catch (error) {
         res.status(500).json({ error: "Failed to send mail" });
       }
     } else {
-      return res.status(401).json({ error: "Unauthorized" });
+      return res.status(401).json({ error: "Email is required" });
     }
   } else {
     return res.status(405).json({ error: "Method not allowed" });
