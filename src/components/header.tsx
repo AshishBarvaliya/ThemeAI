@@ -23,6 +23,8 @@ import {
 } from "./verification-dialog";
 import { RegisterDialog } from "./register-dialog";
 import { UserProfileDialog } from "./user-profile-dialog";
+import { ResetPasswordDialog } from "./reset-password";
+import { NewPasswordDialog } from "./new-password";
 
 const Header = () => {
   const router = useRouter();
@@ -30,6 +32,8 @@ const Header = () => {
   const [loginOpen, setLoginOpen] = useState(false);
   const [singupOpen, setSingupOpen] = useState(false);
   const [userProfileOpen, setUserProfileOpen] = useState(false);
+  const [resetPasswordDialog, setResetPasswordDialog] = useState(false);
+  const [newPasswordDialog, setNewPasswordDialog] = useState(false);
 
   const [verifyDialogState, setVerifyDialogState] = useState<{
     open: boolean;
@@ -41,8 +45,13 @@ const Header = () => {
 
   const isAuthenticated = status === "authenticated";
 
+  const handleSignOut = async (path: string) => {
+    await signOut({ callbackUrl: path });
+  };
+
   useEffect(() => {
-    if (router.asPath === "/themes?signin=1") {
+    if (status === "loading") return;
+    else if (router.asPath === "/themes?signin=1") {
       setLoginOpen(true);
       router.push("/themes", undefined, { shallow: true });
     } else if (router.asPath === "/themes?signup=1") {
@@ -59,14 +68,34 @@ const Header = () => {
         type: "expired",
       });
     } else if (router.asPath === "/themes?verify=0&error=verified") {
-      setVerifyDialogState({
-        open: true,
-        type: "alreadyVerified",
-      });
+      if (status === "authenticated" && !session?.user.isActived) {
+        handleSignOut("/themes?verify=0&error=verified");
+      } else {
+        setVerifyDialogState({
+          open: true,
+          type: "alreadyVerified",
+        });
+        router.push("/themes", undefined, { shallow: true });
+      }
     } else if (router.asPath === "/themes?verify=1") {
-      setVerifyDialogState({ open: true, type: "verified" });
+      if (status === "authenticated" && !session?.user.isActived) {
+        handleSignOut("/themes?verify=1");
+      } else {
+        setVerifyDialogState({
+          open: true,
+          type: "verified",
+        });
+        router.push("/themes", undefined, { shallow: true });
+      }
+    } else if (router.asPath === "/themes?resetpassword=1") {
+      setResetPasswordDialog(true);
+    } else if (
+      router.pathname === "/themes" &&
+      router.query.newpassword === "1"
+    ) {
+      setNewPasswordDialog(true);
     }
-  }, [router]);
+  }, [router, status]);
 
   useEffect(() => {
     if (
@@ -161,6 +190,7 @@ const Header = () => {
         open={loginOpen}
         setOpen={setLoginOpen}
         setSingupOpen={setSingupOpen}
+        forgetPassword={() => setResetPasswordDialog(true)}
       />
       <RegisterDialog open={singupOpen} setOpen={setSingupOpen} />
       <VerificationDialog
@@ -171,6 +201,14 @@ const Header = () => {
         setUserProfileOpen={setUserProfileOpen}
       />
       <UserProfileDialog open={userProfileOpen} setOpen={setUserProfileOpen} />
+      <ResetPasswordDialog
+        open={resetPasswordDialog}
+        setOpen={setResetPasswordDialog}
+      />
+      <NewPasswordDialog
+        open={newPasswordDialog}
+        setOpen={setNewPasswordDialog}
+      />
     </div>
   );
 };

@@ -19,12 +19,14 @@ interface LoginDialogProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSingupOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  forgetPassword: () => void;
 }
 
 export const LoginDialog: React.FC<LoginDialogProps> = ({
   open,
   setOpen,
   setSingupOpen,
+  forgetPassword,
 }) => {
   const { addToast } = useToast();
   const session = useSession();
@@ -104,9 +106,12 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                   }
                 />
               </div>
-              <Link href="" className="underline my-4 block text-[#23344a]">
+              <div
+                onClick={forgetPassword}
+                className="underline my-4 block text-primary-foreground cursor-pointer"
+              >
                 Forgot Password?
-              </Link>
+              </div>
               <div className="mt-8">
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading && (
