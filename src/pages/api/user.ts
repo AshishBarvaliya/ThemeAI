@@ -27,6 +27,7 @@ export default async function handler(
                 image: true,
                 username: true,
                 experience: true,
+                avatar: true,
                 pupa: true,
                 purchaseHistory: {
                   select: {
@@ -97,6 +98,7 @@ export default async function handler(
                 image: true,
                 title: true,
                 username: true,
+                avatar: true,
                 organization: true,
                 experience: true,
                 location: true,
@@ -153,6 +155,7 @@ export default async function handler(
               id: true,
               name: true,
               image: true,
+              avatar: true,
               title: true,
               username: true,
               organization: true,

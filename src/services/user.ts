@@ -46,12 +46,17 @@ export const sendPasswordResetEmail = async (email: string) => {
   });
 };
 
-export const updatePassword = async (password: string, token?: string) => {
+export const updatePassword = async (
+  currentpassword: string,
+  password: string,
+  token?: string
+) => {
   const apiUrl = token
     ? `/api/update-password?token=${token}`
     : `/api/update-password`;
 
   return axios.put(apiUrl, {
+    currentpassword,
     password,
   });
 };

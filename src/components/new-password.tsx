@@ -20,9 +20,22 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
   const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
+    currentpassword: "",
     password: "",
     confirmPassword: "",
   });
+
+  const token = router.query.token as string;
+
+  const close = () => {
+    setOpen(false);
+    router.push(router.pathname, undefined, { shallow: true });
+    setData({
+      currentpassword: "",
+      password: "",
+      confirmPassword: "",
+    });
+  };
 
   const createPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,14 +44,17 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
       setData((prev) => ({ ...prev, confirmPassword: "" }));
     } else {
       setLoading(true);
-      updatePassword(data.password, router.query.token as string)
+      updatePassword(
+        data.currentpassword,
+        data.password,
+        router.query.token as string
+      )
         .then(() => {
           addToast({
             title: "The password has been updated successfully!",
             type: "success",
           });
-          setOpen(false);
-          router.push("/themes", undefined, { shallow: true });
+          close();
         })
         .catch((error) => {
           addToast({ title: error.response.data.error, type: "error" });
@@ -50,19 +66,30 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={() => {
-        setOpen(false);
-        router.push("/themes", undefined, { shallow: true });
-      }}
-    >
+    <Dialog open={open} onOpenChange={() => close()}>
       <DialogContent className="p-10 border border-border bg-white rounded-none">
         <DialogHeader>
           <DialogTitle className="mb-1">Create New Password</DialogTitle>
         </DialogHeader>
         <div>
           <form onSubmit={createPassword}>
+            {!token ? (
+              <Input
+                id="currentpassword"
+                name="currentpassword"
+                type="password"
+                className="mt-4"
+                required
+                value={data.currentpassword}
+                placeholder="Current Password"
+                onChange={(e) =>
+                  setData((prev) => ({
+                    ...prev,
+                    currentpassword: e.target.value,
+                  }))
+                }
+              />
+            ) : null}
             <Input
               id="password"
               name="password"

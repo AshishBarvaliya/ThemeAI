@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import NiceAvatar from "react-nice-avatar";
 import { landingMenu } from "@/constants/navigation";
 import { signOut, useSession } from "next-auth/react";
 import {
@@ -91,7 +92,8 @@ const Header = () => {
       setResetPasswordDialog(true);
     } else if (
       router.pathname === "/themes" &&
-      router.query.newpassword === "1"
+      router.query.newpassword === "1" &&
+      router.query.token
     ) {
       setNewPasswordDialog(true);
     }
@@ -144,16 +146,26 @@ const Header = () => {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-8 w-8 rounded-full"
+                  className="relative h-12 w-12 rounded-full"
+                  size="icon"
                 >
-                  <Avatar className="h-8 w-8 ">
-                    <AvatarImage
-                      src={session?.user.image}
-                      alt="profile image"
-                    />
-                    <AvatarFallback className="bg-[#ffd069] text-[#23344a]">
-                      {session?.user.name?.split(" ")[0][0]}
-                    </AvatarFallback>
+                  <Avatar className="h-12 w-12 border border-border">
+                    {session?.user?.avatar ? (
+                      <NiceAvatar
+                        className="h-12 w-12"
+                        {...JSON.parse(session?.user?.avatar)}
+                      />
+                    ) : (
+                      <>
+                        <AvatarImage
+                          src={session?.user.image}
+                          alt="profile image"
+                        />
+                        <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
+                          {session?.user.name?.split(" ")[0][0]}
+                        </AvatarFallback>
+                      </>
+                    )}
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
@@ -170,8 +182,17 @@ const Header = () => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem className="cursor-pointer">
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => router.push("/profile")}
+                  >
                     Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => router.push("/settings")}
+                  >
+                    Settings
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />

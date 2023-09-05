@@ -25,6 +25,7 @@ model User {
     stripeCustomerId String?
     pupa             Int       @default(0)
     experience       Int       @default(0)
+    avatar           String?   @db.VarChar(400)
 
     accounts           Account[]
     createdThemes      Theme[]             @relation("ThemeOwner")
