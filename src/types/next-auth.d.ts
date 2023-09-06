@@ -11,7 +11,7 @@ declare module "next-auth" {
       image?: string;
       id: string;
       pupa: number;
-      isActived?: Date;
+      isActived?: boolean;
       location?: string;
       title?: string;
       organization?: string;

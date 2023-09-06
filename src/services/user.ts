@@ -60,3 +60,15 @@ export const updatePassword = async (
     password,
   });
 };
+
+export const getNotifications = async () => {
+  const apiUrl = `/api/notifications`;
+
+  return axios.get(apiUrl);
+};
+
+export const getAllFollowings = async () => {
+  const apiUrl = `/api/user?type=following`;
+
+  return axios.get(apiUrl);
+};

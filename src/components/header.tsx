@@ -194,6 +194,12 @@ const Header = () => {
                   >
                     Settings
                   </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => router.push("/notifications")}
+                  >
+                    Notifications
+                  </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
