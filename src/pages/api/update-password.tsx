@@ -10,7 +10,7 @@ export default async function handler(
 ) {
   const session = await getServerSession(req, res, authOptions);
   if (req.method === "PUT") {
-    const { password } = req.body;
+    const { currentpassword, password } = req.body;
 
     if (!password) {
       return res.status(400).json({ error: "Password is required" });
@@ -24,7 +24,28 @@ export default async function handler(
         return res.status(401).json({ error: "Unauthorized" });
       }
 
+      if (!currentpassword) {
+        return res.status(400).json({ error: "Current password is required" });
+      }
       try {
+        const currentuser = await prisma.user.findUnique({
+          where: {
+            id: session?.user?.id,
+          },
+          select: {
+            hashedPassword: true,
+          },
+        });
+
+        const passwordMatch = await bcrypt.compare(
+          currentpassword,
+          currentuser?.hashedPassword as string
+        );
+
+        if (!passwordMatch) {
+          return res.status(400).json({ error: "Invalid current password" });
+        }
+
         const user = await prisma.user.update({
           where: {
             id: session?.user?.id,
@@ -35,7 +56,6 @@ export default async function handler(
           select: {
             id: true,
             name: true,
-            username: true,
             isActived: true,
           },
         });
@@ -82,7 +102,6 @@ export default async function handler(
         select: {
           id: true,
           name: true,
-          username: true,
           isActived: true,
         },
       });

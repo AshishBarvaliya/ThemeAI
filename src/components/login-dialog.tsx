@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   Dialog,
   DialogContent,
@@ -86,7 +85,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                   name="email"
                   autoComplete="email"
                   value={data.email}
-                  placeholder="Username or Email"
+                  placeholder="Email"
                   onChange={(e) =>
                     setData((prev) => ({ ...prev, email: e.target.value }))
                   }

@@ -65,7 +65,28 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    jwt: ({ token, user }: any) => {
+    jwt: async ({ token, user, session, trigger }: any) => {
+      if (trigger === "update") {
+        await prisma.user
+          .update({
+            where: {
+              id: token.id,
+            },
+            data: {
+              avatar: session.avatar,
+              title: session.title,
+              organization: session.organization,
+              location: session.location,
+            },
+          })
+          .then(() => {
+            token.avatar = session.avatar;
+            token.title = session.title;
+            token.organization = session.organization;
+            token.location = session.location;
+          });
+      }
+
       if (user) {
         return {
           ...token,
@@ -75,6 +96,7 @@ export const authOptions: NextAuthOptions = {
           location: user.location,
           organization: user.organization,
           title: user.title,
+          avatar: user.avatar,
         };
       }
       return token;
@@ -90,6 +112,7 @@ export const authOptions: NextAuthOptions = {
           location: token.location,
           organization: token.organization,
           title: token.title,
+          avatar: token.avatar,
         },
       };
     },
