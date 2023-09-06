@@ -8,7 +8,6 @@ import Typography from "@/components/ui/typography";
 import { useToast } from "@/hooks/useToast";
 import { Pen, Save } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import NiceAvatar from "react-nice-avatar";
 
@@ -98,19 +97,6 @@ export default function Settings() {
         </Typography>
         <div className="flex">
           <div className="flex flex-col w-2/3 px-10 py-4">
-            <Label htmlFor="title" className="mb-2">
-              Title
-            </Label>
-            <Input
-              id="title"
-              name="title"
-              disabled={!editMode || loading}
-              value={data.title}
-              placeholder="e.g. UX Designer"
-              onChange={(e) =>
-                setData((prev) => ({ ...prev, title: e.target.value }))
-              }
-            />
             <Label htmlFor="title" className="mt-5 mb-2">
               Title
             </Label>

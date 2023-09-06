@@ -25,7 +25,6 @@ export default async function handler(
                 name: true,
                 email: true,
                 image: true,
-                username: true,
                 experience: true,
                 avatar: true,
                 pupa: true,
@@ -61,7 +60,6 @@ export default async function handler(
                       select: {
                         id: true,
                         name: true,
-                        username: true,
                       },
                     },
                   },
@@ -72,7 +70,6 @@ export default async function handler(
                       select: {
                         id: true,
                         name: true,
-                        username: true,
                       },
                     },
                   },
@@ -97,7 +94,6 @@ export default async function handler(
                 name: true,
                 image: true,
                 title: true,
-                username: true,
                 avatar: true,
                 organization: true,
                 experience: true,
@@ -121,7 +117,6 @@ export default async function handler(
                       select: {
                         id: true,
                         name: true,
-                        username: true,
                       },
                     },
                   },
@@ -132,7 +127,6 @@ export default async function handler(
                       select: {
                         id: true,
                         name: true,
-                        username: true,
                       },
                     },
                   },
@@ -157,7 +151,6 @@ export default async function handler(
               image: true,
               avatar: true,
               title: true,
-              username: true,
               organization: true,
               experience: true,
               location: true,
@@ -241,7 +234,6 @@ export default async function handler(
           name: true,
           image: true,
           title: true,
-          username: true,
           organization: true,
           experience: true,
           location: true,
