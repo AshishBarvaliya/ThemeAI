@@ -41,7 +41,7 @@ export default async function handler(
       await prisma.user.update({
         where: { id: verificationToken.user.id },
         data: {
-          isActived: new Date(),
+          isActived: true,
         },
       });
 

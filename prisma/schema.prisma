@@ -16,7 +16,7 @@ model User {
     location         String?
     organization     String?
     emailVerified    DateTime?
-    isActived        DateTime? @default(now())
+    isActived        Boolean   @default(true)
     hashedPassword   String?
     image            String?
     createdAt        DateTime  @default(now())
