@@ -88,3 +88,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+.parent_hover .hidden_child {
+  visibility: hidden !important;
+}
+
+.parent_hover:hover .hidden_child {
+  visibility: visible !important;
+}

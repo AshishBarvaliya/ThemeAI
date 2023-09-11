@@ -1,0 +1,169 @@
+import { FontProps, GOOGLE_FONTS } from "@/constants/fonts";
+import { hslToHex } from "@/lib/utils";
+import React, { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { ChevronDown, SearchX, StarIcon } from "lucide-react";
+import { StarFilledIcon } from "@radix-ui/react-icons";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+import { SeachBar } from "./ui/input";
+import Typography from "./ui/typography";
+
+interface FontPickerProps {
+  id: string;
+  name: string;
+  selectedFont: FontProps;
+  setSelectedFont: (font: FontProps) => void;
+}
+
+const randomCode = [
+  100, 300, 40, 150, 320, 350, 250, 270, 225, 290, 30, 330, 270, 225, 140, 235,
+  305, 10, 95, 355, 165, 60, 275, 185, 20, 345, 130, 85, 255, 110,
+];
+
+const FontPicker: React.FC<FontPickerProps> = ({
+  id,
+  name,
+  selectedFont,
+  setSelectedFont,
+}) => {
+  const [open, setOpen] = useState(false);
+  const [category, setCategory] = useState("all");
+  const [filteredFonts, setFilteredFonts] = useState<FontProps[]>(GOOGLE_FONTS);
+
+  return (
+    <div className="relative" id={id}>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="flex flex-col max-w-[200px]">
+              <Typography element="p" as="p" className="text-xs">
+                {name}
+              </Typography>
+              <div
+                className="flex px-3 gap-1 items-center text-[30px] cursor-pointer border border-border bg-white"
+                style={{ fontFamily: selectedFont.fontFamily }}
+                onClick={() => setOpen(true)}
+              >
+                <p className="w-[145px] truncate">{selectedFont.fontFamily}</p>
+                <ChevronDown />
+              </div>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>{selectedFont.fontFamily}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      {open ? (
+        <>
+          <div
+            className="fixed top-0 left-0 bottom-0 right-0 z-10"
+            onClick={() => {
+              setOpen(false);
+              setFilteredFonts(GOOGLE_FONTS);
+            }}
+          />
+          <div className="absolute mt-1 flex z-20 flex-col w-[553px] bg-white border border-border ml-[-200px] shadow-dropshadow">
+            <div className="flex p-2">
+              <SeachBar
+                id="font-search"
+                name="font-search"
+                placeholder="Search by font"
+                autoComplete="off"
+                onRemoveCallback={() => setFilteredFonts(GOOGLE_FONTS)}
+                onSearch={(string: string) =>
+                  setFilteredFonts(
+                    GOOGLE_FONTS.filter(
+                      (font) => font.fontFamily.indexOf(string) !== -1
+                    )
+                  )
+                }
+              />
+            </div>
+            <div className="flex mx-2 mb-1 flex-1 justify-end">
+              <Select onValueChange={setCategory} defaultValue={category}>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue defaultValue="popular" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">
+                    All ({filteredFonts.length})
+                  </SelectItem>
+                  <SelectItem value="popular">Popular(0)</SelectItem>
+                  <SelectItem value="saved">Saved(0)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex h-[424px] overflow-y-auto flex-col gap-2 px-2 mb-2 pt-1">
+              {!!filteredFonts.length ? (
+                new Array(Math.ceil(filteredFonts.length / 4))
+                  .fill(1)
+                  .map((_, i) => (
+                    <div className="flex gap-2" key={i}>
+                      {new Array(4).fill(1).map((_, j) => {
+                        if (i * 4 + j < filteredFonts.length) {
+                          return (
+                            <p
+                              key={i * 4 + j}
+                              style={{
+                                fontFamily: filteredFonts[i * 4 + j].fontFamily,
+                                backgroundColor: hslToHex(
+                                  randomCode[(i * 4 + j) % 30],
+                                  90,
+                                  92
+                                ),
+                                wordBreak: "break-word",
+                              }}
+                              onClick={() =>
+                                setSelectedFont(filteredFonts[i * 4 + j])
+                              }
+                              className="parent_hover flex relative px-1 py-4 h-24 w-32 font-normal text-2xl text-center items-center justify-center bg-[hsl(0, 90%, 80%)] border border-border hover:shadow-normal hover:-translate-x-px hover:-translate-y-px cursor-pointer"
+                            >
+                              {filteredFonts[i * 4 + j].fontFamily}
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <StarIcon className="hidden_child absolute right-2 top-2 ml-2 h-4 w-4 font-['Poppins']" />
+                                  </TooltipTrigger>
+                                  <TooltipContent side="left">
+                                    {"Save"}
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                              {/* <StarFilledIcon className="absolute right-2 top-2 ml-2 h-4 w-4 font-sans" /> */}
+                            </p>
+                          );
+                        }
+                      })}
+                    </div>
+                  ))
+              ) : (
+                <div className="flex flex-col justify-center items-center h-full">
+                  <div
+                    className={`flex items-center bg-destructive justify-center border border-border w-14 h-14`}
+                  >
+                    <SearchX className="h-8 w-8" />
+                  </div>
+                  <Typography element="p" as="p" className="text-lg mt-2">
+                    No fonts found
+                  </Typography>
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      ) : null}
+    </div>
+  );
+};
+
+export default FontPicker;
