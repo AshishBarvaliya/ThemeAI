@@ -26,6 +26,7 @@ import { RegisterDialog } from "./register-dialog";
 import { UserProfileDialog } from "./user-profile-dialog";
 import { ResetPasswordDialog } from "./reset-password";
 import { NewPasswordDialog } from "./new-password";
+import { LightningBoltIcon } from "@radix-ui/react-icons";
 
 const Header = () => {
   const router = useRouter();
@@ -110,7 +111,7 @@ const Header = () => {
   }, [status]);
 
   return (
-    <div className="absolute max-w-screen-2xl flex border-b border-border w-full justify-between py-4 px-7 h-[96px]">
+    <div className="fixed bg-background max-w-screen-2xl flex border-b border-border w-full justify-between py-4 px-7 h-[96px]">
       <Link href="/themes" className="flex">
         <Image src="/logo.png" alt="butterfly logo" width={150} height={62} />
         <Logo />
@@ -142,74 +143,83 @@ const Header = () => {
           </div>
         ) : (
           router.pathname !== "/" && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-12 w-12 rounded-full"
-                  size="icon"
-                >
-                  <Avatar className="h-12 w-12 border border-border">
-                    {session?.user?.avatar ? (
-                      <NiceAvatar
-                        className="h-12 w-12"
-                        {...JSON.parse(session?.user?.avatar)}
-                      />
-                    ) : (
-                      <>
-                        <AvatarImage
-                          src={session?.user.image}
-                          alt="profile image"
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={() => router.push("/themes/create")}
+                variant="outline"
+              >
+                <LightningBoltIcon className="mr-2 h-5 w-5 text-secondary" />
+                Generate Theme
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="relative h-12 w-12 rounded-full"
+                    size="icon"
+                  >
+                    <Avatar className="h-12 w-12 border border-border">
+                      {session?.user?.avatar ? (
+                        <NiceAvatar
+                          className="h-12 w-12"
+                          {...JSON.parse(session?.user?.avatar)}
                         />
-                        <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
-                          {session?.user.name?.split(" ")[0][0]}
-                        </AvatarFallback>
-                      </>
-                    )}
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      {session?.user.name}
-                    </p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {session?.user.email}
-                    </p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
+                      ) : (
+                        <>
+                          <AvatarImage
+                            src={session?.user.image}
+                            alt="profile image"
+                          />
+                          <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
+                            {session?.user.name?.split(" ")[0][0]}
+                          </AvatarFallback>
+                        </>
+                      )}
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {session?.user.name}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {session?.user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => router.push("/profile")}
+                    >
+                      Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => router.push("/settings")}
+                    >
+                      Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => router.push("/notifications")}
+                    >
+                      Notifications
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="cursor-pointer"
-                    onClick={() => router.push("/profile")}
+                    onClick={() => signOut()}
                   >
-                    Profile
+                    Log out
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="cursor-pointer"
-                    onClick={() => router.push("/settings")}
-                  >
-                    Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="cursor-pointer"
-                    onClick={() => router.push("/notifications")}
-                  >
-                    Notifications
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={() => signOut()}
-                >
-                  Log out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           )
         )}
       </ul>
