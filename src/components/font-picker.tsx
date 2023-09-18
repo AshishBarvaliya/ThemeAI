@@ -9,7 +9,6 @@ import {
   SelectValue,
 } from "./ui/select";
 import { ChevronDown, SearchX, StarIcon } from "lucide-react";
-import { StarFilledIcon } from "@radix-ui/react-icons";
 import {
   Tooltip,
   TooltipContent,
@@ -44,7 +43,7 @@ const FontPicker: React.FC<FontPickerProps> = ({
   return (
     <div className="relative" id={id}>
       <TooltipProvider>
-        <Tooltip>
+        <Tooltip delayDuration={100}>
           <TooltipTrigger asChild>
             <div className="flex flex-col max-w-[200px]">
               <Typography element="p" as="p" className="text-xs">
@@ -72,7 +71,10 @@ const FontPicker: React.FC<FontPickerProps> = ({
               setFilteredFonts(GOOGLE_FONTS);
             }}
           />
-          <div className="absolute mt-1 flex z-20 flex-col w-[553px] bg-white border border-border ml-[-200px] shadow-dropshadow">
+          <div
+            data-state={open ? "open" : "closed"}
+            className="absolute mt-1 flex z-20 flex-col w-[553px] bg-white border border-border ml-[-200px] shadow-dropshadow data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2"
+          >
             <div className="flex p-2">
               <SeachBar
                 id="font-search"
@@ -83,7 +85,10 @@ const FontPicker: React.FC<FontPickerProps> = ({
                 onSearch={(string: string) =>
                   setFilteredFonts(
                     GOOGLE_FONTS.filter(
-                      (font) => font.fontFamily.indexOf(string) !== -1
+                      (font) =>
+                        font.fontFamily
+                          .toLocaleLowerCase()
+                          .indexOf(string.toLocaleLowerCase()) !== -1
                     )
                   )
                 }
@@ -99,7 +104,6 @@ const FontPicker: React.FC<FontPickerProps> = ({
                     All ({filteredFonts.length})
                   </SelectItem>
                   <SelectItem value="popular">Popular(0)</SelectItem>
-                  <SelectItem value="saved">Saved(0)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -129,7 +133,7 @@ const FontPicker: React.FC<FontPickerProps> = ({
                               className="parent_hover flex relative px-1 py-4 h-24 w-32 font-normal text-2xl text-center items-center justify-center bg-[hsl(0, 90%, 80%)] border border-border hover:shadow-normal hover:-translate-x-px hover:-translate-y-px cursor-pointer"
                             >
                               {filteredFonts[i * 4 + j].fontFamily}
-                              <TooltipProvider>
+                              {/* <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <StarIcon className="hidden_child absolute right-2 top-2 ml-2 h-4 w-4 font-['Poppins']" />
@@ -138,7 +142,7 @@ const FontPicker: React.FC<FontPickerProps> = ({
                                     {"Save"}
                                   </TooltipContent>
                                 </Tooltip>
-                              </TooltipProvider>
+                              </TooltipProvider> */}
                               {/* <StarFilledIcon className="absolute right-2 top-2 ml-2 h-4 w-4 font-sans" /> */}
                             </p>
                           );

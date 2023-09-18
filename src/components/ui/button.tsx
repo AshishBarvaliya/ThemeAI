@@ -15,9 +15,14 @@ const buttonVariants = cva(
         outline:
           "border-input border border-border hover:shadow-normal hover:-translate-x-px hover:-translate-y-px rounded-[45px]",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+          "bg-secondary text-secondary-foreground hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
+        ghost:
+          "hover:bg-accent hover:text-accent-foreground hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
         link: "text-primary underline-offset-4 hover:underline",
+        circle:
+          "rounded-full border border-border bg-primary hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
+        square:
+          "rounded-none border border-border bg-primary hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
       },
       size: {
         default: "px-[30px] py-5",
@@ -25,6 +30,7 @@ const buttonVariants = cva(
         md: "h-10 px-4",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
+        circle: "p-5",
       },
     },
     defaultVariants: {

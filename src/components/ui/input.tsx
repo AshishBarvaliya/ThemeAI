@@ -1,26 +1,30 @@
 import { cn } from "@/lib/utils";
 import { Cross1Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { Cross, Crosshair } from "lucide-react";
 import * as React from "react";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
-    return (
+const Input = React.forwardRef<
+  HTMLInputElement,
+  InputProps & { postElement?: React.ReactNode; isError?: boolean }
+>(({ className, type, postElement, isError, ...props }, ref) => {
+  return (
+    <div className="relative">
       <input
         type={type}
         className={cn(
           "flex h-12 w-full rounded-md border border-border bg-white px-3 py-2 text-lg ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none focus:border-secondary focus:border-5 disabled:cursor-not-allowed disabled:opacity-50",
-          className
+          className,
+          isError && "border-destructive ring-2 ring-destructive"
         )}
         ref={ref}
         {...props}
       />
-    );
-  }
-);
+      {postElement}
+    </div>
+  );
+});
 Input.displayName = "Input";
 
 const SeachBar = React.forwardRef<
@@ -33,11 +37,11 @@ const SeachBar = React.forwardRef<
   const [searchString, setSearchString] = React.useState("");
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-full relative">
       <input
         type={type}
         className={cn(
-          "flex h-12 w-full rounded-md border border-border bg-white px-3 py-2 pr-24 text-lg ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none focus:border-secondary focus:border-5 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-12 w-full rounded-md border border-border bg-white px-3 py-2 pr-24 text-lg ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         ref={ref}
@@ -46,7 +50,7 @@ const SeachBar = React.forwardRef<
         {...props}
       />
       {searchString ? (
-        <div className="absolute right-14 justify-center items-center flex h-12 w-12">
+        <div className="absolute right-12 justify-center items-center flex h-12 w-12">
           <Cross1Icon
             className="h-4 w-4 cursor-pointer"
             onClick={() => {
@@ -56,7 +60,7 @@ const SeachBar = React.forwardRef<
           />
         </div>
       ) : null}
-      <div className="absolute right-2 justify-center items-center flex h-12 w-12 border border-border bg-primary hover:shadow-normal hover:-translate-x-px hover:-translate-y-px">
+      <div className="absolute right-0 justify-center items-center flex h-12 w-12 border border-border bg-primary hover:shadow-normal hover:-translate-x-px hover:-translate-y-px">
         <MagnifyingGlassIcon
           className="h-6 w-6 cursor-pointer"
           onClick={() => onSearch(searchString)}
