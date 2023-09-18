@@ -96,3 +96,8 @@
 .parent_hover:hover .hidden_child {
   visibility: visible !important;
 }
+
+input::placeholder {
+  color: rgb(158, 158, 158) !important;
+  font-style: italic;
+}

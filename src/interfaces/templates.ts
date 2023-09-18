@@ -1,12 +1,8 @@
-import { FontProps } from "@/constants/fonts";
-import { ColorsProps, ShadesProps } from "./theme";
+import { ColorsProps, FontObjProps, ShadesProps } from "./theme";
 
 export interface TemplateProps {
   colors: ColorsProps;
   shades: ShadesProps;
-  fonts: {
-    primary: FontProps;
-    secondary: FontProps;
-  };
+  fonts: FontObjProps;
   svgProps?: any;
 }

@@ -3,11 +3,7 @@ import { prisma } from "@/config/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 import { themeProps, tileThemeProps } from "@/constants/theme";
-
-interface TagProps {
-  id?: string;
-  name: string;
-}
+import { TagProps } from "@/interfaces/theme";
 
 interface ThemeProps {
   id: string;
@@ -83,10 +79,10 @@ export default async function handler(
         font_1_reason,
         font_2,
         font_2_reason,
-        prompt,
+        prompt = "",
         isPrivate,
-        isAIGenerated,
-        tags,
+        isAIGenerated = false,
+        tags = [],
       }: ThemeProps = req.body;
 
       const tagPromises = tags.map(async (tagObject: TagProps) => {
@@ -149,5 +145,7 @@ export default async function handler(
     } else {
       res.status(401).json({ error: "Not authenticated" });
     }
+  } else {
+    res.status(405).json({ error: "Method not allowed" });
   }
 }

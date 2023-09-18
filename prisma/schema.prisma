@@ -84,7 +84,6 @@ model ResetPassword {
 model Theme {
     id             String   @id @default(cuid())
     name           String
-    description    String?
     userId         String
     color_1        String
     color_1_reason String
@@ -102,7 +101,7 @@ model Theme {
     updatedAt      DateTime @updatedAt
     prompt         String?
     isPrivate      Boolean
-    isAIGenerated  Boolean
+    isAIGenerated  Boolean  @default(false)
 
     user       User            @relation("ThemeOwner", fields: [userId], references: [id])
     likedBy    UserLikeTheme[]

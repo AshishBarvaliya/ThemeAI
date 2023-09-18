@@ -1,7 +1,9 @@
 import React from "react";
 
 const Sidebar = () => {
-  return <div className="w-1/6 fixed left-0">Sidebar</div>;
+  return (
+    <div className="flex fixed flex-col w-[300px] bg-background justify-between h-screen pb-[74px] border-r border-border"></div>
+  );
 };
 
 export default Sidebar;

@@ -17,7 +17,7 @@ module.exports = {
     },
     extend: {
       boxShadow: {
-        normal: "1px 1px 0 0",
+        normal: "1px 1px 0 0 rgb(0, 0, 0)",
         dropshadow:
           "rgba(0, 0, 0, 0.3) 0px 0px 2px, rgba(0, 0, 0, 0.3) 0px 4px 8px",
       },
