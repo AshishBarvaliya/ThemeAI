@@ -274,7 +274,7 @@ const LearningTemplate: React.FC<TemplateProps> = ({
           className="text-lg mt-4"
           style={{
             color: colors.primary,
-            fontFamily: fonts.primary.fontFamily,
+            fontFamily: fonts.secondary.fontFamily,
           }}
         >
           Lorem ipsum dolor sit amet consectetur. Nibh proin proin eget neque.
@@ -534,7 +534,7 @@ const LearningTemplate: React.FC<TemplateProps> = ({
           className="text-md mt-10 w-[900px] text-center"
           style={{
             color: colors.primaryLight,
-            fontFamily: fonts.primary.fontFamily,
+            fontFamily: fonts.secondary.fontFamily,
           }}
         >
           WOC has contributed to students so that they can work in their dream
@@ -576,7 +576,7 @@ const LearningTemplate: React.FC<TemplateProps> = ({
           className="text-lg mt-9"
           style={{
             color: colors.primary,
-            fontFamily: fonts.primary.fontFamily,
+            fontFamily: fonts.secondary.fontFamily,
           }}
         >
           Lorem ipsum dolor sit amet consectetur. Proin amet ac nunc porta

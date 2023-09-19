@@ -22,7 +22,7 @@ export const debounce = (func: Function, timeout = 300) => {
 
 type HSL = [number, number, number];
 
-const hexToHSL = (hex: string): HSL => {
+export const hexToHSL = (hex: string): HSL => {
   let r = parseInt(hex.slice(1, 3), 16) / 255;
   let g = parseInt(hex.slice(3, 5), 16) / 255;
   let b = parseInt(hex.slice(5, 7), 16) / 255;
@@ -72,6 +72,21 @@ export const hslToHex = (h: number, s: number, l: number): string => {
   return `#${f(0)}${f(8)}${f(4)}`;
 };
 
+export function hexToRGB(hex: string): { r: number; g: number; b: number } {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : {
+        r: 0,
+        g: 0,
+        b: 0,
+      };
+}
+
 const generateShades = (hexColor: string): { light: string; dark: string } => {
   let [h, s, l] = hexToHSL(hexColor);
   return {
@@ -89,3 +104,11 @@ export const generateAllShades = (colors: ColorsProps): ShadesProps => {
   }
   return shades;
 };
+
+export function formatToTwoDecimalPlaces(value: number) {
+  if (value % 1 !== 0) {
+    return value.toFixed(2);
+  }
+
+  return value;
+}

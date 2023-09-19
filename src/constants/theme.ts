@@ -66,3 +66,16 @@ export const themeProps = {
     },
   },
 };
+
+export const COLORS_FORMAT = {
+  CSS: "CSS",
+  SCSS: "SCSS",
+  TAILWIND: "Tailwind CSS",
+  IMAGE: "Image",
+};
+
+export const COLORS_TYPE = {
+  HEX: "HEX",
+  RGB: "RGB",
+  HSL: "HSL",
+};
