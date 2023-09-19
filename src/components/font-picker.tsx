@@ -130,7 +130,7 @@ const FontPicker: React.FC<FontPickerProps> = ({
                               onClick={() =>
                                 setSelectedFont(filteredFonts[i * 4 + j])
                               }
-                              className="parent_hover flex relative px-1 py-4 h-24 w-32 font-normal text-2xl text-center items-center justify-center bg-[hsl(0, 90%, 80%)] border border-border hover:shadow-normal hover:-translate-x-px hover:-translate-y-px cursor-pointer"
+                              className="parent_hover flex relative px-1 py-4 h-24 w-32 font-normal text-2xl text-center items-center justify-center bg-[hsl(0, 90%, 80%)] border border-border hover:shadow-normal hover:-translate-x-px hover:-translate-y-px cursor-pointer animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-1"
                             >
                               {filteredFonts[i * 4 + j].fontFamily}
                               {/* <TooltipProvider>

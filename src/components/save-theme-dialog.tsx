@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 import TagPicker from "./tag-picker";
+import { ConfirmationDialog } from "./confirmation-dialog";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -97,11 +98,13 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
         addToast({ title: "New theme has been registered!", type: "success" });
         setLoading(false);
         setOpen(false);
+        setOpenSure(true);
       })
       .catch((error) => {
         addToast({ title: error.response.data.error, type: "error" });
         setLoading(false);
         setOpen(false);
+        setOpenSure(true);
       });
   };
 
@@ -304,31 +307,27 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
           </div>
         </DialogContent>
       </Dialog>
-      <Dialog open={openSure} onOpenChange={setOpenSure}>
-        <DialogContent className="p-10 max-w-fit border border-border bg-white rounded-none">
-          <DialogHeader>
-            <DialogTitle>Are you sure?</DialogTitle>
-          </DialogHeader>
-          <div className="text-lg">
-            These fields look empty. are you sure want continue?
-          </div>
-          <div className="flex flex-col">
-            {Object.keys(data)
-              .filter((key) => data[key as keyof FormDataProps] === "")
-              .map((key) => (
-                <div key={key} className="italic font-semibold">
-                  {formKeyValueMapping[key as keyof typeof formKeyValueMapping]}
-                </div>
-              ))}
-          </div>
-          <div className="flex justify-end gap-4 mt-6">
-            <Button onClick={() => setOpenSure(false)} variant={"outline"}>
-              Cancel
-            </Button>
-            <Button onClick={createTheme}>Save & Post</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ConfirmationDialog
+        open={openSure}
+        setOpen={setOpenSure}
+        yesBtnText={loading ? "Saving..." : "Save & Post"}
+        noBtnText="Cancel"
+        onYes={createTheme}
+        loading={loading}
+      >
+        <div className="text-lg">
+          These fields look empty. are you sure want continue?
+        </div>
+        <div className="flex flex-col">
+          {Object.keys(data)
+            .filter((key) => data[key as keyof FormDataProps] === "")
+            .map((key) => (
+              <div key={key} className="italic font-semibold">
+                {formKeyValueMapping[key as keyof typeof formKeyValueMapping]}
+              </div>
+            ))}
+        </div>
+      </ConfirmationDialog>
     </>
   );
 };
