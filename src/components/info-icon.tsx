@@ -8,7 +8,7 @@ import {
 import { cn } from "@/lib/utils";
 
 interface InfoIconProps {
-  info: string;
+  info: string | React.ReactNode;
   className?: string;
 }
 

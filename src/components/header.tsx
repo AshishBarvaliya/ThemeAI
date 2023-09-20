@@ -27,6 +27,8 @@ import { UserProfileDialog } from "./user-profile-dialog";
 import { ResetPasswordDialog } from "./reset-password";
 import { NewPasswordDialog } from "./new-password";
 import { LightningBoltIcon } from "@radix-ui/react-icons";
+import { GenerateThemeDialog } from "./generate-theme-dialog";
+import MagicWand from "@/assets/svgs/magic-wand";
 
 const Header = () => {
   const router = useRouter();
@@ -36,6 +38,7 @@ const Header = () => {
   const [userProfileOpen, setUserProfileOpen] = useState(false);
   const [resetPasswordDialog, setResetPasswordDialog] = useState(false);
   const [newPasswordDialog, setNewPasswordDialog] = useState(false);
+  const [generateThemeDialog, setGenerateThemeDialog] = useState(false);
 
   const [verifyDialogState, setVerifyDialogState] = useState<{
     open: boolean;
@@ -145,10 +148,10 @@ const Header = () => {
           router.pathname !== "/" && (
             <div className="flex items-center gap-4">
               <Button
-                onClick={() => router.push("/themes/create")}
+                onClick={() => setGenerateThemeDialog(true)}
                 variant="outline"
               >
-                <LightningBoltIcon className="mr-2 h-5 w-5 text-secondary" />
+                <MagicWand className="mr-2 h-5 w-5" />
                 Generate Theme
               </Button>
               <DropdownMenu>
@@ -245,6 +248,10 @@ const Header = () => {
       <NewPasswordDialog
         open={newPasswordDialog}
         setOpen={setNewPasswordDialog}
+      />
+      <GenerateThemeDialog
+        open={generateThemeDialog}
+        setOpen={setGenerateThemeDialog}
       />
     </div>
   );
