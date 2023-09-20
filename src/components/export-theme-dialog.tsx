@@ -66,7 +66,8 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
 
   const handleDraw = (
     ctx: CanvasRenderingContext2D,
-    scaleFactor: number = 1
+    scaleFactor: number = 1,
+    forDownload?: boolean
   ) => {
     ctx.fillStyle = colors.bg;
     ctx.fillRect(0, 0, 320 * scaleFactor, 180 * scaleFactor);
@@ -161,6 +162,56 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
     ctx.moveTo(265 * scaleFactor, 70 * scaleFactor);
     ctx.lineTo(265 * scaleFactor, 140 * scaleFactor);
     ctx.stroke();
+
+    if (forDownload) {
+      ctx.fillStyle = colors.bg;
+      ctx.fillRect(
+        188 * scaleFactor,
+        163 * scaleFactor,
+        10 * scaleFactor,
+        10 * scaleFactor
+      );
+
+      ctx.fillStyle = "black";
+      ctx.font = `${3 * scaleFactor}px Arial`;
+      ctx.fillText(colors.bg, 200 * scaleFactor, 170 * scaleFactor);
+
+      ctx.fillStyle = colors.primary;
+      ctx.fillRect(
+        218 * scaleFactor,
+        163 * scaleFactor,
+        10 * scaleFactor,
+        10 * scaleFactor
+      );
+
+      ctx.fillStyle = "black";
+      ctx.font = `${3 * scaleFactor}px Arial`;
+      ctx.fillText(colors.primary, 230 * scaleFactor, 170 * scaleFactor);
+
+      ctx.fillStyle = colors.accent;
+      ctx.fillRect(
+        248 * scaleFactor,
+        163 * scaleFactor,
+        10 * scaleFactor,
+        10 * scaleFactor
+      );
+
+      ctx.fillStyle = "black";
+      ctx.font = `${3 * scaleFactor}px Arial`;
+      ctx.fillText(colors.accent, 260 * scaleFactor, 170 * scaleFactor);
+
+      ctx.fillStyle = colors.extra;
+      ctx.fillRect(
+        278 * scaleFactor,
+        163 * scaleFactor,
+        10 * scaleFactor,
+        10 * scaleFactor
+      );
+
+      ctx.fillStyle = "black";
+      ctx.font = `${3 * scaleFactor}px Arial`;
+      ctx.fillText(colors.extra, 290 * scaleFactor, 170 * scaleFactor);
+    }
   };
   const downloadCanvas = () => {
     const displayCanvas = document.getElementById(
@@ -175,7 +226,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
     const ctx = tempCanvas.getContext("2d");
     if (!ctx) return;
 
-    handleDraw(ctx, 4);
+    handleDraw(ctx, 4, true);
 
     const link = document.createElement("a");
     link.download = `ThemeGPT_Theme_${+new Date()}.png`;
@@ -243,7 +294,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                     />
                   </div>
                 ) : (
-                  <div className="h-[180px] border border-border mt-4 bg-background pl-4 justify-center flex flex-col">
+                  <div className="h-[180px] border border-border mt-4 bg-background pl-4 justify-center flex flex-col shadow-inset-bg">
                     {Object.keys(colors).map((color, index) => (
                       <div
                         key={index}

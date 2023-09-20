@@ -14,7 +14,7 @@ const Input = React.forwardRef<
       <input
         type={type}
         className={cn(
-          "flex h-12 w-full rounded-md border border-border bg-white px-3 py-2 text-lg ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none focus:border-secondary focus:border-5 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-12 w-full rounded-md shadow-inset border border-border bg-white px-3 py-2 text-lg ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none focus:border-secondary focus:border-5 disabled:cursor-not-allowed disabled:opacity-50",
           className,
           isError && "border-destructive ring-2 ring-destructive"
         )}

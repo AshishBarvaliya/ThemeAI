@@ -20,6 +20,8 @@ module.exports = {
         normal: "1px 1px 0 0 rgb(0, 0, 0)",
         dropshadow:
           "rgba(0, 0, 0, 0.3) 0px 0px 2px, rgba(0, 0, 0, 0.3) 0px 4px 8px",
+        "inset-bg": "inset 0 0 8px hsl(25, 95%, 90%);",
+        inset: "inset 0px 0px 6px 0px hsl(0, 0%, 88%);",
       },
       colors: {
         border: "hsl(var(--border))",
