@@ -45,7 +45,7 @@ export default async function handler(
         }
         res.status(200).json(theme);
       } catch (error) {
-        res.status(500).json({ error: "Failed to fetch theme" });
+        return res.status(500).json({ error: "Failed to fetch theme" });
       }
     } else {
       try {
@@ -56,9 +56,9 @@ export default async function handler(
             createdAt: "desc",
           },
         });
-        res.status(200).json(themes);
+        return res.status(200).json(themes);
       } catch (error) {
-        res.status(500).json({ error: "Failed to fetch themes" });
+        return res.status(500).json({ error: "Failed to fetch themes" });
       }
     }
   }
@@ -138,14 +138,14 @@ export default async function handler(
           },
         });
 
-        res.status(201).json({ message: "Theme have been created" });
+        return res.status(201).json({ message: "Theme have been created" });
       } catch (error) {
-        res.status(500).json({ error: "Failed to create theme" });
+        return res.status(500).json({ error: "Failed to create theme" });
       }
     } else {
-      res.status(401).json({ error: "Not authenticated" });
+      return res.status(401).json({ error: "Not authenticated" });
     }
   } else {
-    res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 }

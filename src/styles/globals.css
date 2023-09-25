@@ -125,3 +125,15 @@ textarea::placeholder {
     background-position: 100% 50%;
   }
 }
+
+.parent_hover .hidden_child {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s linear, visibility 0.15s linear;
+}
+
+.parent_hover:hover .hidden_child {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0.15s;
+}

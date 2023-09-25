@@ -112,3 +112,14 @@ export function formatToTwoDecimalPlaces(value: number) {
 
   return value;
 }
+
+export const getLuminance = (hex: string) => {
+  const color = hexToRGB(hex);
+  const luminance = (0.299 * color.r + 0.587 * color.g + 0.114 * color.b) / 255;
+
+  return {
+    color: luminance > 0.5 ? "black" : "white",
+    shade:
+      luminance > 0.5 ? "hsla(0, 0%, 0%, 0.15)" : "hsla(0, 100%, 100%, 0.15)",
+  };
+};

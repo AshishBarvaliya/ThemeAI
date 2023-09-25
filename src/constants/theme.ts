@@ -13,11 +13,18 @@ export const tileThemeProps = {
     select: {
       id: true,
       name: true,
+      avatar: true,
+      image: true,
     },
   },
   tags: {
     select: {
-      tag: true,
+      tag: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   },
   _count: {

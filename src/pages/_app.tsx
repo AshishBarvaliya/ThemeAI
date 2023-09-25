@@ -11,7 +11,14 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <SessionProvider session={pageProps.session}>
       <ToastProvider>
-        <Layout sidebar={router.pathname === "/themes/create" ? true : false}>
+        <Layout
+          sidebar={
+            router.pathname === "/themes/create" ||
+            router.pathname === "/themes"
+              ? true
+              : false
+          }
+        >
           <Component {...pageProps} />
         </Layout>
       </ToastProvider>
