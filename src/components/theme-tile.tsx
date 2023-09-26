@@ -1,52 +1,37 @@
+import HeartIcon from "@/assets/icons/heart";
 import LearningTemplate from "@/assets/templates/learning/learning-mini";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import Typography from "@/components/ui/typography";
-import {
-  ColorsProps,
-  GetThemeTileProps,
-  MappedThemeProps,
-} from "@/interfaces/theme";
-import { generateAllShades, getLuminance } from "@/lib/utils";
+import { useHelpers } from "@/hooks/useHelpers";
+import { ColorsProps, GetThemeTileProps } from "@/interfaces/theme";
+import { getMappedTheme } from "@/lib/theme";
+import { cn, generateAllShades, getLuminance } from "@/lib/utils";
+import { toggleThemeLike } from "@/services/toggle";
 import { AvatarFallback } from "@radix-ui/react-avatar";
-import { Heart } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import moment from "moment";
 import { useState } from "react";
 import NiceAvatar from "react-nice-avatar";
 
 interface ThemeTileProps {
   theme: GetThemeTileProps;
+  checkLiked: (id: string) => boolean | undefined;
 }
 
-const getMappedTheme = (theme: GetThemeTileProps): MappedThemeProps => ({
-  id: theme.id,
-  name: theme.name,
-  user: theme.user,
-  colors: {
-    bg: theme.color_1,
-    primary: theme.color_2,
-    accent: theme.color_3,
-    extra: theme.color_4,
-  },
-  fonts: {
-    primary: {
-      fontFamily: theme.font_1,
-      weights: [],
+export const ThemeTile: React.FC<ThemeTileProps> = ({ theme, checkLiked }) => {
+  const queryClient = useQueryClient();
+  const { mutate: mutateLikeTheme } = useMutation({
+    mutationFn: () => toggleThemeLike(theme.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["home", "userlikedthemesStatus"]);
+      queryClient.invalidateQueries(["home", "themes"]);
     },
-    secondary: {
-      fontFamily: theme.font_2,
-      weights: [],
-    },
-  },
-  tags: theme.tags.map((e) => ({ id: e.tag.id, name: e.tag.name })),
-  createdAt: theme.createdAt,
-  likes: theme._count.likedBy,
-  saves: theme._count.savedBy,
-});
-
-export const ThemeTile: React.FC<ThemeTileProps> = ({ theme }) => {
+  });
+  const { runIfLoggedInElseOpenLoginDialog } = useHelpers();
   const [copied, setCopied] = useState<null | string>(null);
-
   const mappedTheme = getMappedTheme(theme);
+
+  const isLiked = checkLiked(theme.id);
 
   return (
     <div className="w-[270px] h-fit border-[0.5px] border-border flex flex-col shadow-lg bg-white">
@@ -82,7 +67,7 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({ theme }) => {
         />
       </div>
       <div
-        className="flex flex-col border-t-[0.5px] p-1 gap-2"
+        className="flex flex-col border-t-[0.5px] p-1.5 gap-2"
         style={{ borderColor: mappedTheme.colors.primary }}
       >
         <Typography element={"p"} as="p" className="text-lg">
@@ -129,10 +114,18 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({ theme }) => {
         </div>
         <div className="flex gap-1 items-center">
           <div className="flex flex-1 gap-2 items-center">
-            <Heart className="h-5 w-5 cursor-pointer hover:text-[red]" />
+            <HeartIcon
+              className={cn("h-5 w-5 cursor-pointer hover:text-[red]", {
+                "text-[red]": isLiked,
+              })}
+              active={isLiked}
+              onClick={() => {
+                runIfLoggedInElseOpenLoginDialog(() => mutateLikeTheme());
+              }}
+            />
             {mappedTheme.likes}
           </div>
-          <p className="text-xs text-secondary-foreground">
+          <p className="text-[10px] text-secondary-foreground">
             {moment(mappedTheme.createdAt).fromNow()}
           </p>
         </div>

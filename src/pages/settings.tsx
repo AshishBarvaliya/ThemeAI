@@ -165,7 +165,7 @@ export default function Settings() {
             </div>
           </div>
           <div className="flex flex-col w-1/3 items-center">
-            <Avatar className="h-[170px] w-[170px] border border-border">
+            <Avatar className="h-[170px] w-[170px] border-[0.5px] border-border">
               {session?.user?.avatar ? (
                 <NiceAvatar
                   className="h-[170px] w-[170px]"

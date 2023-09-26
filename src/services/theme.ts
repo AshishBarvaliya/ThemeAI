@@ -1,3 +1,4 @@
+import { GetThemeTileProps, TagProps } from "@/interfaces/theme";
 import axios from "axios";
 
 export const postTheme = async () => {
@@ -38,16 +39,11 @@ export const postTheme = async () => {
   }
 };
 
-export const getThemes = async () => {
+export const getThemes = async (): Promise<GetThemeTileProps[]> => {
   const apiUrl = "/api/themes";
+  const response = await axios.get(apiUrl);
 
-  try {
-    const response = await axios.get(apiUrl);
-
-    return response.data;
-  } catch (error) {
-    console.log("Failed to fetch theme");
-  }
+  return response.data as GetThemeTileProps[];
 };
 
 export const getThemeById = async (themeId: string) => {
@@ -60,4 +56,21 @@ export const getThemeById = async (themeId: string) => {
   } catch (error) {
     console.log("Failed to fetch theme");
   }
+};
+
+export const getThemesByUserAndType = async (
+  userId: string,
+  type: "saved" | "liked" | "created"
+) => {
+  const apiUrl = `/api/themes?userId=${userId}&type=${type}`;
+  const response = await axios.get(apiUrl);
+
+  return response.data as GetThemeTileProps[];
+};
+
+export const getTags = async (): Promise<TagProps[]> => {
+  const apiUrl = "/api/tags";
+  const response = await axios.get(apiUrl);
+
+  return response.data as TagProps[];
 };
