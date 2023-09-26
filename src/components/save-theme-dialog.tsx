@@ -98,13 +98,13 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
         addToast({ title: "New theme has been registered!", type: "success" });
         setLoading(false);
         setOpen(false);
-        setOpenSure(true);
+        setOpenSure(false);
       })
       .catch((error) => {
         addToast({ title: error.response.data.error, type: "error" });
         setLoading(false);
         setOpen(false);
-        setOpenSure(true);
+        setOpenSure(false);
       });
   };
 

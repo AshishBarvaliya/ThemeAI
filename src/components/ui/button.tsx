@@ -9,11 +9,11 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground border border-border rounded-[45px] hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
+          "bg-primary text-primary-foreground border-[0.5px] border-border rounded-[45px] hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
         destructive:
           "bg-destructive text-destructive-foreground border border-border rounded-[45px] hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
         outline:
-          "border-input border border-border hover:shadow-normal hover:-translate-x-px hover:-translate-y-px rounded-[45px]",
+          "border-input border-[0.5px] border-border hover:shadow-normal hover:-translate-x-px hover:-translate-y-px rounded-[45px]",
         secondary:
           "bg-secondary text-secondary-foreground hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
         ghost:
@@ -28,7 +28,7 @@ const buttonVariants = cva(
         default: "h-10 px-4 text-sm py-2",
         sm: "h-9 rounded-md px-3",
         md: "h-8 px-4 text-xs border-[0.5px]",
-        lg: "h-12 px-8",
+        lg: "h-12 px-8 border",
         icon: "h-10 w-10",
         circle: "p-3",
       },

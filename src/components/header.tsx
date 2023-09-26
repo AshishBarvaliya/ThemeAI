@@ -27,11 +27,12 @@ import { ResetPasswordDialog } from "./reset-password";
 import { NewPasswordDialog } from "./new-password";
 import { GenerateThemeDialog } from "./generate-theme-dialog";
 import MagicWand from "@/assets/svgs/magic-wand";
+import { useHelpers } from "@/hooks/useHelpers";
 
 const Header = () => {
   const router = useRouter();
+  const { loginOpen, setLoginOpen } = useHelpers();
   const { status, data: session } = useSession();
-  const [loginOpen, setLoginOpen] = useState(false);
   const [singupOpen, setSingupOpen] = useState(false);
   const [userProfileOpen, setUserProfileOpen] = useState(false);
   const [resetPasswordDialog, setResetPasswordDialog] = useState(false);
@@ -158,7 +159,7 @@ const Header = () => {
                     className="relative h-8 w-8 rounded-full"
                     size="icon"
                   >
-                    <Avatar className="h-8 w-8 border border-border">
+                    <Avatar className="h-8 w-8 border-[0.5px] border-border">
                       {session?.user?.avatar ? (
                         <NiceAvatar
                           className="h-8 w-8"

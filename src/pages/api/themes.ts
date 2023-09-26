@@ -48,6 +48,63 @@ export default async function handler(
         return res.status(500).json({ error: "Failed to fetch theme" });
       }
     } else {
+      const { userId, type } = req.query;
+      if (userId && type) {
+        if (!["created", "liked", "saved"].includes(type as string)) {
+          return res.status(400).json({ error: "Invalid type" });
+        }
+        try {
+          if (type === "created") {
+            const user: any = await prisma.user.findUnique({
+              where: { id: userId as string },
+              select: {
+                createdThemes: {
+                  select: tileThemeProps,
+                },
+              },
+            });
+            return res.status(200).json(user.createdThemes);
+          }
+          if (type === "saved") {
+            const savedThemes: any = await prisma.userSaveTheme.findMany({
+              where: { userId: userId as string },
+              select: {
+                theme: {
+                  select: tileThemeProps,
+                },
+              },
+              orderBy: {
+                theme: {
+                  createdAt: "desc",
+                },
+              },
+            });
+            return res
+              .status(200)
+              .json(savedThemes?.map((theme: any) => theme.theme));
+          }
+          if (type === "liked") {
+            const likedThemes = await prisma.userLikeTheme.findMany({
+              where: { userId: userId as string },
+              select: {
+                theme: {
+                  select: tileThemeProps,
+                },
+              },
+              orderBy: {
+                theme: {
+                  createdAt: "desc",
+                },
+              },
+            });
+            return res
+              .status(200)
+              .json(likedThemes?.map((theme: any) => theme.theme));
+          }
+        } catch (error) {
+          return res.status(500).json({ error: "Failed to fetch themes" });
+        }
+      }
       try {
         const themes = await prisma.theme.findMany({
           where: { isPrivate: false },

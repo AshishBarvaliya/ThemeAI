@@ -18,7 +18,6 @@ export default async function handler(
       if (session) {
         if (!userId || session?.user?.id === userId) {
           const infoType = req.query.type;
-          console.log({ infoType });
           if (infoType) {
             if (infoType === "following") {
               try {
@@ -33,6 +32,7 @@ export default async function handler(
                             name: true,
                             avatar: true,
                             image: true,
+                            title: true,
                           },
                         },
                       },
@@ -45,9 +45,54 @@ export default async function handler(
               } catch (error) {
                 return res.status(500).json({ error: "An error occurred" });
               }
-            } else {
-              return res.status(400).json({ error: "Invalid Fields" });
             }
+            if (infoType === "likedthemes") {
+              try {
+                const likedThemes = await prisma.userLikeTheme.findMany({
+                  where: { userId: session?.user?.id as string },
+                  select: {
+                    theme: {
+                      select: {
+                        id: true,
+                      },
+                    },
+                  },
+                });
+                return res
+                  .status(200)
+                  .json(likedThemes?.map((theme: any) => theme.theme.id) || []);
+              } catch (error) {
+                return res.status(500).json({ error: "An error occurred" });
+              }
+            }
+            if (infoType === "followers") {
+              try {
+                const followers = await prisma.user.findUnique({
+                  where: { id: session?.user?.id },
+                  select: {
+                    followers: {
+                      select: {
+                        follower: {
+                          select: {
+                            id: true,
+                            name: true,
+                            avatar: true,
+                            image: true,
+                            title: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                });
+                return res
+                  .status(200)
+                  .json({ followers: followers?.followers || [] });
+              } catch (error) {
+                return res.status(500).json({ error: "An error occurred" });
+              }
+            }
+            return res.status(400).json({ error: "Invalid Fields" });
           } else {
             try {
               const user = await prisma.user.findUnique({
@@ -60,58 +105,15 @@ export default async function handler(
                   experience: true,
                   avatar: true,
                   pupa: true,
-                  purchaseHistory: {
-                    select: {
-                      id: true,
-                      createdAt: true,
-                    },
-                  },
+                  // purchaseHistory: {
+                  //   select: {
+                  //     id: true,
+                  //     createdAt: true,
+                  //   },
+                  // },
                   title: true,
                   organization: true,
                   location: true,
-                  likedThemes: {
-                    select: {
-                      theme: {
-                        select: tileThemeProps,
-                      },
-                    },
-                  },
-                  savedThemes: {
-                    select: {
-                      theme: {
-                        select: tileThemeProps,
-                      },
-                    },
-                  },
-                  createdThemes: {
-                    select: tileThemeProps,
-                  },
-                  following: {
-                    select: {
-                      following: {
-                        select: {
-                          id: true,
-                          name: true,
-                          avatar: true,
-                          image: true,
-                        },
-                      },
-                    },
-                  },
-                  followers: {
-                    select: {
-                      follower: {
-                        select: {
-                          id: true,
-                          name: true,
-                          avatar: true,
-                          image: true,
-                        },
-                      },
-                    },
-                  },
-                  notifications: true,
-                  activities: true,
                   _count: {
                     select: {
                       followers: true,
@@ -124,7 +126,7 @@ export default async function handler(
                 },
               });
 
-              return res.status(200).json({ user });
+              return res.status(200).json(user);
             } catch (error) {
               return res
                 .status(500)
