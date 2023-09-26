@@ -1,8 +1,11 @@
 import React from "react";
 
-const Sidebar = () => {
+const Sidebar = ({ width }: { width: string }) => {
   return (
-    <div className="flex fixed flex-col w-[300px] bg-background justify-between h-screen pb-[74px] border-r border-border"></div>
+    <div
+      style={{ width: width }}
+      className={`flex fixed flex-col bg-background justify-between h-screen pb-[74px] border-r-[0.5px] border-border`}
+    ></div>
   );
 };
 

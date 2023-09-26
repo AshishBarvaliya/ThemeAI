@@ -87,17 +87,17 @@ export default function Settings() {
   }, [status]);
 
   return (
-    <div className="flex flex-col w-full my-10 border border-border bg-white mx-36 p-[40px]">
+    <div className="flex flex-col w-full my-6 border-[0.5px] border-border bg-white mx-36 p-[30px] px-[40px]">
       <Typography element="h1" as="h1" className="text-center">
         Profile Settings
       </Typography>
       <div className="flex flex-col">
-        <Typography element="h2" as="h2" className="mx-10">
+        <Typography element="h3" as="h3" className="mx-10">
           General
         </Typography>
         <div className="flex">
-          <div className="flex flex-col w-2/3 px-10 py-4">
-            <Label htmlFor="title" className="mt-5 mb-2">
+          <div className="flex flex-col w-2/3 px-10 py-2">
+            <Label htmlFor="title" className="mt-4 mb-2">
               Title
             </Label>
             <Input
@@ -110,7 +110,7 @@ export default function Settings() {
                 setData((prev) => ({ ...prev, title: e.target.value }))
               }
             />
-            <Label htmlFor="organization" className="mt-5 mb-2">
+            <Label htmlFor="organization" className="mt-4 mb-2">
               Organization
             </Label>
             <Input
@@ -123,7 +123,7 @@ export default function Settings() {
                 setData((prev) => ({ ...prev, organization: e.target.value }))
               }
             />
-            <Label htmlFor="location" className="mt-5 mb-2">
+            <Label htmlFor="location" className="mt-4 mb-2">
               Location
             </Label>
             <Input
@@ -165,10 +165,10 @@ export default function Settings() {
             </div>
           </div>
           <div className="flex flex-col w-1/3 items-center">
-            <Avatar className="h-[230px] w-[230px] border border-border">
+            <Avatar className="h-[170px] w-[170px] border border-border">
               {session?.user?.avatar ? (
                 <NiceAvatar
-                  className="h-[230px] w-[230px]"
+                  className="h-[170px] w-[170px]"
                   {...JSON.parse(session?.user?.avatar)}
                 />
               ) : (
@@ -180,7 +180,7 @@ export default function Settings() {
                 </>
               )}
             </Avatar>
-            <div className="flex flex-col mt-10 gap-6">
+            <div className="flex flex-col mt-8 gap-4">
               <Button onClick={() => setOpenAvatar(true)}>Update Avatar</Button>
               <Button
                 onClick={onRemoveAvatar}
@@ -192,7 +192,7 @@ export default function Settings() {
             </div>
           </div>
         </div>
-        <Typography element="h2" as="h2" className="mx-10 mt-10">
+        <Typography element="h3" as="h3" className="mx-10 mt-10">
           Password
         </Typography>
       </div>

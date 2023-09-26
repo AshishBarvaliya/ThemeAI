@@ -99,8 +99,9 @@
 
 input::placeholder,
 textarea::placeholder {
-  color: rgb(158, 158, 158) !important;
+  color: rgb(161, 161, 161) !important;
   font-style: italic;
+  font-size: 14px;
 }
 
 .gradient-border {

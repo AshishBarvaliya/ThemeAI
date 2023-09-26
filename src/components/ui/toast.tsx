@@ -121,7 +121,7 @@ const ToastComponent: React.FC<Props> = ({ toast }) => {
       >
         <div className="w-full border-border border max-w-sm bg-white rounded-lg shadow-lg pointer-events-auto">
           <div className="overflow-hidden rounded-lg shadow-xs">
-            <div className="p-4">
+            <div className="p-3">
               <div className="flex items-start">
                 <div className="flex-shrink-0">{icon()}</div>
                 <div className="ml-3 w-0 flex-1 pt-0.5">

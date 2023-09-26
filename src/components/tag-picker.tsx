@@ -68,7 +68,7 @@ export default function TagPicker({
   return (
     <div className="flex relative flex-col" ref={containerRef}>
       <div className="flex flex-col">
-        <Label className="mb-2">Tags</Label>
+        <Label className="mb-1">Tags</Label>
         <Input
           className="w-full"
           placeholder="New tag"
@@ -85,13 +85,13 @@ export default function TagPicker({
       {showNewTagDialog && (
         <div
           data-state={showNewTagDialog ? "open" : "closed"}
-          className="flex flex-col absolute z-10 pt-1 -top-[180px] min-w-[12rem] bg-white h-[200px] overflow-y-scroll border border-border data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-bottom-2"
+          className="flex flex-col absolute z-10 pt-1 -top-[160px] min-w-[12rem] bg-white h-[180px] overflow-y-scroll border-[0.5px] border-border data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-bottom-2"
           onFocus={(e) => e.stopPropagation()}
         >
           {filteredTags.map((tag) => (
             <div
               key={tag.name}
-              className="p-1 flex items-center cursor-pointer hover:bg-primary/40 justify-between px-6"
+              className="p-1 text-sm flex items-center cursor-pointer hover:bg-primary/40 justify-between px-6"
               onClick={() => {
                 if (selectedTags.find((t) => t.name === tag.name)) {
                   setSelectedTags(
@@ -110,7 +110,7 @@ export default function TagPicker({
           ))}
           {filteredTags.length === 0 && (
             <div className="flex flex-col flex-1 justify-center items-center gap-2">
-              <p className="mt-2 text-lg">{`'${searchString}' not found`}</p>
+              <p className="mt-2 text-sm">{`'${searchString}' not found`}</p>
               <Button
                 onClick={(e) => {
                   e.preventDefault();
@@ -128,15 +128,15 @@ export default function TagPicker({
         </div>
       )}
       <div
-        className={`flex flex-wrap items-center overflow-x-scroll w-[750px] mt-2 min-h-[38px] text-lg ${
-          selectedTags.length > 0 ? "" : "italic text-[rgb(158,158,158)]"
+        className={`flex flex-wrap items-center overflow-x-scroll w-[750px] mt-1.5 min-h-[28px] text-md ${
+          selectedTags.length > 0 ? "" : "italic text-[rgb(135,135,135)]"
         }`}
       >
         {selectedTags.length ? (
           selectedTags?.map((tag) => (
             <div
               key={tag.name}
-              className="mr-2 mt-2 flex items-center border border-border px-2 rounded-[45px]"
+              className="mr-2 h-[28px] text-sm flex items-center border border-border px-3 rounded-[45px]"
             >
               {tag.name}
               <Cross1Icon
@@ -151,7 +151,7 @@ export default function TagPicker({
             </div>
           ))
         ) : (
-          <p className="mt-2">No tags selected</p>
+          <p className="">No tags selected</p>
         )}
       </div>
     </div>

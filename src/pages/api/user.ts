@@ -39,11 +39,11 @@ export default async function handler(
                     },
                   },
                 });
-                res
+                return res
                   .status(200)
                   .json({ followings: followings?.following || [] });
               } catch (error) {
-                res.status(500).json({ error: "An error occurred" });
+                return res.status(500).json({ error: "An error occurred" });
               }
             } else {
               return res.status(400).json({ error: "Invalid Fields" });
@@ -112,12 +112,21 @@ export default async function handler(
                   },
                   notifications: true,
                   activities: true,
+                  _count: {
+                    select: {
+                      followers: true,
+                      following: true,
+                      likedThemes: true,
+                      savedThemes: true,
+                      createdThemes: true,
+                    },
+                  },
                 },
               });
 
-              res.status(200).json({ user });
+              return res.status(200).json({ user });
             } catch (error) {
-              res
+              return res
                 .status(500)
                 .json({ error: "An error occurred while fetching user data" });
             }
@@ -175,9 +184,9 @@ export default async function handler(
               },
             });
 
-            res.status(200).json({ user });
+            return res.status(200).json({ user });
           } catch (error) {
-            res
+            return res
               .status(500)
               .json({ error: "An error occurred while fetching user data" });
           }
@@ -211,9 +220,9 @@ export default async function handler(
             },
           });
 
-          res.status(200).json({ user });
+          return res.status(200).json({ user });
         } catch (error) {
-          res
+          return res
             .status(500)
             .json({ error: "An error occurred while fetching user data" });
         }
@@ -250,7 +259,7 @@ export default async function handler(
       });
       return res.status(201).json({ user });
     } catch (error) {
-      res.status(500).json({ error: "Failed to create user" });
+      return res.status(500).json({ error: "Failed to create user" });
     }
   } else {
     return res.status(405).json({ error: "Method not allowed" });

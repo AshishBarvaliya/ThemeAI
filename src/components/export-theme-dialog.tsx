@@ -236,19 +236,19 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="p-10 border max-w-fit border-border bg-white rounded-none">
-        <div className="flex flex-col items-center w-[520px]">
+      <DialogContent className="p-8 border max-w-fit border-border bg-white rounded-none">
+        <div className="flex flex-col items-center w-[480px]">
           <Typography element="h3" as="h3">
             Export Theme
           </Typography>
-          <div className="flex flex-1 mt-4">
-            <Tabs defaultValue="colors" className="w-[520px]">
+          <div className="flex flex-1 mt-3">
+            <Tabs defaultValue="colors" className="w-[480px]">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="colors">Colors</TabsTrigger>
                 <TabsTrigger value="fonts">Fonts</TabsTrigger>
               </TabsList>
-              <TabsContent value="colors" className="h-[355px] py-2 px-1">
-                <div className="flex gap-4">
+              <TabsContent value="colors" className="h-[300px] py-1 px-1">
+                <div className="flex gap-3">
                   {Object.keys(COLORS_FORMAT).map((key) => (
                     <div
                       key={key}
@@ -256,7 +256,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                         setColorFormat(key as keyof typeof COLORS_FORMAT)
                       }
                       className={cn(
-                        "border border-border px-3 h-8 flex items-center font-sm cursor-pointer hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
+                        "border-[0.5px] border-border px-3 h-7 flex items-center text-sm cursor-pointer hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
                         {
                           "bg-primary": colorFormat === key,
                         }
@@ -266,7 +266,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                     </div>
                   ))}
                 </div>
-                <div className="flex gap-4 mt-4">
+                <div className="flex gap-3 mt-3">
                   {Object.keys(COLORS_TYPE).map((key) => (
                     <div
                       key={key}
@@ -274,7 +274,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                         setColorType(key as keyof typeof COLORS_TYPE)
                       }
                       className={cn(
-                        "border border-border px-3 h-8 flex items-center font-sm cursor-pointer hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
+                        "border-[0.5px] border-border px-3 h-7 flex items-center text-sm cursor-pointer hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
                         {
                           "bg-primary": colorType === key,
                         }
@@ -294,7 +294,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                     />
                   </div>
                 ) : (
-                  <div className="h-[180px] border border-border mt-4 bg-background pl-4 justify-center flex flex-col shadow-inset-bg">
+                  <div className="h-[160px] border-[0.5px] border-border mt-4 bg-background pl-4 justify-center flex flex-col shadow-inset-bg">
                     {Object.keys(colors).map((color, index) => (
                       <div
                         key={index}
@@ -330,18 +330,18 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                         )
                     }
                   >
-                    <CopySlash className="mr-2 h-5 w-5" /> Copy
+                    <CopySlash className="mr-1.5 h-4 w-4" /> Copy
                   </Button>
                 )}
               </TabsContent>
-              <TabsContent value="fonts" className="h-[355px] p-1">
-                <div className="flex gap-4 flex-col">
+              <TabsContent value="fonts" className="h-[300px] py-1 px-1">
+                <div className="flex gap-3 flex-col">
                   {Object.keys(fonts).map((key) => (
                     <div
                       key={key}
-                      className="flex border border-border p-2 flex-col gap-3"
+                      className="flex border-[0.5px] border-border p-2 flex-col gap-3"
                     >
-                      <div className="flex gap-3 items-center justify-between">
+                      <div className="flex gap-2.5 items-center justify-between">
                         <Typography element="h4" as="h4">
                           {key === "primary"
                             ? "Primary Font"
@@ -387,7 +387,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                             key === "primary" ? "#f5dc98" : "#9ceeff",
                           wordBreak: "break-word",
                         }}
-                        className="flex flex-col gap-1 relative p-1 h-[100px] w-full font-normal text-3xl text-center items-center justify-center border border-border"
+                        className="flex flex-col gap-1 relative p-1 h-[85px] w-full font-normal text-3xl text-center items-center justify-center border-[0.5px] border-border"
                       >
                         {fonts[key as keyof FontObjProps].fontFamily}
                         <p className="text-lg">

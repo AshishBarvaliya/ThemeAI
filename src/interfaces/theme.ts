@@ -65,3 +65,20 @@ export interface GetThemeTileProps {
     savedBy: number;
   };
 }
+
+export interface MappedThemeProps {
+  id: string;
+  name: string;
+  colors: ColorsProps;
+  fonts: FontObjProps;
+  tags: TagProps[];
+  createdAt?: Date;
+  user: {
+    id: string;
+    name: string;
+    avatar: string;
+    image: string;
+  };
+  likes: number;
+  saves: number;
+}

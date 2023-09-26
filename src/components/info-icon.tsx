@@ -17,7 +17,7 @@ export const InfoIcon: React.FC<InfoIconProps> = ({ info, className }) => {
     <TooltipProvider>
       <Tooltip delayDuration={100}>
         <TooltipTrigger asChild>
-          <div className={cn("cursor-pointer, ml-2", className)}>
+          <div className={cn("cursor-pointer, ml-1", className)}>
             <QuestionMarkCircledIcon className="w-4 h-4 text-border" />
           </div>
         </TooltipTrigger>

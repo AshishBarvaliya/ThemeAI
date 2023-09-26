@@ -47,7 +47,7 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="p-10 border border-border bg-white rounded-none">
+      <DialogContent className="p-8 max-w-[450px] border border-border bg-white rounded-none">
         <DialogHeader>
           <DialogTitle>Update your profile</DialogTitle>
         </DialogHeader>
@@ -95,7 +95,7 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
               <Button
                 variant={"outline"}
                 type="button"
-                className="w-full mt-6"
+                className="w-full mt-4"
                 onClick={() => setOpen(false)}
                 disabled={loading}
               >

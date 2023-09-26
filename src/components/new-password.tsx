@@ -67,7 +67,7 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={() => close()}>
-      <DialogContent className="p-10 border border-border bg-white rounded-none">
+      <DialogContent className="p-8 border border-border bg-white rounded-none">
         <DialogHeader>
           <DialogTitle className="mb-1">Create New Password</DialogTitle>
         </DialogHeader>
