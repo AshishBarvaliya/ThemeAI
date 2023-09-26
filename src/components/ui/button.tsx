@@ -25,12 +25,12 @@ const buttonVariants = cva(
           "rounded-none border border-border bg-primary hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
       },
       size: {
-        default: "px-[30px] py-5",
+        default: "h-10 px-4 text-sm py-2",
         sm: "h-9 rounded-md px-3",
-        md: "h-10 px-4 text-md",
-        lg: "h-11 rounded-md px-8",
+        md: "h-8 px-4 text-xs border-[0.5px]",
+        lg: "h-12 px-8",
         icon: "h-10 w-10",
-        circle: "p-5",
+        circle: "p-3",
       },
     },
     defaultVariants: {

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import NiceAvatar from "react-nice-avatar";
 import { landingMenu } from "@/constants/navigation";
@@ -26,7 +25,6 @@ import { RegisterDialog } from "./register-dialog";
 import { UserProfileDialog } from "./user-profile-dialog";
 import { ResetPasswordDialog } from "./reset-password";
 import { NewPasswordDialog } from "./new-password";
-import { LightningBoltIcon } from "@radix-ui/react-icons";
 import { GenerateThemeDialog } from "./generate-theme-dialog";
 import MagicWand from "@/assets/svgs/magic-wand";
 
@@ -114,9 +112,8 @@ const Header = () => {
   }, [status]);
 
   return (
-    <div className="fixed bg-background max-w-screen-2xl flex border-b border-border w-full justify-between py-4 px-7 h-[96px]">
+    <div className="fixed bg-background max-w-screen-2xl flex border-b-[0.5px] border-border w-full justify-between py-2 px-6 h-[60px]">
       <Link href="/themes" className="flex">
-        <Image src="/logo.png" alt="butterfly logo" width={150} height={62} />
         <Logo />
       </Link>
 
@@ -126,7 +123,7 @@ const Header = () => {
             {landingMenu.map((item, index) => (
               <li key={index}>
                 <Link
-                  className="text-primary-foreground text-lg"
+                  className="text-primary-foreground text-sm"
                   href={item.path}
                 >
                   {item.label}
@@ -151,20 +148,20 @@ const Header = () => {
                 onClick={() => setGenerateThemeDialog(true)}
                 variant="outline"
               >
-                <MagicWand className="mr-2 h-5 w-5" />
+                <MagicWand className="mr-1.5 h-4 w-4" />
                 Generate Theme
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="relative h-12 w-12 rounded-full"
+                    className="relative h-8 w-8 rounded-full"
                     size="icon"
                   >
-                    <Avatar className="h-12 w-12 border border-border">
+                    <Avatar className="h-8 w-8 border border-border">
                       {session?.user?.avatar ? (
                         <NiceAvatar
-                          className="h-12 w-12"
+                          className="h-8 w-8"
                           {...JSON.parse(session?.user?.avatar)}
                         />
                       ) : (
@@ -181,7 +178,11 @@ const Header = () => {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuContent
+                  className="w-56 mt-1"
+                  align="end"
+                  forceMount
+                >
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">
@@ -196,7 +197,7 @@ const Header = () => {
                   <DropdownMenuGroup>
                     <DropdownMenuItem
                       className="cursor-pointer"
-                      onClick={() => router.push("/profile")}
+                      onClick={() => router.push("/user/" + session?.user.id)}
                     >
                       Profile
                     </DropdownMenuItem>

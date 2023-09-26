@@ -57,7 +57,7 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
         router.push("/themes", undefined, { shallow: true });
       }}
     >
-      <DialogContent className="p-10 border border-border bg-white rounded-none">
+      <DialogContent className="p-8 border border-border bg-white rounded-none">
         <DialogHeader>
           <DialogTitle className="mb-1">Reset Your Password</DialogTitle>
           <DialogDescription>

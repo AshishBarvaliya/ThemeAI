@@ -32,8 +32,11 @@ const CreateTheme = () => {
   return (
     <div className="flex flex-1 flex-col">
       <div
-        className="flex fixed justify-between border-b border-border bg-background gap-4 p-4 items-center w-full"
-        style={{ maxWidth: "calc(1536px - 300px)" }}
+        className="flex fixed justify-between border-b-[0.5px] border-border bg-background gap-4 p-3 px-5 items-center"
+        style={{
+          maxWidth: "calc(1536px - 250px)",
+          width: "calc(100vw - 250px)",
+        }}
       >
         <Button
           onClick={() => {
@@ -51,9 +54,9 @@ const CreateTheme = () => {
           variant="circle"
           size={"circle"}
         >
-          <ArrowLeftIcon className="h-5 w-5" />
+          <ArrowLeftIcon className="h-4 w-4" />
         </Button>
-        <div className="flex flex-1 gap-4 pl-8">
+        <div className="flex gap-3.5 pl-20">
           <ColorPicker
             id="bgcolor"
             name="Background Color"
@@ -86,6 +89,8 @@ const CreateTheme = () => {
             open={openColorPicker}
             setOpen={setOpenColorPicker}
           />
+        </div>
+        <div className="flex flex-1 gap-3.5 ml-5">
           <FontPicker
             id="primaryfont"
             name="Primary Font"
@@ -104,7 +109,7 @@ const CreateTheme = () => {
             variant={"outline"}
             onClick={() => setOpenExportThemeDialog(true)}
           >
-            <DownloadIcon className="h-5 w-5 mr-2" /> Export
+            <DownloadIcon className="h-4 w-4 mr-1.5" /> Export
           </Button>
           <Button
             onClick={() => {
@@ -115,7 +120,7 @@ const CreateTheme = () => {
           </Button>
         </div>
       </div>
-      <div className="flex mt-24">
+      <div className="flex mt-[72px]">
         <LearningTemplate
           colors={colors}
           shades={generateAllShades(colors)}
@@ -136,7 +141,7 @@ const CreateTheme = () => {
           setOpenSure(false);
         }}
       >
-        <div className="text-lg">
+        <div className="text-md">
           You have unsaved changes. are you sure want to leave?
         </div>
       </ConfirmationDialog>

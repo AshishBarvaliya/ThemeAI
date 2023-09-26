@@ -24,12 +24,12 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
 }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="p-10 max-w-fit border border-border bg-white rounded-none">
+      <DialogContent className="p-8 max-w-fit border border-border bg-white rounded-none">
         <DialogHeader>
           <DialogTitle>Are you sure?</DialogTitle>
         </DialogHeader>
         {children}
-        <div className="flex justify-end gap-4 mt-6">
+        <div className="flex justify-end gap-3 mt-3">
           <Button
             onClick={() => setOpen(false)}
             variant={"outline"}

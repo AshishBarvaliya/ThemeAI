@@ -73,7 +73,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
 
   const messages = {
     invalid: {
-      icon: <MailMinus className="w-8 h-8 text-primary-foreground" />,
+      icon: <MailMinus className="w-6 h-6 text-primary-foreground" />,
       title: "Verification Unsuccessful",
       description:
         "We're sorry, but the verification link you clicked appears to be invalid. If you copied and pasted the link, please make sure you did so completely. Alternatively, you may request a new verification email.",
@@ -81,7 +81,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
       button: "resend",
     },
     expired: {
-      icon: <MailMinus className="w-8 h-8 text-primary-foreground" />,
+      icon: <MailMinus className="w-6 h-6 text-primary-foreground" />,
       title: "Verification Link Expired",
       description:
         "Oops! The verification link you clicked has expired. For security reasons, verification links are time-sensitive. Please request a new verification email.",
@@ -89,7 +89,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
       button: "resend",
     },
     alreadyVerified: {
-      icon: <MailCheck className="w-8 h-8 text-primary-foreground" />,
+      icon: <MailCheck className="w-6 h-6 text-primary-foreground" />,
       title: "Email Already Verified",
       description:
         "Good news! Your email address has already been verified. There's no need to do anything further, you can now continue using all features of your account. Thank you for confirming your email.",
@@ -97,7 +97,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
       button: isAuthenticated ? "none" : "signin",
     },
     pleaseVerify: {
-      icon: <MailQuestion className="w-8 h-8 text-primary-foreground" />,
+      icon: <MailQuestion className="w-6 h-6 text-primary-foreground" />,
       title: "Please verify your email",
       description: (
         <>
@@ -109,7 +109,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
       button: "resend",
     },
     verificationRequired: {
-      icon: <MailQuestion className="w-8 h-8 text-primary-foreground" />,
+      icon: <MailQuestion className="w-6 h-6 text-primary-foreground" />,
       title: "Email Verification Required",
       description:
         "To fully activate your account and access all features, you'll need to verify your email address. Please check your inbox (or spam folder) for the verification email we sent and click the button to complete the process.",
@@ -117,7 +117,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
       button: "resend",
     },
     verified: {
-      icon: <MailCheck className="w-8 h-8 text-primary-foreground" />,
+      icon: <MailCheck className="w-6 h-6 text-primary-foreground" />,
       title: "Email Successfully Verified",
       description:
         "Congratulations! Your email address has been successfully verified. You now have full access to all features of your account. Thank you for confirming your email address, and welcome to our community.",
@@ -134,17 +134,17 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
         router.push("/themes", undefined, { shallow: true });
       }}
     >
-      <DialogContent className="p-10 border border-border bg-white rounded-none">
+      <DialogContent className="p-8 border max-w-[400px] border-border bg-white rounded-none">
         <div className="flex flex-col items-center">
           <div
-            className={`flex items-center ${messages[type].bg} justify-center border border-border w-14 h-14`}
+            className={`flex items-center ${messages[type].bg} justify-center border border-border w-10 h-10`}
           >
             {messages[type].icon}
           </div>
           <Typography element="h3" as="h3" className="mt-4">
             {messages[type].title}
           </Typography>
-          <Typography element="p" as="p" className="text-center">
+          <Typography element="p" as="p" className="text-center text-xs mt-2">
             {messages[type].description}
           </Typography>
           {messages[type].button === "resend" ? (

@@ -14,9 +14,9 @@ const Input = React.forwardRef<
       <input
         type={type}
         className={cn(
-          "flex h-12 w-full rounded-md shadow-inset border border-border bg-white px-3 py-2 text-lg ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none focus:border-secondary focus:border-5 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-9 w-full rounded-md shadow-inset border-[0.5px] border-border bg-white px-3 py-2 text-md ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none focus:border-secondary focus:border-5 disabled:cursor-not-allowed disabled:opacity-50",
           className,
-          isError && "border-destructive ring-2 ring-destructive"
+          isError && "border-destructive ring-1 ring-destructive"
         )}
         ref={ref}
         {...props}
@@ -41,7 +41,7 @@ const SeachBar = React.forwardRef<
       <input
         type={type}
         className={cn(
-          "flex h-12 w-full rounded-md border border-border bg-white px-3 py-2 pr-24 text-lg ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-9 w-full rounded-md shadow-inset border-[0.5px] border-border bg-white px-3 py-2 pr-[70px] text-md ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         ref={ref}
@@ -50,9 +50,9 @@ const SeachBar = React.forwardRef<
         {...props}
       />
       {searchString ? (
-        <div className="absolute right-12 justify-center items-center flex h-12 w-12">
+        <div className="absolute right-9 justify-center items-center flex h-9 w-9">
           <Cross1Icon
-            className="h-4 w-4 cursor-pointer"
+            className="h-3 w-3 cursor-pointer"
             onClick={() => {
               setSearchString("");
               onRemoveCallback();
@@ -60,9 +60,9 @@ const SeachBar = React.forwardRef<
           />
         </div>
       ) : null}
-      <div className="absolute right-0 justify-center items-center flex h-12 w-12 border border-border bg-primary hover:shadow-normal hover:-translate-x-px hover:-translate-y-px">
+      <div className="absolute right-0 justify-center items-center flex h-9 w-9 border-[0.5px] border-border bg-primary hover:shadow-normal hover:-translate-x-px hover:-translate-y-px">
         <MagnifyingGlassIcon
-          className="h-6 w-6 cursor-pointer"
+          className="h-4 w-4 cursor-pointer"
           onClick={() => onSearch(searchString)}
         />
       </div>

@@ -66,7 +66,7 @@ export default function Settings() {
   }, [status]);
 
   return (
-    <div className="flex flex-col w-full my-10 border border-border bg-white mx-36 p-[40px]">
+    <div className="flex flex-col w-full my-6 border-[0.5px] border-border bg-white mx-36 p-[30px] px-[40px]">
       <Typography element="h1" as="h1" className="text-center">
         Notifications
       </Typography>

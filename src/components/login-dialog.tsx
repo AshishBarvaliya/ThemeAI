@@ -64,7 +64,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="p-10 border border-border bg-white rounded-none">
+        <DialogContent className="p-8 border border-border bg-white rounded-none">
           <DialogHeader>
             <DialogTitle>Sign In</DialogTitle>
             <DialogDescription>
@@ -79,7 +79,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
           </DialogHeader>
           <div>
             <form onSubmit={loginUser}>
-              <div className="mt-2">
+              <div className="mt-1">
                 <Input
                   id="email"
                   name="email"
@@ -107,7 +107,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
               </div>
               <div
                 onClick={forgetPassword}
-                className="underline my-4 block text-primary-foreground cursor-pointer"
+                className="underline text-xs my-3 block text-primary-foreground cursor-pointer"
               >
                 Forgot Password?
               </div>
@@ -120,10 +120,10 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                 </Button>
               </div>
             </form>
-            <div className="flex items-center gap-3 my-6 justify-between">
-              <Separator className="w-full shrink" />
+            <div className="flex items-center gap-3 my-4 justify-between">
+              <Separator className="w-full shrink h-[0.5px]" />
               OR
-              <Separator className="w-full shrink" />
+              <Separator className="w-full shrink h-[0.5px]" />
             </div>
             <Button
               onClick={() => signIn("google")}

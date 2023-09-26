@@ -29,7 +29,7 @@ const ColorPicker: React.FC<RegisterDialogProps> = ({
         <Tooltip delayDuration={100}>
           <TooltipTrigger asChild>
             <div
-              className="w-16 h-16 relative border border-border z-10 rounded-md cursor-pointer hover:shadow-xl"
+              className="w-12 h-12 relative border-[0.5px] border-border z-10 rounded-md cursor-pointer hover:shadow-xl"
               style={{
                 backgroundColor: color,
               }}
@@ -47,12 +47,12 @@ const ColorPicker: React.FC<RegisterDialogProps> = ({
           />
           <div
             data-state={open === id ? "open" : "closed"}
-            className="absolute mt-3 ml-[-80px] z-20 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2"
+            className="absolute mt-1.5 ml-[-80px] z-20 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2"
           >
             <ChromePicker
               color={color}
               onChange={(color) => setColor(color.hex)}
-              className="border border-border"
+              className="border-[0.5px] border-border"
               disableAlpha
             />
           </div>

@@ -66,8 +66,8 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="p-0.5 max-w-fit bg-white border-none rounded-none">
-        <div className="z-10 p-10 bg-white">
+      <DialogContent className="p-[1px] max-w-fit bg-white border-none rounded-none">
+        <div className="z-10 p-8 bg-white">
           <DialogHeader>
             <DialogTitle>Generate Theme</DialogTitle>
             <DialogDescription>
@@ -196,9 +196,9 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
                   }}
                 >
                   {loading ? (
-                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                    <ReloadIcon className="mr-1.5 h-4 w-4 animate-spin" />
                   ) : (
-                    <MagicWand className="mr-2 h-4 w-4" />
+                    <MagicWand className="mr-1.5 h-4 w-4" />
                   )}
                   {loading ? "Generating..." : "Generate"}
                 </Button>

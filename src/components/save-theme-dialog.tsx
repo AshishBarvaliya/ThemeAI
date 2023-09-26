@@ -113,7 +113,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="p-10 max-w-fit border border-border bg-white rounded-none">
+        <DialogContent className="p-5 px-7 max-w-fit border border-border bg-white rounded-none">
           <DialogHeader>
             <DialogTitle>Save Theme</DialogTitle>
             <DialogDescription>
@@ -123,7 +123,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
           <div>
             <form>
               <div className="flex flex-col">
-                <Label htmlFor="name" className="mb-2">
+                <Label htmlFor="name" className="mb-1">
                   Name*{" "}
                   {isNameError && (
                     <span className="ml-1 text-destructive">(Required)</span>
@@ -143,7 +143,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                     setIsNameError(e.target.value.trim().length === 0);
                   }}
                 />
-                <Label htmlFor="color1Reason" className="mt-5 mb-2">
+                <Label htmlFor="color1Reason" className="mt-4 mb-1">
                   Background color
                 </Label>
                 <Input
@@ -161,7 +161,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                     }))
                   }
                 />
-                <Label htmlFor="color1Reason" className="mt-5 mb-2">
+                <Label htmlFor="color1Reason" className="mt-4 mb-1">
                   Primary color
                 </Label>
                 <Input
@@ -179,7 +179,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                     }))
                   }
                 />
-                <Label htmlFor="color1Reason" className="mt-5 mb-2">
+                <Label htmlFor="color1Reason" className="mt-4 mb-1">
                   Accent color
                 </Label>
                 <Input
@@ -197,7 +197,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                     }))
                   }
                 />
-                <Label htmlFor="color1Reason" className="mt-5 mb-2">
+                <Label htmlFor="color1Reason" className="mt-4 mb-1">
                   Complementry color
                 </Label>
                 <Input
@@ -215,7 +215,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                     }))
                   }
                 />
-                <Label htmlFor="color1Reason" className="mt-5 mb-2">
+                <Label htmlFor="color1Reason" className="mt-4 mb-1">
                   Primary font
                 </Label>
                 <Input
@@ -233,7 +233,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                     }))
                   }
                 />
-                <Label htmlFor="color1Reason" className="mt-5 mb-2">
+                <Label htmlFor="color1Reason" className="mt-4 mb-1">
                   Secondary font
                 </Label>
                 <Input
@@ -253,13 +253,13 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                     }))
                   }
                 />
-                <div className="mt-5">
+                <div className="mt-4">
                   <TagPicker
                     selectedTags={selectedTags}
                     setSelectedTags={setSelectedTags}
                   />
                 </div>
-                <div className="flex items-center space-x-2 mt-5">
+                <div className="flex items-center space-x-2 mt-3">
                   <Switch
                     id="isPrivate"
                     name="isPrivate"
@@ -281,7 +281,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                   </Label>
                 </div>
               </div>
-              <div className="mt-8 flex justify-end">
+              <div className="mt-1 flex justify-end">
                 <Button
                   type="button"
                   disabled={loading}
@@ -315,14 +315,14 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
         onYes={createTheme}
         loading={loading}
       >
-        <div className="text-lg">
+        <div className="text-md">
           These fields look empty. are you sure want continue?
         </div>
         <div className="flex flex-col">
           {Object.keys(data)
             .filter((key) => data[key as keyof FormDataProps] === "")
             .map((key) => (
-              <div key={key} className="italic font-semibold">
+              <div key={key} className="italic font-semibold text-sm">
                 {formKeyValueMapping[key as keyof typeof formKeyValueMapping]}
               </div>
             ))}
@@ -337,7 +337,7 @@ const ColorTooltip = ({ color }: { color: string }) => (
     <Tooltip delayDuration={100}>
       <TooltipTrigger asChild>
         <div
-          className="absolute border border-border top-0 right-0 flex h-12 w-12"
+          className="absolute border border-border top-0 right-0 flex h-9 w-9"
           style={{ background: color }}
         />
       </TooltipTrigger>
@@ -351,7 +351,7 @@ const FontTooltip = ({ font }: { font: string }) => (
     <Tooltip delayDuration={100}>
       <TooltipTrigger asChild>
         <div
-          className="absolute truncate border border-border top-0 right-0 flex h-12 w-[100px] text-md items-center bg-background cursor-default"
+          className="absolute truncate border border-border top-0 right-0 flex h-9 w-[100px] text-md items-center bg-background cursor-default"
           style={{ fontFamily: font }}
         >
           <p className="w-full truncate text-center">{font}</p>

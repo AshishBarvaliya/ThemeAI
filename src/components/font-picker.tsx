@@ -50,12 +50,12 @@ const FontPicker: React.FC<FontPickerProps> = ({
                 {name}
               </Typography>
               <div
-                className="flex px-3 gap-1 items-center text-[30px] cursor-pointer border border-border bg-white"
+                className="flex px-2 gap-1 items-center text-[20px] cursor-pointer border-[0.5px] border-border bg-white"
                 style={{ fontFamily: selectedFont.fontFamily }}
                 onClick={() => setOpen(true)}
               >
                 <p className="w-[145px] truncate">{selectedFont.fontFamily}</p>
-                <ChevronDown />
+                <ChevronDown className="h-4 w-4" />
               </div>
             </div>
           </TooltipTrigger>
@@ -73,7 +73,7 @@ const FontPicker: React.FC<FontPickerProps> = ({
           />
           <div
             data-state={open ? "open" : "closed"}
-            className="absolute mt-1 flex z-20 flex-col w-[553px] bg-white border border-border ml-[-200px] shadow-dropshadow data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2"
+            className="absolute mt-1 flex z-20 flex-col w-[442px] bg-white border-[0.5px] border-border ml-[-130px] shadow-dropshadow data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2"
           >
             <div className="flex p-2">
               <SeachBar
@@ -107,7 +107,7 @@ const FontPicker: React.FC<FontPickerProps> = ({
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex h-[424px] overflow-y-auto flex-col gap-2 px-2 mb-2 pt-1">
+            <div className="flex h-[324px] overflow-y-auto flex-col gap-2 px-2 mb-2 pt-1">
               {!!filteredFonts.length ? (
                 new Array(Math.ceil(filteredFonts.length / 4))
                   .fill(1)
@@ -130,7 +130,7 @@ const FontPicker: React.FC<FontPickerProps> = ({
                               onClick={() =>
                                 setSelectedFont(filteredFonts[i * 4 + j])
                               }
-                              className="parent_hover flex relative px-1 py-4 h-24 w-32 font-normal text-2xl text-center items-center justify-center bg-[hsl(0, 90%, 80%)] border border-border hover:shadow-normal hover:-translate-x-px hover:-translate-y-px cursor-pointer animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-1"
+                              className="parent_hover flex relative px-0.5 py-3 h-20 w-[100px] font-normal text-xl text-center items-center justify-center bg-[hsl(0, 90%, 80%)] border-[0.5px] border-border hover:shadow-normal hover:-translate-x-px hover:-translate-y-px cursor-pointer animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-1"
                             >
                               {filteredFonts[i * 4 + j].fontFamily}
                               {/* <TooltipProvider>
@@ -153,11 +153,11 @@ const FontPicker: React.FC<FontPickerProps> = ({
               ) : (
                 <div className="flex flex-col justify-center items-center h-full">
                   <div
-                    className={`flex items-center bg-destructive justify-center border border-border w-14 h-14`}
+                    className={`flex items-center bg-destructive justify-center border border-border w-10 h-10`}
                   >
-                    <SearchX className="h-8 w-8" />
+                    <SearchX className="h-6 w-6" />
                   </div>
-                  <Typography element="p" as="p" className="text-lg mt-2">
+                  <Typography element="p" as="p" className="text-md mt-2">
                     No fonts found
                   </Typography>
                 </div>

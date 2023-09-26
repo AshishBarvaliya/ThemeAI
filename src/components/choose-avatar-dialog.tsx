@@ -28,8 +28,6 @@ export const ChooseAvatarDialog: React.FC<ResetPasswordDialogProps> = ({
     index: "00",
   });
 
-  console.log(session);
-
   const onSave = () => {
     if (selectedAvatar.config !== null) {
       setLoading(true);
@@ -66,14 +64,14 @@ export const ChooseAvatarDialog: React.FC<ResetPasswordDialogProps> = ({
         });
       }}
     >
-      <DialogContent className="p-10 max-w-fit border border-border bg-white rounded-none">
+      <DialogContent className="p-8 max-w-fit border border-border bg-white rounded-none">
         <DialogHeader>
           <DialogTitle className="mb-1">Choose Your Avatar</DialogTitle>
         </DialogHeader>
         <div>
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-3">
             {new Array(5).fill(1).map((_, i) => (
-              <div className="flex gap-5" key={i}>
+              <div className="flex gap-4" key={i}>
                 {new Array(5).fill(1).map((_, j) => (
                   <div
                     key={j + i + generate}
@@ -85,7 +83,7 @@ export const ChooseAvatarDialog: React.FC<ResetPasswordDialogProps> = ({
                     }}
                   >
                     <Avatar
-                      className={`h-28 w-28 cursor-pointer ${
+                      className={`h-20 w-20 cursor-pointer ${
                         selectedAvatar.config &&
                         selectedAvatar.index === i + "" + j
                           ? "ring-2 ring-primary-foreground"
