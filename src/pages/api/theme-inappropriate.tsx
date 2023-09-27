@@ -16,14 +16,14 @@ export default async function handler(
         return res.status(400).json({ error: "themeId is required" });
       }
       try {
-        const existingItem = await prisma.userUnappropriateTheme.findUnique({
+        const existingItem = await prisma.userInappropriateTheme.findUnique({
           where: { userId_themeId: { userId: session.user.id, themeId } },
         });
 
         if (existingItem) {
           res.status(200).json({ item: existingItem });
         } else {
-          const item = await prisma.userUnappropriateTheme.create({
+          const item = await prisma.userInappropriateTheme.create({
             data: { userId: session.user.id, themeId },
           });
 

@@ -1,29 +1,111 @@
 import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { getUser } from "@/services/user";
-import { useState } from "react";
+import { getUser, toggleFollowing } from "@/services/user";
+import { useEffect, useState } from "react";
 import NiceAvatar from "react-nice-avatar";
 import { useRouter } from "next/router";
 import Typography from "@/components/ui/typography";
 import { Building, MapPin, User2 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ProfileThemes from "@/components/profile-themes";
 import ProfileFollowers from "@/components/profile-followers";
 import ProfileFollowing from "@/components/profile-following";
+import {
+  getUserFollowersStatus,
+  getUserFollowingStatus,
+} from "@/services/user-details";
+import { useSession } from "next-auth/react";
+import { useHelpers } from "@/hooks/useHelpers";
+import { Button } from "@/components/ui/button";
+import { Session } from "next-auth";
+import { UserProps } from "@/interfaces/user";
 
 export default function User() {
+  const queryClient = useQueryClient();
   const router = useRouter();
+  const { runIfLoggedInElseOpenLoginDialog, setLoginOpen } = useHelpers();
+  const { data: session } = useSession();
+
+  const { data: userFollowingStatus, isLoading: isUserFollowingStatusLoading } =
+    useQuery(["home", "userfollowingstatus"], () =>
+      getUserFollowingStatus(!!session)
+    );
+  const { data: userFollowerStatus, isLoading: isUserFollowerStatusLoading } =
+    useQuery(["home", "userfollowersstatus"], () =>
+      getUserFollowersStatus(!!session)
+    );
   const { data: user } = useQuery(["user", router.query.id], () =>
     getUser(router.query.id as string)
   );
+  const {
+    mutate: mutateUserFollowing,
+    isLoading: isMutateUserFollowingLoading,
+  } = useMutation({
+    mutationFn: (userId: string) => toggleFollowing(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["home", "userfollowingstatus"]);
+      queryClient.invalidateQueries(["home", "userfollowersstatus"]);
+      queryClient.invalidateQueries(["user", router.query.id]);
+      queryClient.invalidateQueries(["following", router.query.id]);
+      queryClient.invalidateQueries(["followers", router.query.id]);
+    },
+  });
   const [selectedNav, setSelectedNav] = useState("Themes");
+
+  useEffect(() => {
+    setSelectedNav("Themes");
+  }, [router.query.id]);
+
+  const renderButton = (
+    session: Session | null,
+    user: UserProps | undefined,
+    userFollowingStatus: string[] | undefined,
+    userFollowerStatus: string[] | undefined
+  ) => {
+    if (session?.user?.id === user?.id) {
+      return (
+        <Button
+          className="my-4 w-full"
+          onClick={() => router.push("/settings")}
+          disabled={isMutateUserFollowingLoading}
+        >
+          Edit profile
+        </Button>
+      );
+    }
+    if (
+      session &&
+      user &&
+      !isUserFollowerStatusLoading &&
+      !isUserFollowingStatusLoading
+    ) {
+      const isFollowing = userFollowingStatus?.includes(user?.id as string);
+      const isFollower = userFollowerStatus?.includes(user?.id as string);
+
+      return (
+        <Button
+          className="my-4 w-full"
+          onClick={() => mutateUserFollowing(user?.id as string)}
+          variant={isFollowing ? "destructive" : "default"}
+          disabled={isMutateUserFollowingLoading}
+        >
+          {isFollowing ? "Unfollow" : isFollower ? "Follow back" : "Follow"}
+        </Button>
+      );
+    }
+    return (
+      <Button className="my-4 w-full" onClick={() => setLoginOpen(true)}>
+        Follow
+      </Button>
+    );
+  };
 
   return (
     <div className="flex w-full">
-      <div className="flex flex-col fixed h-full border-border border-r-[0.5px] w-[300px] items-center">
+      <div className="flex flex-col fixed h-full border-border border-r-[0.5px] w-[300px] items-center shadow-lg">
         <div className="flex flex-col w-full p-6 items-center">
-          <Avatar className="h-[200px] w-[200px] border-[0.5px] border-border">
+          <Avatar className="h-[200px] w-[200px] border-[0.5px] border-border shadow-md">
             {user?.avatar ? (
               <NiceAvatar
                 className="h-[200px] w-[200px]"
@@ -47,7 +129,7 @@ export default function User() {
               {user?.name || "-"}
             </Typography>
           </div>
-          <div className="flex w-full justify-center items-center mt-4">
+          <div className="flex w-full justify-center items-center mt-4 mb-2">
             <Typography
               element="p"
               as="p"
@@ -70,6 +152,7 @@ export default function User() {
               Following
             </Typography>
           </div>
+          {renderButton(session, user, userFollowingStatus, userFollowerStatus)}
           <div className="flex flex-col py-4 w-full px-4 text-sm">
             <Typography
               element="p"
@@ -97,7 +180,7 @@ export default function User() {
       </div>
       <div className="flex flex-col w-full ml-[300px] bg-white">
         <div
-          className="flex justify-between flex-col border-b-[0.5px] px-6 py-3 pb-1.5 border-border fixed bg-background z-10"
+          className="flex justify-between flex-col border-b-[0.5px] px-6 py-3 pb-1.5 border-border fixed bg-background z-1 shadow-md"
           style={{
             maxWidth: "calc(1536px - 300px)",
             width: "calc(100vw - 300px)",
@@ -105,22 +188,22 @@ export default function User() {
         >
           <div className="flex w-full">
             <div className="flex gap-2">
-              {[
-                "Themes",
-                "Followers",
-                "Following",
-                "Purchases",
-                "Experiences",
-              ].map((tab, index) => (
+              {["Themes", "Followers", "Following"].map((tab, index) => (
                 <Label
                   key={index}
                   className={cn(
-                    "flex relative px-3 py-3 cursor-pointer hover:bg-primary/25",
+                    "flex relative px-3 py-3 cursor-pointer hover:bg-primary/25 font-semibold",
                     {
                       "bg-background text-secondary": selectedNav === tab,
                     }
                   )}
-                  onClick={() => setSelectedNav(tab)}
+                  onClick={() => {
+                    if (tab === "Followers" || tab === "Following") {
+                      runIfLoggedInElseOpenLoginDialog(() =>
+                        setSelectedNav(tab)
+                      );
+                    } else setSelectedNav(tab);
+                  }}
                 >
                   {tab}
                   {selectedNav === tab && (
@@ -135,9 +218,12 @@ export default function User() {
           {selectedNav === "Themes" ? (
             <ProfileThemes />
           ) : selectedNav === "Followers" ? (
-            <ProfileFollowers />
+            <ProfileFollowers
+              mutateUserFollowing={mutateUserFollowing}
+              userFollowingStatus={userFollowingStatus}
+            />
           ) : selectedNav === "Following" ? (
-            <ProfileFollowing />
+            <ProfileFollowing mutateUserFollowing={mutateUserFollowing} />
           ) : selectedNav === "Purchases" ? (
             <>Purchases</>
           ) : selectedNav === "Experiences" ? (

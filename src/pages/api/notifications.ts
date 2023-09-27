@@ -28,14 +28,6 @@ export default async function handler(
               name: true,
             },
           },
-          recipient: {
-            select: {
-              id: true,
-              name: true,
-              avatar: true,
-              image: true,
-            },
-          },
           notifier: {
             select: {
               id: true,
@@ -49,11 +41,11 @@ export default async function handler(
           createdAt: "desc",
         },
       });
-      res.status(200).json(notifications);
+      return res.status(200).json(notifications);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch notifications" });
+      return res.status(500).json({ error: "Failed to fetch notifications" });
     }
   } else {
-    res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 }

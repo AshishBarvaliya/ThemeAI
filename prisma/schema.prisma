@@ -30,7 +30,7 @@ model User {
     createdThemes       Theme[]                  @relation("ThemeOwner")
     likedThemes         UserLikeTheme[]
     savedThemes         UserSaveTheme[]
-    unappropriateThemes UserUnappropriateTheme[]
+    inappropriateThemes UserInappropriateTheme[]
     purchaseHistory     Purchase[]
     following           Follow[]                 @relation("UserFollowing")
     followers           Follow[]                 @relation("UserFollowers")
@@ -109,7 +109,7 @@ model Theme {
     savedBy         UserSaveTheme[]
     tags            ThemeTag[]
     activities      Notification[]
-    unappropriateBy UserUnappropriateTheme[]
+    inappropriateBy UserInappropriateTheme[]
 
     @@index([userId])
 }
@@ -127,10 +127,10 @@ model UserLikeTheme {
     @@index([userId])
 }
 
-model UserUnappropriateTheme {
+model UserInappropriateTheme {
     userId          String
     themeId         String
-    unappropriateAt DateTime @default(now())
+    inappropriateAt DateTime @default(now())
 
     user  User  @relation(fields: [userId], references: [id])
     theme Theme @relation(fields: [themeId], references: [id])

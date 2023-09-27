@@ -1,6 +1,8 @@
 import axios from "axios";
 
 export const toggleThemeLike = async (themeId: string) => {
+  if (!themeId) return;
+
   try {
     const response = await axios.post("/api/like-theme", {
       themeId,
@@ -12,6 +14,8 @@ export const toggleThemeLike = async (themeId: string) => {
 };
 
 export const toggleThemeSave = async (themeId: string) => {
+  if (!themeId) return;
+
   try {
     const response = await axios.post("/api/save-theme", {
       themeId,
@@ -22,9 +26,11 @@ export const toggleThemeSave = async (themeId: string) => {
   }
 };
 
-export const setMarkAsUnappropriate = async (themeId: string) => {
+export const setMarkAsInappropriate = async (themeId: string) => {
+  if (!themeId) return;
+
   try {
-    const response = await axios.post("/api/theme-unappropriate", {
+    const response = await axios.post("/api/theme-inappropriate", {
       themeId,
     });
     console.log(response);
