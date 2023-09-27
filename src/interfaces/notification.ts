@@ -8,12 +8,6 @@ export interface INotification {
     id: string;
     name: string;
   };
-  recipient: {
-    id: string;
-    name: string;
-    avatar?: string;
-    image: string;
-  };
   notifier: {
     id: string;
     name: string;

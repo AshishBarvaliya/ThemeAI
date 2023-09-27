@@ -4,11 +4,13 @@ import { INotification } from "@/interfaces/notification";
 import Typography from "./ui/typography";
 import moment from "moment";
 import { Button } from "./ui/button";
+import Link from "next/link";
+import LearningTemplate from "@/assets/templates/learning/learning-mini";
+import { generateAllShades } from "@/lib/utils";
 
 interface INotificationTileProps {
   notification: INotification;
-  toggleFollow: (n: INotification) => void;
-  loading: boolean;
+  toggleFollow: (id: string) => void;
   isFollowing?: boolean;
 }
 
@@ -16,10 +18,33 @@ const getMessage = (notification: INotification) => {
   if (notification.type === "FOLLOW") {
     return (
       <Typography element="p" as="p" className="font-normal">
-        <span className="font-semibold cursor-pointer hover:text-secondary">
+        <Link
+          href={`/user/${notification.notifier.id}`}
+          className="font-semibold cursor-pointer hover:text-secondary hover:underline"
+        >
           {notification.notifier.name}
-        </span>{" "}
-        started following you.
+        </Link>
+        {" started following you."}
+      </Typography>
+    );
+  }
+  if (notification.type === "LIKE" || notification.type === "SAVE") {
+    return (
+      <Typography element="p" as="p" className="font-normal">
+        <Link
+          href={`/user/${notification.notifier.id}`}
+          className="font-semibold cursor-pointer hover:text-secondary hover:underline"
+        >
+          {notification.notifier.name}
+        </Link>
+        {` ${notification.type === "LIKE" ? "liked" : "saved"} your `}
+        <Link
+          href={`/user/${notification?.theme?.id}`}
+          className="font-semibold cursor-pointer hover:text-secondary hover:underline"
+        >
+          {notification?.theme?.name}
+        </Link>
+        {" theme."}
       </Typography>
     );
   }
@@ -28,13 +53,12 @@ const getMessage = (notification: INotification) => {
 export const NotificationTile: React.FC<INotificationTileProps> = ({
   notification,
   toggleFollow,
-  loading,
   isFollowing,
 }) => {
   return (
     <div
       key={notification.id}
-      className="flex border-[0.5px] border-border p-1"
+      className="flex border-[0.5px] border-border p-1 fade-in-0 max-h-[57px] shadow-md animate-in slide-in-from-top-2"
     >
       <Avatar className="h-12 w-12 border-[0.5px] border-border rounded-[6px]">
         {notification.notifier.avatar ? (
@@ -62,16 +86,44 @@ export const NotificationTile: React.FC<INotificationTileProps> = ({
             {moment(notification.createdAt).fromNow()}
           </Typography>
         </div>
-        <div className="flex items-center mr-2">
-          <Button
-            size="md"
-            onClick={() => toggleFollow(notification)}
-            disabled={loading}
-            variant={isFollowing ? "outline" : "default"}
-          >
-            {isFollowing ? "Following" : "Follow back"}
-          </Button>
-        </div>
+        {notification.type === "FOLLOW" ? (
+          <div className="flex items-center mr-2">
+            <Button
+              size="md"
+              onClick={() => toggleFollow(notification.notifier.id)}
+              variant={isFollowing ? "outline" : "default"}
+            >
+              {isFollowing ? "Following" : "Follow back"}
+            </Button>
+          </div>
+        ) : (
+          <div className="w-20 mr-2">
+            <LearningTemplate
+              colors={{
+                bg: "#ffffff",
+                primary: "#000000",
+                accent: "#eb4034",
+                extra: "#4334eb",
+              }}
+              shades={generateAllShades({
+                bg: "#ffffff",
+                primary: "#000000",
+                accent: "#eb4034",
+                extra: "#4334eb",
+              })}
+              fonts={{
+                primary: {
+                  fontFamily: "Poppins",
+                  weights: [],
+                },
+                secondary: {
+                  fontFamily: "Advent Pro",
+                  weights: [],
+                },
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -55,17 +55,33 @@ export default async function handler(
         }
         try {
           if (type === "created") {
-            const user: any = await prisma.user.findUnique({
-              where: { id: userId as string },
-              select: {
-                createdThemes: {
-                  select: tileThemeProps,
+            if (session?.user?.id === userId) {
+              const user: any = await prisma.user.findUnique({
+                where: { id: userId as string },
+                select: {
+                  createdThemes: {
+                    select: tileThemeProps,
+                  },
                 },
-              },
-            });
-            return res.status(200).json(user.createdThemes);
+              });
+              return res.status(200).json(user.createdThemes);
+            } else {
+              const user: any = await prisma.user.findUnique({
+                where: { id: userId as string },
+                select: {
+                  createdThemes: {
+                    where: { isPrivate: false },
+                    select: tileThemeProps,
+                  },
+                },
+              });
+              return res.status(200).json(user.createdThemes);
+            }
           }
           if (type === "saved") {
+            if (session?.user?.id !== userId) {
+              return res.status(401).json({ error: "Not authenticated" });
+            }
             const savedThemes: any = await prisma.userSaveTheme.findMany({
               where: { userId: userId as string },
               select: {
@@ -84,6 +100,9 @@ export default async function handler(
               .json(savedThemes?.map((theme: any) => theme.theme));
           }
           if (type === "liked") {
+            if (!session) {
+              return res.status(401).json({ error: "Not authenticated" });
+            }
             const likedThemes = await prisma.userLikeTheme.findMany({
               where: { userId: userId as string },
               select: {

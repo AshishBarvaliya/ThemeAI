@@ -7,7 +7,7 @@ import { ColorsProps, GetThemeTileProps } from "@/interfaces/theme";
 import { getMappedTheme } from "@/lib/theme";
 import { cn, generateAllShades, getLuminance } from "@/lib/utils";
 import {
-  setMarkAsUnappropriate,
+  setMarkAsInappropriate,
   toggleThemeLike,
   toggleThemeSave,
 } from "@/services/toggle";
@@ -36,19 +36,19 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
   const { mutate: mutateLikeTheme } = useMutation({
     mutationFn: () => toggleThemeLike(theme.id),
     onSuccess: () => {
-      queryClient.invalidateQueries(["home", "userlikedthemesStatus"]);
+      queryClient.invalidateQueries(["home", "userlikedthemesstatus"]);
       queryClient.invalidateQueries(["home", "themes"]);
     },
   });
   const { mutate: mutateSaveTheme } = useMutation({
     mutationFn: () => toggleThemeSave(theme.id),
     onSuccess: () => {
-      queryClient.invalidateQueries(["home", "usersavedthemesStatus"]);
+      queryClient.invalidateQueries(["home", "usersavedthemesstatus"]);
       queryClient.invalidateQueries(["home", "themes"]);
     },
   });
-  const { mutate: mutateMarkAsUnappropriateTheme } = useMutation({
-    mutationFn: () => setMarkAsUnappropriate(theme.id),
+  const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
+    mutationFn: () => setMarkAsInappropriate(theme.id),
     onSuccess: () => {
       queryClient.invalidateQueries(["home", "themes"]);
     },
@@ -62,7 +62,7 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
   const isSaved = checkSaved(theme.id);
 
   return (
-    <div className="w-[270px] h-fit border-[0.5px] border-border flex flex-col shadow-lg bg-white">
+    <div className="w-[270px] h-fit border-[0.5px] border-border flex flex-col shadow-lg bg-white fade-in-0 animate-in slide-in-from-right-2">
       <div className="flex gap-1 items-center p-1 border-b-[0.5px] border-border ">
         <div className="flex flex-1 gap-2 items-center">
           <Avatar
@@ -120,11 +120,11 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
                     className="text-xs cursor-pointer p-1 hover:bg-primary/20"
                     onClick={() => {
                       runIfLoggedInElseOpenLoginDialog(() =>
-                        mutateMarkAsUnappropriateTheme()
+                        mutateMarkAsInappropriateTheme()
                       );
                     }}
                   >
-                    Mark as unappropiate
+                    Mark as inappropriate
                   </p>
                 </div>
               </>

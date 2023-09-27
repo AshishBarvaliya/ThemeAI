@@ -1,33 +1,18 @@
-import { FollowUserProps } from "@/interfaces/user";
+import { INotification } from "@/interfaces/notification";
+import { FollowUserProps, UserProps } from "@/interfaces/user";
 import axios from "axios";
 
-interface UserProps {
-  id: string;
-  name: string;
-  avatar: string;
-  title: string;
-  organization: string;
-  location: string;
-  image: string;
-  _count: {
-    createdThemes: number;
-    likedThemes: number;
-    savedThemes: number;
-    following: number;
-    followers: number;
-  };
-}
-
-export const getUser = async (id: string): Promise<UserProps> => {
+export const getUser = async (id: string) => {
+  if (!id) return;
   const apiUrl = `/api/user?id=${id}`;
   const response = await axios.get(apiUrl);
 
   return response.data as UserProps;
 };
 
-export const toggleFollowing = async (userId: string) => {
+export const toggleFollowing = async (userId?: string) => {
+  if (!userId) return;
   const apiUrl = `/api/follow-user`;
-
   try {
     const response = await axios.post(apiUrl, {
       userId,
@@ -76,11 +61,13 @@ export const updatePassword = async (
 
 export const getNotifications = async () => {
   const apiUrl = `/api/notifications`;
+  const response = await axios.get(apiUrl);
 
-  return axios.get(apiUrl);
+  return response.data as INotification[];
 };
 
 export const getAllFollowings = async (userId: string) => {
+  if (!userId) return;
   const apiUrl = `/api/user?id=${userId}&type=following`;
   const response = await axios.get(apiUrl);
 
@@ -90,24 +77,11 @@ export const getAllFollowings = async (userId: string) => {
 };
 
 export const getAllFollowers = async (userId: string) => {
+  if (!userId) return;
   const apiUrl = `/api/user?id=${userId}&type=followers`;
   const response = await axios.get(apiUrl);
 
   return response.data.followers?.map(
     (e: any) => e.follower
   ) as FollowUserProps[];
-};
-
-export const getUserLikedThemes = async () => {
-  const apiUrl = `/api/user?type=likedthemes`;
-  const response = await axios.get(apiUrl);
-
-  return response.data as string[];
-};
-
-export const getUserSavedThemes = async () => {
-  const apiUrl = `/api/user?type=savedthemes`;
-  const response = await axios.get(apiUrl);
-
-  return response.data as string[];
 };

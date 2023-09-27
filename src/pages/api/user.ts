@@ -3,7 +3,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
-import { tileThemeProps } from "@/constants/theme";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,146 +10,112 @@ export default async function handler(
 ) {
   const session = await getServerSession(req, res, authOptions);
   if (req.method === "GET") {
-    const userId = req.query.id;
-    if (!userId && !session) {
-      return res.status(400).json({ error: "Missing Fields" });
-    } else {
-      if (session) {
-        if (!userId || session?.user?.id === userId) {
-          const infoType = req.query.type;
-          if (infoType) {
-            if (infoType === "following") {
-              try {
-                const followings = await prisma.user.findUnique({
-                  where: { id: session?.user?.id },
-                  select: {
-                    following: {
-                      select: {
-                        following: {
-                          select: {
-                            id: true,
-                            name: true,
-                            avatar: true,
-                            image: true,
-                            title: true,
-                          },
-                        },
-                      },
-                    },
-                  },
-                });
-                return res
-                  .status(200)
-                  .json({ followings: followings?.following || [] });
-              } catch (error) {
-                return res.status(500).json({ error: "An error occurred" });
-              }
-            }
-            if (infoType === "likedthemes") {
-              try {
-                const likedThemes = await prisma.userLikeTheme.findMany({
-                  where: { userId: session?.user?.id as string },
-                  select: {
-                    theme: {
-                      select: {
-                        id: true,
-                      },
-                    },
-                  },
-                });
-                return res
-                  .status(200)
-                  .json(likedThemes?.map((theme: any) => theme.theme.id) || []);
-              } catch (error) {
-                return res.status(500).json({ error: "An error occurred" });
-              }
-            }
-            if (infoType === "savedthemes") {
-              try {
-                const savedThemes = await prisma.userSaveTheme.findMany({
-                  where: { userId: session?.user?.id as string },
-                  select: {
-                    theme: {
-                      select: {
-                        id: true,
-                      },
-                    },
-                  },
-                });
-                return res
-                  .status(200)
-                  .json(savedThemes?.map((theme: any) => theme.theme.id) || []);
-              } catch (error) {
-                return res.status(500).json({ error: "An error occurred" });
-              }
-            }
-            if (infoType === "followers") {
-              try {
-                const followers = await prisma.user.findUnique({
-                  where: { id: session?.user?.id },
-                  select: {
-                    followers: {
-                      select: {
-                        follower: {
-                          select: {
-                            id: true,
-                            name: true,
-                            avatar: true,
-                            image: true,
-                            title: true,
-                          },
-                        },
-                      },
-                    },
-                  },
-                });
-                return res
-                  .status(200)
-                  .json({ followers: followers?.followers || [] });
-              } catch (error) {
-                return res.status(500).json({ error: "An error occurred" });
-              }
-            }
-            return res.status(400).json({ error: "Invalid Fields" });
-          } else {
-            try {
-              const user = await prisma.user.findUnique({
-                where: { id: userId },
+    const userId = req.query.id as string;
+    const type = req.query.type as string;
+    if (!userId) {
+      return res.status(400).json({ error: "userId is required" });
+    }
+    if (type) {
+      if (type === "following") {
+        if (!session) {
+          return res.status(400).json({ error: "Not authenticated" });
+        }
+        try {
+          const followings = await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+              following: {
                 select: {
-                  id: true,
-                  name: true,
-                  email: true,
-                  image: true,
-                  experience: true,
-                  avatar: true,
-                  pupa: true,
-                  // purchaseHistory: {
-                  //   select: {
-                  //     id: true,
-                  //     createdAt: true,
-                  //   },
-                  // },
-                  title: true,
-                  organization: true,
-                  location: true,
-                  _count: {
+                  following: {
                     select: {
-                      followers: true,
-                      following: true,
-                      likedThemes: true,
-                      savedThemes: true,
-                      createdThemes: true,
+                      id: true,
+                      name: true,
+                      avatar: true,
+                      image: true,
+                      title: true,
                     },
                   },
                 },
-              });
+              },
+            },
+          });
+          return res
+            .status(200)
+            .json({ followings: followings?.following || [] });
+        } catch (error) {
+          return res
+            .status(500)
+            .json({ error: "An error occurred while fetching followings" });
+        }
+      }
+      if (type === "followers") {
+        if (!session) {
+          return res.status(400).json({ error: "Not authenticated" });
+        }
+        try {
+          const followers = await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+              followers: {
+                select: {
+                  follower: {
+                    select: {
+                      id: true,
+                      name: true,
+                      avatar: true,
+                      image: true,
+                      title: true,
+                    },
+                  },
+                },
+              },
+            },
+          });
+          return res
+            .status(200)
+            .json({ followers: followers?.followers || [] });
+        } catch (error) {
+          return res
+            .status(500)
+            .json({ error: "An error occurred while fetching followers" });
+        }
+      }
 
-              return res.status(200).json(user);
-            } catch (error) {
-              return res
-                .status(500)
-                .json({ error: "An error occurred while fetching user data" });
-            }
+      return res.status(400).json({ error: "invalid type" });
+    } else {
+      if (session) {
+        if (session?.user?.id === userId) {
+          try {
+            const user = await prisma.user.findUnique({
+              where: { id: userId },
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+                experience: true,
+                avatar: true,
+                pupa: true,
+                title: true,
+                organization: true,
+                location: true,
+                _count: {
+                  select: {
+                    followers: true,
+                    following: true,
+                    likedThemes: true,
+                    savedThemes: true,
+                    createdThemes: true,
+                  },
+                },
+              },
+            });
+
+            return res.status(200).json(user);
+          } catch (error) {
+            return res
+              .status(500)
+              .json({ error: "An error occurred while fetching user data" });
           }
         } else {
           try {
@@ -170,7 +135,11 @@ export default async function handler(
                     followers: true,
                     following: true,
                     likedThemes: true,
-                    createdThemes: true,
+                    createdThemes: {
+                      where: {
+                        isPrivate: false,
+                      },
+                    },
                   },
                 },
               },
@@ -196,17 +165,16 @@ export default async function handler(
               organization: true,
               experience: true,
               location: true,
-              createdThemes: {
-                where: {
-                  isPrivate: false,
-                },
-                select: tileThemeProps,
-              },
               _count: {
                 select: {
                   followers: true,
                   following: true,
                   likedThemes: true,
+                  createdThemes: {
+                    where: {
+                      isPrivate: false,
+                    },
+                  },
                 },
               },
             },

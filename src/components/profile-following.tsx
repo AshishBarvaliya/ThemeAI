@@ -5,35 +5,40 @@ import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useQuery } from "@tanstack/react-query";
 import { FollowUserProps } from "@/interfaces/user";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import { OpenInNewWindowIcon } from "@radix-ui/react-icons";
 
-export default function ProfileFollowing() {
+interface ProfileFollowingProps {
+  mutateUserFollowing: (id: string) => void;
+}
+
+const ProfileFollowing: React.FC<ProfileFollowingProps> = ({
+  mutateUserFollowing,
+}) => {
   const router = useRouter();
+  const { data: session } = useSession();
   const { data: followings } = useQuery(["following", router.query.id], () =>
     getAllFollowings(router.query.id as string)
   );
 
-  const unfollow = async (id: string) => {};
   return (
     <div className="flex flex-col mt-4 gap-3 px-4 pr-[300px]">
       {followings?.map((user) => (
         <UserTile
           key={user.id}
           user={user}
-          button={
-            <Button
-              size="md"
-              onClick={() => unfollow(user.id)}
-              variant={"outline"}
-            >
-              Unfollow
-            </Button>
-          }
+          button={renderFollowStatusButton(
+            session?.user?.id,
+            user.id,
+            router,
+            mutateUserFollowing
+          )}
         />
       ))}
     </div>
   );
-}
+};
 
 export const UserTile = ({
   user,
@@ -41,32 +46,66 @@ export const UserTile = ({
 }: {
   user: FollowUserProps;
   button: JSX.Element;
-}) => (
-  <div key={user.id} className="flex border-[0.5px] border-border p-1">
-    <Avatar className="h-12 w-12 border-[0.5px] border-border rounded-[6px]">
-      {user.avatar ? (
-        <NiceAvatar
-          className="h-12 w-12 rounded-md"
-          {...JSON.parse(user.avatar)}
-          shape="square"
-        />
-      ) : (
-        <>
-          <AvatarImage src={user.image} alt="profile image" />
-          <AvatarFallback className="bg-primary text-primary-foreground text-3xl rounded-md">
-            {user.name?.split(" ")[0][0]}
-          </AvatarFallback>
-        </>
-      )}
-    </Avatar>
-    <div className="flex justify-between flex-1">
-      <div className="flex flex-col ml-3 justify-between">
-        <div>{user.name}</div>
-        <Typography element={"p"} as="p" className="text-xs">
-          {user.title}
-        </Typography>
+}) => {
+  const router = useRouter();
+
+  return (
+    <div
+      key={user.id}
+      className="flex border-[0.5px] border-border p-1 fade-in-0 animate-in slide-in-from-top-2"
+    >
+      <Avatar className="h-12 w-12 border-[0.5px] border-border rounded-[6px]">
+        {user.avatar ? (
+          <NiceAvatar
+            className="h-12 w-12 rounded-md"
+            {...JSON.parse(user.avatar)}
+            shape="square"
+          />
+        ) : (
+          <>
+            <AvatarImage src={user.image} alt="profile image" />
+            <AvatarFallback className="bg-primary text-primary-foreground text-3xl rounded-md">
+              {user.name?.split(" ")[0][0]}
+            </AvatarFallback>
+          </>
+        )}
+      </Avatar>
+      <div className="flex justify-between flex-1">
+        <div className="flex flex-col ml-3 justify-between">
+          <div>{user.name}</div>
+          <Typography element={"p"} as="p" className="text-xs">
+            {user.title}
+          </Typography>
+        </div>
+        <div className="flex items-center gap-3 mr-2">
+          {button}
+          <Button size="md" onClick={() => router.push("/user/" + user.id)}>
+            View
+          </Button>
+        </div>
       </div>
-      <div className="flex items-center mr-2">{button}</div>
     </div>
-  </div>
-);
+  );
+};
+
+const renderFollowStatusButton = (
+  sessionUserId: string | undefined,
+  userId: string | undefined,
+  router: NextRouter,
+  mutateUserFollowing: (id: string) => void
+) => {
+  if (router.query.id === sessionUserId) {
+    return (
+      <Button
+        size="md"
+        onClick={() => mutateUserFollowing(userId as string)}
+        variant={"outline"}
+      >
+        Following
+      </Button>
+    );
+  }
+  return <></>;
+};
+
+export default ProfileFollowing;

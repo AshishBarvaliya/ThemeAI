@@ -113,7 +113,7 @@ const Header = () => {
   }, [status]);
 
   return (
-    <div className="fixed bg-background max-w-screen-2xl flex border-b-[0.5px] border-border w-full justify-between py-2 px-6 h-[60px]">
+    <div className="fixed bg-background max-w-screen-2xl flex border-b-[0.5px] border-border w-full justify-between py-2 px-6 h-[60px] z-10">
       <Link href="/themes" className="flex">
         <Logo />
       </Link>
@@ -145,10 +145,7 @@ const Header = () => {
         ) : (
           router.pathname !== "/" && (
             <div className="flex items-center gap-4">
-              <Button
-                onClick={() => setGenerateThemeDialog(true)}
-                variant="outline"
-              >
+              <Button onClick={() => setGenerateThemeDialog(true)}>
                 <MagicWand className="mr-1.5 h-4 w-4" />
                 Generate Theme
               </Button>

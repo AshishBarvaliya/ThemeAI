@@ -47,6 +47,8 @@ export const getThemes = async (): Promise<GetThemeTileProps[]> => {
 };
 
 export const getThemeById = async (themeId: string) => {
+  if (!themeId) return;
+
   const apiUrl = `/api/themes?id=${themeId}`;
 
   try {
@@ -62,6 +64,7 @@ export const getThemesByUserAndType = async (
   userId: string,
   type: "saved" | "liked" | "created"
 ) => {
+  if (!userId || !type) return;
   const apiUrl = `/api/themes?userId=${userId}&type=${type}`;
   const response = await axios.get(apiUrl);
 

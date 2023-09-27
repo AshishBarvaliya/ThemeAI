@@ -1,17 +1,22 @@
 import { ThemeTile } from "@/components/theme-tile";
 import { getThemes } from "@/services/theme";
-import { getUserLikedThemes, getUserSavedThemes } from "@/services/user";
+import {
+  getUserLikedThemesStatus,
+  getUserSavedThemesStatus,
+} from "@/services/user-details";
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 export default function Themes() {
+  const { data: session } = useSession();
   const { data: themes } = useQuery(["home", "themes"], getThemes);
   const { data: themesLikedStatus } = useQuery(
-    ["home", "userlikedthemesStatus"],
-    getUserLikedThemes
+    ["home", "userlikedthemesstatus"],
+    () => getUserLikedThemesStatus(!!session)
   );
   const { data: themesSavedStatus } = useQuery(
-    ["home", "usersavedthemesStatus"],
-    getUserSavedThemes
+    ["home", "usersavedthemesstatus"],
+    () => getUserSavedThemesStatus(!!session)
   );
 
   const checkLiked = (id: string) => themesLikedStatus?.includes(id);
