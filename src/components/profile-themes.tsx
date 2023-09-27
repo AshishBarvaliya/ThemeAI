@@ -6,7 +6,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { getUser, getUserLikedThemes } from "@/services/user";
+import {
+  getUser,
+  getUserLikedThemes,
+  getUserSavedThemes,
+} from "@/services/user";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
@@ -43,6 +47,10 @@ export default function ProfileThemes() {
     ["home", "userlikedthemesStatus"],
     getUserLikedThemes
   );
+  const { data: themesSavedStatus } = useQuery(
+    ["home", "usersavedthemesStatus"],
+    getUserSavedThemes
+  );
   const [selectedTab, setSelectedTab] =
     useState<TabsProps["id"]>("createdThemes");
   const [filter, setFilter] = useState("");
@@ -69,6 +77,7 @@ export default function ProfileThemes() {
   ];
 
   const checkLiked = (id: string) => themesLikedStatus?.includes(id);
+  const checkSaved = (id: string) => themesSavedStatus?.includes(id);
 
   return (
     <>
@@ -118,11 +127,16 @@ export default function ProfileThemes() {
           </div>
         </div>
       </div>
-      <div className="flex gap-4 px-4">
+      <div className="flex gap-4 px-4 flex-wrap">
         {tabs
           .find((tab) => tab.id === selectedTab)
           ?.themes?.map((theme: GetThemeTileProps, index: number) => (
-            <ThemeTile key={index} theme={theme} checkLiked={checkLiked} />
+            <ThemeTile
+              key={index}
+              theme={theme}
+              checkLiked={checkLiked}
+              checkSaved={checkSaved}
+            />
           ))}
       </div>
     </>

@@ -48,4 +48,4 @@ const Typography = <T extends Element>({
   return React.createElement(Component, componentProps);
 };
 
-export default React.forwardRef(Typography);
+export default Typography;

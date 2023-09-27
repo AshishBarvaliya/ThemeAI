@@ -55,7 +55,7 @@ export default function User() {
             >
               <span className="mr-2 font-semibold">
                 {user?._count.followers}
-              </span>{" "}
+              </span>
               Followers
             </Typography>
             <div className="w-[1px] h-full bg-border mx-4" />
@@ -66,7 +66,7 @@ export default function User() {
             >
               <span className="mr-2 font-semibold">
                 {user?._count.following}
-              </span>{" "}
+              </span>
               Following
             </Typography>
           </div>

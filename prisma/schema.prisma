@@ -26,17 +26,18 @@ model User {
     experience       Int       @default(0)
     avatar           String?   @db.VarChar(400)
 
-    accounts           Account[]
-    createdThemes      Theme[]             @relation("ThemeOwner")
-    likedThemes        UserLikeTheme[]
-    savedThemes        UserSaveTheme[]
-    purchaseHistory    Purchase[]
-    following          Follow[]            @relation("UserFollowing")
-    followers          Follow[]            @relation("UserFollowers")
-    notifications      Notification[]      @relation("ReceiverNotification")
-    activities         Notification[]      @relation("NotifierNotification")
-    verificationTokens VerificationToken[]
-    resetPasswords     ResetPassword[]
+    accounts            Account[]
+    createdThemes       Theme[]                  @relation("ThemeOwner")
+    likedThemes         UserLikeTheme[]
+    savedThemes         UserSaveTheme[]
+    unappropriateThemes UserUnappropriateTheme[]
+    purchaseHistory     Purchase[]
+    following           Follow[]                 @relation("UserFollowing")
+    followers           Follow[]                 @relation("UserFollowers")
+    notifications       Notification[]           @relation("ReceiverNotification")
+    activities          Notification[]           @relation("NotifierNotification")
+    verificationTokens  VerificationToken[]
+    resetPasswords      ResetPassword[]
 }
 
 model Account {
@@ -103,11 +104,12 @@ model Theme {
     isPrivate      Boolean
     isAIGenerated  Boolean  @default(false)
 
-    user       User            @relation("ThemeOwner", fields: [userId], references: [id])
-    likedBy    UserLikeTheme[]
-    savedBy    UserSaveTheme[]
-    tags       ThemeTag[]
-    activities Notification[]
+    user            User                     @relation("ThemeOwner", fields: [userId], references: [id])
+    likedBy         UserLikeTheme[]
+    savedBy         UserSaveTheme[]
+    tags            ThemeTag[]
+    activities      Notification[]
+    unappropriateBy UserUnappropriateTheme[]
 
     @@index([userId])
 }
@@ -116,6 +118,19 @@ model UserLikeTheme {
     userId  String
     themeId String
     likedAt DateTime @default(now())
+
+    user  User  @relation(fields: [userId], references: [id])
+    theme Theme @relation(fields: [themeId], references: [id])
+
+    @@id([userId, themeId])
+    @@index([themeId])
+    @@index([userId])
+}
+
+model UserUnappropriateTheme {
+    userId          String
+    themeId         String
+    unappropriateAt DateTime @default(now())
 
     user  User  @relation(fields: [userId], references: [id])
     theme Theme @relation(fields: [themeId], references: [id])
