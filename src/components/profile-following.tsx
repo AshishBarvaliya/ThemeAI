@@ -1,15 +1,17 @@
 import Typography from "@/components/ui/typography";
 import { getAllFollowings } from "@/services/user";
 import NiceAvatar from "react-nice-avatar";
-import { useToast } from "@/hooks/useToast";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useQuery } from "@tanstack/react-query";
 import { FollowUserProps } from "@/interfaces/user";
+import { useRouter } from "next/router";
 
 export default function ProfileFollowing() {
-  const { addToast } = useToast();
-  const { data: followings } = useQuery(["following"], getAllFollowings);
+  const router = useRouter();
+  const { data: followings } = useQuery(["following", router.query.id], () =>
+    getAllFollowings(router.query.id as string)
+  );
 
   const unfollow = async (id: string) => {};
   return (

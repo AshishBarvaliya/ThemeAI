@@ -80,8 +80,8 @@ export const getNotifications = async () => {
   return axios.get(apiUrl);
 };
 
-export const getAllFollowings = async () => {
-  const apiUrl = `/api/user?type=following`;
+export const getAllFollowings = async (userId: string) => {
+  const apiUrl = `/api/user?id=${userId}&type=following`;
   const response = await axios.get(apiUrl);
 
   return response.data.followings?.map(
@@ -89,8 +89,8 @@ export const getAllFollowings = async () => {
   ) as FollowUserProps[];
 };
 
-export const getAllFollowers = async () => {
-  const apiUrl = `/api/user?type=followers`;
+export const getAllFollowers = async (userId: string) => {
+  const apiUrl = `/api/user?id=${userId}&type=followers`;
   const response = await axios.get(apiUrl);
 
   return response.data.followers?.map(
@@ -100,6 +100,13 @@ export const getAllFollowers = async () => {
 
 export const getUserLikedThemes = async () => {
   const apiUrl = `/api/user?type=likedthemes`;
+  const response = await axios.get(apiUrl);
+
+  return response.data as string[];
+};
+
+export const getUserSavedThemes = async () => {
+  const apiUrl = `/api/user?type=savedthemes`;
   const response = await axios.get(apiUrl);
 
   return response.data as string[];

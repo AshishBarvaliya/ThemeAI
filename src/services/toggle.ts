@@ -21,3 +21,14 @@ export const toggleThemeSave = async (themeId: string) => {
     console.error("Failed to toggle save", error);
   }
 };
+
+export const setMarkAsUnappropriate = async (themeId: string) => {
+  try {
+    const response = await axios.post("/api/theme-unappropriate", {
+      themeId,
+    });
+    console.log(response);
+  } catch (error) {
+    console.error("Failed to toggle save", error);
+  }
+};

@@ -1,12 +1,14 @@
 import { getAllFollowers } from "@/services/user";
-import { useToast } from "@/hooks/useToast";
 import { Button } from "./ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { UserTile } from "./profile-following";
+import { useRouter } from "next/router";
 
 export default function ProfileFollowers() {
-  const { addToast } = useToast();
-  const { data: followers } = useQuery(["followers"], getAllFollowers);
+  const router = useRouter();
+  const { data: followers } = useQuery(["followers", router.query.id], () =>
+    getAllFollowers(router.query.id as string)
+  );
 
   const unfollow = async (id: string) => {};
   return (

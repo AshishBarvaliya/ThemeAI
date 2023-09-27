@@ -65,6 +65,25 @@ export default async function handler(
                 return res.status(500).json({ error: "An error occurred" });
               }
             }
+            if (infoType === "savedthemes") {
+              try {
+                const savedThemes = await prisma.userSaveTheme.findMany({
+                  where: { userId: session?.user?.id as string },
+                  select: {
+                    theme: {
+                      select: {
+                        id: true,
+                      },
+                    },
+                  },
+                });
+                return res
+                  .status(200)
+                  .json(savedThemes?.map((theme: any) => theme.theme.id) || []);
+              } catch (error) {
+                return res.status(500).json({ error: "An error occurred" });
+              }
+            }
             if (infoType === "followers") {
               try {
                 const followers = await prisma.user.findUnique({
@@ -146,47 +165,18 @@ export default async function handler(
                 organization: true,
                 experience: true,
                 location: true,
-                likedThemes: {
+                _count: {
                   select: {
-                    theme: {
-                      select: tileThemeProps,
-                    },
-                  },
-                },
-                createdThemes: {
-                  where: {
-                    isPrivate: false,
-                  },
-                  select: tileThemeProps,
-                },
-                following: {
-                  select: {
-                    following: {
-                      select: {
-                        id: true,
-                        name: true,
-                        avatar: true,
-                        image: true,
-                      },
-                    },
-                  },
-                },
-                followers: {
-                  select: {
-                    follower: {
-                      select: {
-                        id: true,
-                        name: true,
-                        avatar: true,
-                        image: true,
-                      },
-                    },
+                    followers: true,
+                    following: true,
+                    likedThemes: true,
+                    createdThemes: true,
                   },
                 },
               },
             });
 
-            return res.status(200).json({ user });
+            return res.status(200).json(user);
           } catch (error) {
             return res
               .status(500)
@@ -222,7 +212,7 @@ export default async function handler(
             },
           });
 
-          return res.status(200).json({ user });
+          return res.status(200).json(user);
         } catch (error) {
           return res
             .status(500)
