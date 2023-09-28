@@ -13,15 +13,11 @@ export const getUser = async (id: string) => {
 export const toggleFollowing = async (userId?: string) => {
   if (!userId) return;
   const apiUrl = `/api/follow-user`;
-  try {
-    const response = await axios.post(apiUrl, {
-      userId,
-    });
+  const response = await axios.post(apiUrl, {
+    userId,
+  });
 
-    console.log(response);
-  } catch (error) {
-    console.log("Failed to toggle follow user");
-  }
+  return response.data;
 };
 
 export const sendVerificationEmail = async () => {

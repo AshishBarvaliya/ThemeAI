@@ -6,14 +6,8 @@ import { useHelpers } from "@/hooks/useHelpers";
 import { ColorsProps, GetThemeTileProps } from "@/interfaces/theme";
 import { getMappedTheme } from "@/lib/theme";
 import { cn, generateAllShades, getLuminance } from "@/lib/utils";
-import {
-  setMarkAsInappropriate,
-  toggleThemeLike,
-  toggleThemeSave,
-} from "@/services/toggle";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import { DotsVerticalIcon, StarFilledIcon } from "@radix-ui/react-icons";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { StarIcon } from "lucide-react";
 import moment from "moment";
 import { useRouter } from "next/router";
@@ -24,35 +18,24 @@ interface ThemeTileProps {
   theme: GetThemeTileProps;
   checkLiked: (id: string) => boolean | undefined;
   checkSaved: (id: string) => boolean | undefined;
+  mutateLikeTheme: (themeId: string) => void;
+  mutateSaveTheme: (themeId: string) => void;
+  mutateDislikeTheme: (themeId: string) => void;
+  mutateUnsaveTheme: (themeId: string) => void;
+  mutateMarkAsInappropriateTheme: (themeId: string) => void;
 }
 
 export const ThemeTile: React.FC<ThemeTileProps> = ({
   theme,
   checkLiked,
   checkSaved,
+  mutateLikeTheme,
+  mutateSaveTheme,
+  mutateDislikeTheme,
+  mutateUnsaveTheme,
+  mutateMarkAsInappropriateTheme,
 }) => {
-  const queryClient = useQueryClient();
   const router = useRouter();
-  const { mutate: mutateLikeTheme } = useMutation({
-    mutationFn: () => toggleThemeLike(theme.id),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["home", "userlikedthemesstatus"]);
-      queryClient.invalidateQueries(["home", "themes"]);
-    },
-  });
-  const { mutate: mutateSaveTheme } = useMutation({
-    mutationFn: () => toggleThemeSave(theme.id),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["home", "usersavedthemesstatus"]);
-      queryClient.invalidateQueries(["home", "themes"]);
-    },
-  });
-  const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
-    mutationFn: () => setMarkAsInappropriate(theme.id),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["home", "themes"]);
-    },
-  });
   const { runIfLoggedInElseOpenLoginDialog } = useHelpers();
   const [copied, setCopied] = useState<null | string>(null);
   const [openMore, setOpenMore] = useState(false);
@@ -106,7 +89,11 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
                   <p
                     className="text-xs cursor-pointer flex items-center p-1 hover:bg-primary/20"
                     onClick={() => {
-                      runIfLoggedInElseOpenLoginDialog(() => mutateSaveTheme());
+                      runIfLoggedInElseOpenLoginDialog(() =>
+                        isSaved
+                          ? mutateUnsaveTheme(mappedTheme.id)
+                          : mutateSaveTheme(mappedTheme.id)
+                      );
                     }}
                   >
                     {isSaved ? "Saved" : "Save"}
@@ -120,7 +107,7 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
                     className="text-xs cursor-pointer p-1 hover:bg-primary/20"
                     onClick={() => {
                       runIfLoggedInElseOpenLoginDialog(() =>
-                        mutateMarkAsInappropriateTheme()
+                        mutateMarkAsInappropriateTheme(mappedTheme.id)
                       );
                     }}
                   >
@@ -193,7 +180,11 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
               })}
               active={isLiked}
               onClick={() => {
-                runIfLoggedInElseOpenLoginDialog(() => mutateLikeTheme());
+                runIfLoggedInElseOpenLoginDialog(() =>
+                  isLiked
+                    ? mutateDislikeTheme(mappedTheme.id)
+                    : mutateLikeTheme(mappedTheme.id)
+                );
               }}
             />
             {mappedTheme.likes}

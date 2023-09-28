@@ -180,7 +180,7 @@ export default function User() {
       </div>
       <div className="flex flex-col w-full ml-[300px] bg-white">
         <div
-          className="flex justify-between flex-col border-b-[0.5px] px-6 py-3 pb-1.5 border-border fixed bg-background z-1 shadow-md"
+          className="flex justify-between flex-col border-b-[0.5px] px-6 py-3 pb-1.5 border-border fixed bg-background z-10 shadow-md"
           style={{
             maxWidth: "calc(1536px - 300px)",
             width: "calc(100vw - 300px)",
