@@ -38,23 +38,23 @@ export default async function handler(
             },
           });
 
-          res.status(202).json({ follow: existingFollower });
+          res.status(202).json({ follow: false, userId });
         } else {
-          const [follow] = await prisma.$transaction([
-            prisma.follow.create({
-              data: { followerId: session.user.id, followingId: userId },
-            }),
-            prisma.notification.create({
+          await prisma.follow.create({
+            data: { followerId: session.user.id, followingId: userId },
+          });
+          res.status(201).json({ follow: true, userId });
+
+          setTimeout(async () => {
+            await prisma.notification.create({
               data: {
                 recipientId: userId,
                 read: false,
                 type: "FOLLOW",
                 notifierId: session.user.id,
               },
-            }),
-          ]);
-
-          res.status(201).json({ follow });
+            });
+          }, 0);
         }
       } catch (error) {
         res

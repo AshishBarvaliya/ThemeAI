@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { getUser } from "@/services/user";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTags, getThemesByUserAndType } from "@/services/theme";
 import { GetThemeTileProps } from "@/interfaces/theme";
 import { ThemeTile } from "@/components/theme-tile";
@@ -19,6 +19,13 @@ import {
 } from "@/services/user-details";
 import { useSession } from "next-auth/react";
 import { useHelpers } from "@/hooks/useHelpers";
+import {
+  setMarkAsInappropriate,
+  themeDislike,
+  themeLike,
+  themeSave,
+  themeUnsave,
+} from "@/services/toggle";
 
 interface TabsProps {
   id: "createdThemes" | "likedThemes" | "savedThemes";
@@ -159,11 +166,42 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
   checkLiked,
   checkSaved,
 }) => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { data: createdThemes } = useQuery(
     ["user", router.query.id, "created"],
     () => getThemesByUserAndType(router.query.id as string, "created")
   );
+  const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
+    mutationFn: (themeId: string) => setMarkAsInappropriate(themeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["home", "themes"]);
+    },
+  });
+  const { mutate: mutateLikeTheme } = useMutation({
+    mutationFn: (themeId: string) => themeLike(themeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["home", "userlikedthemesstatus"]);
+    },
+  });
+  const { mutate: mutateDislikeTheme } = useMutation({
+    mutationFn: (themeId: string) => themeDislike(themeId),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
+  const { mutate: mutateSaveTheme } = useMutation({
+    mutationFn: (themeId: string) => themeSave(themeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["home", "usersavedthemesstatus"]);
+    },
+  });
+  const { mutate: mutateUnsaveTheme } = useMutation({
+    mutationFn: (themeId: string) => themeUnsave(themeId),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
 
   return createdThemes?.map((theme: GetThemeTileProps, index: number) => (
     <ThemeTile
@@ -171,6 +209,11 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
       theme={theme}
       checkLiked={checkLiked}
       checkSaved={checkSaved}
+      mutateLikeTheme={mutateLikeTheme}
+      mutateSaveTheme={mutateSaveTheme}
+      mutateDislikeTheme={mutateDislikeTheme}
+      mutateUnsaveTheme={mutateUnsaveTheme}
+      mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
     />
   ));
 };
@@ -179,11 +222,42 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
   checkLiked,
   checkSaved,
 }) => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { data: likedThemes } = useQuery(
     ["user", router.query.id, "liked"],
     () => getThemesByUserAndType(router.query.id as string, "liked")
   );
+  const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
+    mutationFn: (themeId: string) => setMarkAsInappropriate(themeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["home", "themes"]);
+    },
+  });
+  const { mutate: mutateLikeTheme } = useMutation({
+    mutationFn: (themeId: string) => themeLike(themeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["home", "userlikedthemesstatus"]);
+    },
+  });
+  const { mutate: mutateDislikeTheme } = useMutation({
+    mutationFn: (themeId: string) => themeDislike(themeId),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
+  const { mutate: mutateSaveTheme } = useMutation({
+    mutationFn: (themeId: string) => themeSave(themeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["home", "usersavedthemesstatus"]);
+    },
+  });
+  const { mutate: mutateUnsaveTheme } = useMutation({
+    mutationFn: (themeId: string) => themeUnsave(themeId),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
 
   return likedThemes?.map((theme: GetThemeTileProps, index: number) => (
     <ThemeTile
@@ -191,6 +265,11 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
       theme={theme}
       checkLiked={checkLiked}
       checkSaved={checkSaved}
+      mutateLikeTheme={mutateLikeTheme}
+      mutateSaveTheme={mutateSaveTheme}
+      mutateDislikeTheme={mutateDislikeTheme}
+      mutateUnsaveTheme={mutateUnsaveTheme}
+      mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
     />
   ));
 };
@@ -199,11 +278,42 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
   checkLiked,
   checkSaved,
 }) => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { data: savedThemes } = useQuery(
     ["user", router.query.id, "saved"],
     () => getThemesByUserAndType(router.query.id as string, "saved")
   );
+  const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
+    mutationFn: (themeId: string) => setMarkAsInappropriate(themeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["home", "themes"]);
+    },
+  });
+  const { mutate: mutateLikeTheme } = useMutation({
+    mutationFn: (themeId: string) => themeLike(themeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["home", "userlikedthemesstatus"]);
+    },
+  });
+  const { mutate: mutateDislikeTheme } = useMutation({
+    mutationFn: (themeId: string) => themeDislike(themeId),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
+  const { mutate: mutateSaveTheme } = useMutation({
+    mutationFn: (themeId: string) => themeSave(themeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["home", "usersavedthemesstatus"]);
+    },
+  });
+  const { mutate: mutateUnsaveTheme } = useMutation({
+    mutationFn: (themeId: string) => themeUnsave(themeId),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
 
   return savedThemes?.map((theme: GetThemeTileProps, index: number) => (
     <ThemeTile
@@ -211,6 +321,11 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
       theme={theme}
       checkLiked={checkLiked}
       checkSaved={checkSaved}
+      mutateLikeTheme={mutateLikeTheme}
+      mutateSaveTheme={mutateSaveTheme}
+      mutateDislikeTheme={mutateDislikeTheme}
+      mutateUnsaveTheme={mutateUnsaveTheme}
+      mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
     />
   ));
 };

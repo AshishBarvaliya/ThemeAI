@@ -117,7 +117,8 @@ model Theme {
 model UserLikeTheme {
     userId  String
     themeId String
-    likedAt DateTime @default(now())
+    likedAt DateTime     @default(now())
+    status  LikeSaveType
 
     user  User  @relation(fields: [userId], references: [id])
     theme Theme @relation(fields: [themeId], references: [id])
@@ -143,7 +144,8 @@ model UserInappropriateTheme {
 model UserSaveTheme {
     userId  String
     themeId String
-    savedAt DateTime @default(now())
+    savedAt DateTime     @default(now())
+    status  LikeSaveType
 
     user  User  @relation(fields: [userId], references: [id])
     theme Theme @relation(fields: [themeId], references: [id])
@@ -151,6 +153,12 @@ model UserSaveTheme {
     @@id([userId, themeId])
     @@index([themeId])
     @@index([userId])
+}
+
+enum LikeSaveType {
+    P
+    N
+    F
 }
 
 model Tag {
