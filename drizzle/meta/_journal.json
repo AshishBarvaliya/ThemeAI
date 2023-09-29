@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1695947476086,
+      "tag": "0000_unknown_shadow_king",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1695947631644,
+      "tag": "0001_cooing_northstar",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1695952617199,
+      "tag": "0002_romantic_absorbing_man",
+      "breakpoints": true
+    }
+  ]
+}

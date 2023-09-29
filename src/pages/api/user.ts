@@ -1,8 +1,12 @@
 import { prisma } from "@/config/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
+import { eq } from "drizzle-orm";
+import { createId } from "@paralleldrive/cuid2";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
+import db from "@/db";
+import { users } from "@/db/schema";
 
 export default async function handler(
   req: NextApiRequest,
@@ -197,27 +201,25 @@ export default async function handler(
       return res.status(400).json({ error: "Missing Fields" });
     }
 
-    const exist = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-
-    if (exist) {
+    const exist = await db.select().from(users).where(eq(users.email, email));
+    if (exist.length) {
       return res.status(400).json({ error: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     try {
-      const user = await prisma.user.create({
-        data: {
+      const user = await db
+        .insert(users)
+        .values({
+          id: createId(),
           name,
           email,
           hashedPassword,
           isActived: false,
-        },
-      });
-      return res.status(201).json({ user });
+        })
+        .returning({ id: users.id });
+
+      return res.status(201).json(user);
     } catch (error) {
       return res.status(500).json({ error: "Failed to create user" });
     }
