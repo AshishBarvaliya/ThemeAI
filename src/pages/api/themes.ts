@@ -1,9 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/config/db";
+import { createId } from "@paralleldrive/cuid2";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
-import { themeProps, tileThemeProps } from "@/constants/theme";
+import { tileThemeProps } from "@/constants/theme";
+import { eq, sql } from "drizzle-orm";
 import { TagProps } from "@/interfaces/theme";
+import { tags as tagsSchema, themes, themesToTags } from "@/db/schema";
+import db from "@/db";
 
 interface ThemeProps {
   id: string;
@@ -33,18 +37,62 @@ export default async function handler(
   const session = await getServerSession(req, res, authOptions);
 
   if (req.method === "GET") {
-    const themeId = req.query.id;
+    const themeId = req.query.id as string;
     if (themeId) {
       try {
-        const theme = await prisma.theme.findUnique({
-          where: { id: themeId as string },
-          select: themeProps,
+        const theme = await db.query.themes.findFirst({
+          where: eq(themes.id, themeId),
+          columns: {
+            id: true,
+            name: true,
+            color_1: true,
+            color_1_reason: true,
+            color_2: true,
+            color_2_reason: true,
+            color_3: true,
+            color_3_reason: true,
+            color_4: true,
+            color_4_reason: true,
+            font_1: true,
+            font_1_reason: true,
+            font_2: true,
+            font_2_reason: true,
+            createdAt: true,
+            isAIGenerated: true,
+            isPrivate: true,
+            prompt: true,
+          },
+          with: {
+            user: {
+              columns: {
+                id: true,
+                name: true,
+              },
+            },
+            tags: {
+              columns: {
+                themeId: true,
+              },
+            },
+            likedBy: {
+              columns: {
+                userId: true,
+              },
+            },
+            savedBy: {
+              columns: {
+                userId: true,
+              },
+            },
+          },
         });
+
         if (!theme) {
           return res.status(404).json({ error: "Theme not found" });
         }
         res.status(200).json(theme);
       } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: "Failed to fetch theme" });
       }
     } else {
@@ -166,56 +214,57 @@ export default async function handler(
           return tagObject;
         } else {
           const smallcaseTagName = tagObject.name.toLowerCase();
-          let tag = await prisma.tag.create({
-            data: {
+          let tag = await db
+            .insert(tagsSchema)
+            .values({
+              id: createId(),
               name: smallcaseTagName,
-            },
-          });
-
-          return tag;
+            })
+            .returning({ id: tagsSchema.id });
+          return tag[0];
         }
       });
       const resolvedTags = await Promise.all(tagPromises);
 
       try {
-        await prisma.user.update({
-          where: {
-            id: session.user.id,
-          },
-          data: {
-            experience: {
-              increment: 10,
-            },
-            createdThemes: {
-              create: {
-                name,
-                color_1,
-                color_1_reason,
-                color_2,
-                color_2_reason,
-                color_3,
-                color_3_reason,
-                color_4,
-                color_4_reason,
-                font_1,
-                font_1_reason,
-                font_2,
-                font_2_reason,
-                prompt,
-                isPrivate,
-                isAIGenerated,
-                tags: {
-                  create: resolvedTags.map((tag) => ({
-                    tag: { connect: { id: tag.id } },
-                  })),
-                },
-              },
-            },
-          },
-        });
+        const createdTheme = await db
+          .insert(themes)
+          .values({
+            id: createId(),
+            name,
+            color_1,
+            color_1_reason,
+            color_2,
+            color_2_reason,
+            color_3,
+            color_3_reason,
+            color_4,
+            color_4_reason,
+            font_1,
+            font_1_reason,
+            font_2,
+            font_2_reason,
+            prompt,
+            isPrivate,
+            isAIGenerated,
+            userId: session.user.id,
+          })
+          .returning({ id: themes.id });
 
-        return res.status(201).json({ message: "Theme have been created" });
+        if (resolvedTags.length) {
+          await db.insert(themesToTags).values(
+            resolvedTags.map((tag) => ({
+              themeId: createdTheme[0].id,
+              tagId: tag.id as string,
+            }))
+          );
+        }
+
+        return res
+          .status(201)
+          .json({ message: "Theme have been created", theme: createdTheme[0] });
       } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: "Failed to create theme" });
       }
     } else {
