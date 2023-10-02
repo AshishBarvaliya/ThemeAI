@@ -1,12 +1,14 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "@/config/db";
+import { eq } from "drizzle-orm";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import bcrypt from "bcrypt";
+import db from "@/db";
+import { users } from "@/db/schema";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: DrizzleAdapter(db),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -27,17 +29,16 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Please enter an email and password");
         }
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
-        });
+        const user = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, credentials.email));
 
-        if (!user || !user?.hashedPassword) {
+        if (!user.length) {
           throw new Error("No user found");
         }
 
-        if (!user.hashedPassword) {
+        if (!user[0].hashedPassword) {
           throw new Error(
             "Please use the 'Login with Google' option as you've previously signed up using it"
           );
@@ -45,14 +46,14 @@ export const authOptions: NextAuthOptions = {
 
         const passwordMatch = await bcrypt.compare(
           credentials.password,
-          user.hashedPassword
+          user[0].hashedPassword
         );
 
         if (!passwordMatch) {
           throw new Error("Incorrect password");
         }
 
-        return user;
+        return user[0];
       },
     }),
   ],
@@ -67,18 +68,15 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     jwt: async ({ token, user, session, trigger }: any) => {
       if (trigger === "update") {
-        await prisma.user
-          .update({
-            where: {
-              id: token.id,
-            },
-            data: {
-              avatar: session.avatar,
-              title: session.title,
-              organization: session.organization,
-              location: session.location,
-            },
+        await db
+          .update(users)
+          .set({
+            avatar: session.avatar,
+            title: session.title,
+            organization: session.organization,
+            location: session.location,
           })
+          .where(eq(users.id, token.id))
           .then(() => {
             token.avatar = session.avatar;
             token.title = session.title;

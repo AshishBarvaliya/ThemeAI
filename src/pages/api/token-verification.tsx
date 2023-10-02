@@ -1,5 +1,10 @@
-import { prisma } from "@/config/db";
+import db from "@/db";
+import { eq } from "drizzle-orm";
 import { NextApiRequest, NextApiResponse } from "next";
+import {
+  resetPasswords as resetPasswordsSchema,
+  users as usersSchema,
+} from "@/db/schema";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,13 +16,16 @@ export default async function handler(
     if (!token) {
       return res.status(400).json({ error: "token required" });
     }
-    const verificationToken = await prisma.verificationToken.findUnique({
-      where: { token },
-      select: {
+
+    const verificationToken = await db.query.verificationTokens.findFirst({
+      where: eq(resetPasswordsSchema.token, token),
+      columns: {
         token: true,
         expiresAt: true,
+      },
+      with: {
         user: {
-          select: {
+          columns: {
             id: true,
             isActived: true,
           },
@@ -38,12 +46,12 @@ export default async function handler(
     }
 
     try {
-      await prisma.user.update({
-        where: { id: verificationToken.user.id },
-        data: {
+      await db
+        .update(usersSchema)
+        .set({
           isActived: true,
-        },
-      });
+        })
+        .where(eq(usersSchema.id, verificationToken.user.id));
 
       return res.redirect("/themes?verify=1");
     } catch (error) {

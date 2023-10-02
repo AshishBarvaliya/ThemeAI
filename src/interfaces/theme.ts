@@ -52,7 +52,7 @@ export interface GetThemeTileProps {
   font_1: string;
   font_2: string;
   isAIGenerated: boolean;
-  tags: { tag: TagProps }[];
+  tags: { tagId: string }[];
   createdAt?: Date;
   user: {
     id: string;
@@ -60,10 +60,8 @@ export interface GetThemeTileProps {
     avatar: string;
     image: string;
   };
-  _count: {
-    likedBy: number;
-    savedBy: number;
-  };
+  likedBy: { userId: string }[];
+  savedBy: { userId: string }[];
 }
 
 export interface MappedThemeProps {
@@ -71,7 +69,7 @@ export interface MappedThemeProps {
   name: string;
   colors: ColorsProps;
   fonts: FontObjProps;
-  tags: TagProps[];
+  tags: string[];
   createdAt?: Date;
   user: {
     id: string;

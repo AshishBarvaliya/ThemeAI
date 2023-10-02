@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/config/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
+import db from "@/db";
+import { eq, desc } from "drizzle-orm";
+import { usersTonotifications } from "@/db/schema";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,25 +13,27 @@ export default async function handler(
 
   if (req.method === "GET") {
     if (!session) {
-      res.status(401).json({ error: "Not authenticated" });
+      return res.status(401).json({ error: "Not authenticated" });
     }
     try {
-      const notifications = await prisma.notification.findMany({
-        where: { recipientId: session?.user.id },
-        select: {
+      const notifications = await db.query.usersTonotifications.findMany({
+        where: eq(usersTonotifications.recipientId, session.user.id),
+        columns: {
           id: true,
           createdAt: true,
           read: true,
           type: true,
           pupa: true,
+        },
+        with: {
           theme: {
-            select: {
+            columns: {
               id: true,
               name: true,
             },
           },
           notifier: {
-            select: {
+            columns: {
               id: true,
               name: true,
               avatar: true,
@@ -37,9 +41,7 @@ export default async function handler(
             },
           },
         },
-        orderBy: {
-          createdAt: "desc",
-        },
+        orderBy: [desc(usersTonotifications.createdAt)],
       });
       return res.status(200).json(notifications);
     } catch (error) {

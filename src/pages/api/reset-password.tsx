@@ -1,6 +1,9 @@
-import { prisma } from "@/config/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { randomUUID } from "crypto";
+import { eq } from "drizzle-orm";
+import db from "@/db";
+import { resetPasswords, users as usersSchema } from "@/db/schema";
+import { createId } from "@paralleldrive/cuid2";
 
 const FORGOT_PASSWORD_MAIL_LIMIT = parseInt(
   process.env.FORGOT_PASSWORD_MAIL_LIMIT || "0"
@@ -14,18 +17,14 @@ export default async function handler(
   if (req.method === "POST") {
     const { email } = req.body;
     if (email) {
-      const user = await prisma.user.findUnique({
-        where: {
-          email,
-        },
-        select: {
+      const user = await db.query.users.findFirst({
+        where: eq(usersSchema.email, email),
+        columns: {
           id: true,
           isActived: true,
-          _count: {
-            select: {
-              resetPasswords: true,
-            },
-          },
+        },
+        with: {
+          resetPasswords: true,
         },
       });
 
@@ -39,19 +38,16 @@ export default async function handler(
         return res.status(404).json({ error: "User is not verified" });
       }
 
-      if (user?._count?.resetPasswords === FORGOT_PASSWORD_MAIL_LIMIT) {
+      if (user?.resetPasswords.length === FORGOT_PASSWORD_MAIL_LIMIT) {
         return res.status(404).json({ error: "Forgot password limit reached" });
       }
 
       try {
-        await prisma.resetPassword.create({
-          data: {
-            userId: user.id,
-            token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
-            expiresAt: new Date(
-              new Date().getTime() + 60000 * EMAIL_LINK_EXPIRY
-            ),
-          },
+        await db.insert(resetPasswords).values({
+          id: createId(),
+          userId: user.id,
+          token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
+          expiresAt: new Date(new Date().getTime() + 60000 * EMAIL_LINK_EXPIRY),
         });
 
         // TODO: sending mail logic

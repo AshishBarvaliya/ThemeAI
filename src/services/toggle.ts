@@ -3,14 +3,10 @@ import axios from "axios";
 export const setMarkAsInappropriate = async (themeId: string) => {
   if (!themeId) return;
 
-  try {
-    const response = await axios.post("/api/theme-inappropriate", {
-      themeId,
-    });
-    console.log(response);
-  } catch (error) {
-    console.error("Failed to toggle save", error);
-  }
+  const response = await axios.post("/api/theme/inappropriate", {
+    themeId,
+  });
+  return response.data;
 };
 
 export const themeLike = async (themeId: string) => {

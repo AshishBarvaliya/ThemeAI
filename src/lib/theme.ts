@@ -20,8 +20,8 @@ export const getMappedTheme = (theme: GetThemeTileProps): MappedThemeProps => ({
       weights: [],
     },
   },
-  tags: theme.tags.map((e) => ({ id: e.tag.id, name: e.tag.name })),
+  tags: theme.tags.map((tag) => tag.tagId),
   createdAt: theme.createdAt,
-  likes: theme._count.likedBy,
-  saves: theme._count.savedBy,
+  likes: theme.likedBy.length,
+  saves: theme.savedBy.length,
 });

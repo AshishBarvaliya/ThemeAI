@@ -1,9 +1,19 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/config/db";
+import { createId } from "@paralleldrive/cuid2";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
-import { themeProps, tileThemeProps } from "@/constants/theme";
+import { tileThemeProps } from "@/constants/theme";
+import { eq, desc, ne, and } from "drizzle-orm";
 import { TagProps } from "@/interfaces/theme";
+import {
+  tags as tagsSchema,
+  themes as themesSchema,
+  themesToTags as themesToTagsSchema,
+  users as usersSchema,
+  usersToLikedThemes,
+  usersToSavedThemes,
+} from "@/db/schema";
+import db from "@/db";
 
 interface ThemeProps {
   id: string;
@@ -33,18 +43,64 @@ export default async function handler(
   const session = await getServerSession(req, res, authOptions);
 
   if (req.method === "GET") {
-    const themeId = req.query.id;
+    const themeId = req.query.id as string;
     if (themeId) {
       try {
-        const theme = await prisma.theme.findUnique({
-          where: { id: themeId as string },
-          select: themeProps,
+        const theme = await db.query.themes.findFirst({
+          where: eq(themesSchema.id, themeId),
+          columns: {
+            id: true,
+            name: true,
+            color_1: true,
+            color_1_reason: true,
+            color_2: true,
+            color_2_reason: true,
+            color_3: true,
+            color_3_reason: true,
+            color_4: true,
+            color_4_reason: true,
+            font_1: true,
+            font_1_reason: true,
+            font_2: true,
+            font_2_reason: true,
+            createdAt: true,
+            isAIGenerated: true,
+            isPrivate: true,
+            prompt: true,
+          },
+          with: {
+            user: {
+              columns: {
+                id: true,
+                name: true,
+              },
+            },
+            tags: {
+              columns: {
+                tagId: true,
+              },
+            },
+            likedBy: {
+              columns: {
+                userId: true,
+              },
+              where: ne(usersToLikedThemes.status, "N"),
+            },
+            savedBy: {
+              columns: {
+                userId: true,
+              },
+              where: ne(usersToSavedThemes.status, "N"),
+            },
+          },
         });
+
         if (!theme) {
           return res.status(404).json({ error: "Theme not found" });
         }
         res.status(200).json(theme);
       } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: "Failed to fetch theme" });
       }
     } else {
@@ -56,22 +112,26 @@ export default async function handler(
         try {
           if (type === "created") {
             if (session?.user?.id === userId) {
-              const user: any = await prisma.user.findUnique({
-                where: { id: userId as string },
-                select: {
+              const user: any = await db.query.users.findFirst({
+                where: eq(usersSchema.id, userId),
+                with: {
                   createdThemes: {
-                    select: tileThemeProps,
+                    columns: tileThemeProps.columns,
+                    with: tileThemeProps.with,
+                    orderBy: [desc(themesSchema.createdAt)],
                   },
                 },
               });
               return res.status(200).json(user.createdThemes);
             } else {
-              const user: any = await prisma.user.findUnique({
-                where: { id: userId as string },
-                select: {
+              const user: any = await db.query.users.findFirst({
+                where: eq(usersSchema.id, userId as string),
+                with: {
                   createdThemes: {
-                    where: { isPrivate: false },
-                    select: tileThemeProps,
+                    where: eq(themesSchema.isPrivate, false),
+                    columns: tileThemeProps.columns,
+                    with: tileThemeProps.with,
+                    orderBy: [desc(themesSchema.createdAt)],
                   },
                 },
               });
@@ -82,19 +142,20 @@ export default async function handler(
             if (session?.user?.id !== userId) {
               return res.status(401).json({ error: "Not authenticated" });
             }
-            const savedThemes: any = await prisma.userSaveTheme.findMany({
-              where: { userId: userId as string },
-              select: {
+
+            const savedThemes = await db.query.usersToSavedThemes.findMany({
+              where: and(
+                eq(usersToSavedThemes.userId, userId as string),
+                ne(usersToSavedThemes.status, "N")
+              ),
+              with: {
                 theme: {
-                  select: tileThemeProps,
-                },
-              },
-              orderBy: {
-                theme: {
-                  createdAt: "desc",
+                  columns: tileThemeProps.columns,
+                  with: tileThemeProps.with,
                 },
               },
             });
+
             return res
               .status(200)
               .json(savedThemes?.map((theme: any) => theme.theme));
@@ -103,16 +164,15 @@ export default async function handler(
             if (!session) {
               return res.status(401).json({ error: "Not authenticated" });
             }
-            const likedThemes = await prisma.userLikeTheme.findMany({
-              where: { userId: userId as string },
-              select: {
+            const likedThemes = await db.query.usersToLikedThemes.findMany({
+              where: and(
+                eq(usersToLikedThemes.userId, userId as string),
+                ne(usersToLikedThemes.status, "N")
+              ),
+              with: {
                 theme: {
-                  select: tileThemeProps,
-                },
-              },
-              orderBy: {
-                theme: {
-                  createdAt: "desc",
+                  columns: tileThemeProps.columns,
+                  with: tileThemeProps.with,
                 },
               },
             });
@@ -125,13 +185,13 @@ export default async function handler(
         }
       }
       try {
-        const themes = await prisma.theme.findMany({
-          where: { isPrivate: false },
-          select: tileThemeProps,
-          orderBy: {
-            createdAt: "desc",
-          },
+        const themes = await db.query.themes.findMany({
+          where: eq(themesSchema.isPrivate, false),
+          columns: tileThemeProps.columns,
+          with: tileThemeProps.with,
+          orderBy: [desc(themesSchema.createdAt)],
         });
+
         return res.status(200).json(themes);
       } catch (error) {
         return res.status(500).json({ error: "Failed to fetch themes" });
@@ -166,56 +226,57 @@ export default async function handler(
           return tagObject;
         } else {
           const smallcaseTagName = tagObject.name.toLowerCase();
-          let tag = await prisma.tag.create({
-            data: {
+          let tag = await db
+            .insert(tagsSchema)
+            .values({
+              id: createId(),
               name: smallcaseTagName,
-            },
-          });
-
-          return tag;
+            })
+            .returning({ id: tagsSchema.id });
+          return tag[0];
         }
       });
       const resolvedTags = await Promise.all(tagPromises);
 
       try {
-        await prisma.user.update({
-          where: {
-            id: session.user.id,
-          },
-          data: {
-            experience: {
-              increment: 10,
-            },
-            createdThemes: {
-              create: {
-                name,
-                color_1,
-                color_1_reason,
-                color_2,
-                color_2_reason,
-                color_3,
-                color_3_reason,
-                color_4,
-                color_4_reason,
-                font_1,
-                font_1_reason,
-                font_2,
-                font_2_reason,
-                prompt,
-                isPrivate,
-                isAIGenerated,
-                tags: {
-                  create: resolvedTags.map((tag) => ({
-                    tag: { connect: { id: tag.id } },
-                  })),
-                },
-              },
-            },
-          },
-        });
+        const createdTheme = await db
+          .insert(themesSchema)
+          .values({
+            id: createId(),
+            name,
+            color_1,
+            color_1_reason,
+            color_2,
+            color_2_reason,
+            color_3,
+            color_3_reason,
+            color_4,
+            color_4_reason,
+            font_1,
+            font_1_reason,
+            font_2,
+            font_2_reason,
+            prompt,
+            isPrivate,
+            isAIGenerated,
+            userId: session.user.id,
+          })
+          .returning({ id: themesSchema.id });
 
-        return res.status(201).json({ message: "Theme have been created" });
+        if (resolvedTags.length) {
+          await db.insert(themesToTagsSchema).values(
+            resolvedTags.map((tag) => ({
+              themeId: createdTheme[0].id,
+              tagId: tag.id as string,
+            }))
+          );
+        }
+
+        return res
+          .status(201)
+          .json({ message: "Theme have been created", theme: createdTheme[0] });
       } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: "Failed to create theme" });
       }
     } else {

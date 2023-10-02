@@ -28,9 +28,12 @@ import { NewPasswordDialog } from "./new-password";
 import { GenerateThemeDialog } from "./generate-theme-dialog";
 import MagicWand from "@/assets/svgs/magic-wand";
 import { useHelpers } from "@/hooks/useHelpers";
+import { buyPupa, managePurchase } from "@/services/stripe";
+import { useToast } from "@/hooks/useToast";
 
 const Header = () => {
   const router = useRouter();
+  const { addToast } = useToast();
   const { loginOpen, setLoginOpen } = useHelpers();
   const { status, data: session } = useSession();
   const [singupOpen, setSingupOpen] = useState(false);
@@ -99,6 +102,12 @@ const Header = () => {
       router.query.token
     ) {
       setNewPasswordDialog(true);
+    } else if (router.pathname === "/themes" && router.query.session_id) {
+      managePurchase(router.query.session_id as string)
+        .then(() => addToast({ title: "Purchase success", type: "success" }))
+        .finally(() => {
+          router.push(router.pathname, undefined, { shallow: true });
+        });
     }
   }, [router, status]);
 
@@ -198,6 +207,16 @@ const Header = () => {
                       onClick={() => router.push("/user/" + session?.user.id)}
                     >
                       Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => {
+                        buyPupa().then(({ url }) => {
+                          router.push(url);
+                        });
+                      }}
+                    >
+                      Buy Promts
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="cursor-pointer"

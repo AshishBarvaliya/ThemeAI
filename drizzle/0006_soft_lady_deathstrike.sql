@@ -1,0 +1,1 @@
+ALTER TABLE "themes_to_tags" DROP CONSTRAINT "themes_to_tags_tagId_themeId_unique";

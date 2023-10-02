@@ -1,7 +1,9 @@
-import { prisma } from "@/config/db";
 import { NextApiRequest, NextApiResponse } from "next";
+import { eq, and } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import { usersToLikedThemes } from "@/db/schema";
+import db from "@/db";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,31 +18,22 @@ export default async function handler(
         return res.status(400).json({ error: "themeId is required" });
       }
       try {
-        // await prisma.userLikeTheme.update({
-        //   where: {
-        //     userId_themeId: { userId: session.user.id, themeId },
-        //   },
-        //   data: {
-        //     status: "N",
-        //   },
-        // });
-        console.log("---------------------------------------");
-        const dislikedTheme = await prisma.$executeRaw`
-          UPDATE UserLikeTheme 
-          SET status = 'N' 
-          WHERE themeId = ${themeId} AND userId = ${session.user.id};
-        `;
+        await db
+          .update(usersToLikedThemes)
+          .set({
+            status: "N",
+          })
+          .where(
+            and(
+              eq(usersToLikedThemes.themeId, themeId),
+              eq(usersToLikedThemes.userId, session.user.id)
+            )
+          );
 
-        return res.status(202).json({ disliked: true, themeId, dislikedTheme });
+        return res
+          .status(202)
+          .json({ disliked: true, themeId, userId: session.user.id });
       } catch (error) {
-        // if (
-        //   error instanceof Prisma.PrismaClientKnownRequestError &&
-        //   error.code === "P2025"
-        // ) {
-        //   return res
-        //     .status(202)
-        //     .json({ disliked: true, themeId, isError: true });
-        // }
         res
           .status(500)
           .json({ error: "An error occurred when disliking the theme." });

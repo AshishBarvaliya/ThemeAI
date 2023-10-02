@@ -10,9 +10,19 @@ export const getUser = async (id: string) => {
   return response.data as UserProps;
 };
 
-export const toggleFollowing = async (userId?: string) => {
+export const followUser = async (userId?: string) => {
   if (!userId) return;
-  const apiUrl = `/api/follow-user`;
+  const apiUrl = `/api/user/follow`;
+  const response = await axios.post(apiUrl, {
+    userId,
+  });
+
+  return response.data;
+};
+
+export const unfollowUser = async (userId?: string) => {
+  if (!userId) return;
+  const apiUrl = `/api/user/unfollow`;
   const response = await axios.post(apiUrl, {
     userId,
   });
