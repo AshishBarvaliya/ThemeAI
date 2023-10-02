@@ -22,6 +22,8 @@ interface ThemeTileProps {
   mutateDislikeTheme: (themeId: string) => void;
   mutateUnsaveTheme: (themeId: string) => void;
   mutateMarkAsInappropriateTheme: (themeId: string) => void;
+  setLikeLoading: (themeId: string) => void;
+  loading: boolean;
 }
 
 export const ThemeTile: React.FC<ThemeTileProps> = ({
@@ -31,6 +33,8 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
   mutateDislikeTheme,
   mutateUnsaveTheme,
   mutateMarkAsInappropriateTheme,
+  setLikeLoading,
+  loading,
 }) => {
   const router = useRouter();
   const { data: session } = useSession();
@@ -185,14 +189,18 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
             <HeartIcon
               className={cn("h-5 w-5 cursor-pointer hover:text-[red]", {
                 "text-[red]": isLiked,
+                "opacity-70": loading,
               })}
               active={!!isLiked}
               onClick={() => {
-                runIfLoggedInElseOpenLoginDialog(() =>
-                  isLiked
-                    ? mutateDislikeTheme(mappedTheme.id)
-                    : mutateLikeTheme(mappedTheme.id)
-                );
+                if (!loading) {
+                  runIfLoggedInElseOpenLoginDialog(() => {
+                    setLikeLoading(mappedTheme.id);
+                    isLiked
+                      ? mutateDislikeTheme(mappedTheme.id)
+                      : mutateLikeTheme(mappedTheme.id);
+                  });
+                }
               }}
             />
             {mappedTheme.likes}

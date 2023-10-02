@@ -168,52 +168,55 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const [likeLoading, setLikeLoading] = useState<string | null>(null);
   const { data: createdThemes } = useQuery(
     ["user", router.query.id, "created"],
     () => getThemesByUserAndType(router.query.id as string, "created")
   );
-  const { mutate: mutateLikeTheme } = useMutation({
-    mutationFn: (themeId: string) => themeLike(themeId),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries(["user", router.query.id]);
-      if (createdThemes?.length) {
-        queryClient.setQueryData(
-          ["user", router.query.id, "created"],
-          createdThemes.map((theme) => {
-            if (theme.id === data.themeId) {
-              return {
-                ...theme,
-                likedBy: [...theme.likedBy, { userId: data.userId }],
-              };
-            }
-            return theme;
-          })
-        );
-      }
-    },
-  });
-  const { mutate: mutateDislikeTheme } = useMutation({
-    mutationFn: (themeId: string) => themeDislike(themeId),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries(["user", router.query.id]);
-      if (createdThemes?.length) {
-        queryClient.setQueryData(
-          ["user", router.query.id, "created"],
-          createdThemes.map((theme) => {
-            if (theme.id === data.themeId) {
-              return {
-                ...theme,
-                likedBy: theme.likedBy.filter(
-                  (user) => user.userId !== data.userId
-                ),
-              };
-            }
-            return theme;
-          })
-        );
-      }
-    },
-  });
+  const { mutate: mutateLikeTheme, isLoading: isLoadingLikeTheme } =
+    useMutation({
+      mutationFn: (themeId: string) => themeLike(themeId),
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["user", router.query.id]);
+        if (createdThemes?.length) {
+          queryClient.setQueryData(
+            ["user", router.query.id, "created"],
+            createdThemes.map((theme) => {
+              if (theme.id === data.themeId) {
+                return {
+                  ...theme,
+                  likedBy: [...theme.likedBy, { userId: data.userId }],
+                };
+              }
+              return theme;
+            })
+          );
+        }
+      },
+    });
+  const { mutate: mutateDislikeTheme, isLoading: isLoadingDislikeTheme } =
+    useMutation({
+      mutationFn: (themeId: string) => themeDislike(themeId),
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["user", router.query.id]);
+        if (createdThemes?.length) {
+          queryClient.setQueryData(
+            ["user", router.query.id, "created"],
+            createdThemes.map((theme) => {
+              if (theme.id === data.themeId) {
+                return {
+                  ...theme,
+                  likedBy: theme.likedBy.filter(
+                    (user) => user.userId !== data.userId
+                  ),
+                };
+              }
+              return theme;
+            })
+          );
+        }
+      },
+    });
 
   const { mutate: mutateSaveTheme } = useMutation({
     mutationFn: (themeId: string) => themeSave(themeId),
@@ -267,6 +270,11 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
       mutateDislikeTheme={mutateDislikeTheme}
       mutateUnsaveTheme={mutateUnsaveTheme}
       mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+      setLikeLoading={setLikeLoading}
+      loading={
+        likeLoading === theme.id &&
+        (isLoadingDislikeTheme || isLoadingLikeTheme)
+      }
     />
   ));
 };
@@ -276,52 +284,55 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const [likeLoading, setLikeLoading] = useState<string | null>(null);
   const { data: likedThemes } = useQuery(
     ["user", router.query.id, "liked"],
     () => getThemesByUserAndType(router.query.id as string, "liked")
   );
-  const { mutate: mutateLikeTheme } = useMutation({
-    mutationFn: (themeId: string) => themeLike(themeId),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries(["user", router.query.id]);
-      if (likedThemes?.length) {
-        queryClient.setQueryData(
-          ["user", router.query.id, "liked"],
-          likedThemes.map((theme) => {
-            if (theme.id === data.themeId) {
-              return {
-                ...theme,
-                likedBy: [...theme.likedBy, { userId: data.userId }],
-              };
-            }
-            return theme;
-          })
-        );
-      }
-    },
-  });
-  const { mutate: mutateDislikeTheme } = useMutation({
-    mutationFn: (themeId: string) => themeDislike(themeId),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries(["user", router.query.id]);
-      if (likedThemes?.length) {
-        queryClient.setQueryData(
-          ["user", router.query.id, "liked"],
-          likedThemes.map((theme) => {
-            if (theme.id === data.themeId) {
-              return {
-                ...theme,
-                likedBy: theme.likedBy.filter(
-                  (user) => user.userId !== data.userId
-                ),
-              };
-            }
-            return theme;
-          })
-        );
-      }
-    },
-  });
+  const { mutate: mutateLikeTheme, isLoading: isLoadingLikeTheme } =
+    useMutation({
+      mutationFn: (themeId: string) => themeLike(themeId),
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["user", router.query.id]);
+        if (likedThemes?.length) {
+          queryClient.setQueryData(
+            ["user", router.query.id, "liked"],
+            likedThemes.map((theme) => {
+              if (theme.id === data.themeId) {
+                return {
+                  ...theme,
+                  likedBy: [...theme.likedBy, { userId: data.userId }],
+                };
+              }
+              return theme;
+            })
+          );
+        }
+      },
+    });
+  const { mutate: mutateDislikeTheme, isLoading: isLoadingDislikeTheme } =
+    useMutation({
+      mutationFn: (themeId: string) => themeDislike(themeId),
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["user", router.query.id]);
+        if (likedThemes?.length) {
+          queryClient.setQueryData(
+            ["user", router.query.id, "liked"],
+            likedThemes.map((theme) => {
+              if (theme.id === data.themeId) {
+                return {
+                  ...theme,
+                  likedBy: theme.likedBy.filter(
+                    (user) => user.userId !== data.userId
+                  ),
+                };
+              }
+              return theme;
+            })
+          );
+        }
+      },
+    });
 
   const { mutate: mutateSaveTheme } = useMutation({
     mutationFn: (themeId: string) => themeSave(themeId),
@@ -375,6 +386,11 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
       mutateDislikeTheme={mutateDislikeTheme}
       mutateUnsaveTheme={mutateUnsaveTheme}
       mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+      setLikeLoading={setLikeLoading}
+      loading={
+        likeLoading === theme.id &&
+        (isLoadingDislikeTheme || isLoadingLikeTheme)
+      }
     />
   ));
 };
@@ -384,52 +400,55 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const [likeLoading, setLikeLoading] = useState<string | null>(null);
   const { data: savedThemes } = useQuery(
     ["user", router.query.id, "saved"],
     () => getThemesByUserAndType(router.query.id as string, "saved")
   );
-  const { mutate: mutateLikeTheme } = useMutation({
-    mutationFn: (themeId: string) => themeLike(themeId),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries(["user", router.query.id]);
-      if (savedThemes?.length) {
-        queryClient.setQueryData(
-          ["user", router.query.id, "saved"],
-          savedThemes.map((theme) => {
-            if (theme.id === data.themeId) {
-              return {
-                ...theme,
-                likedBy: [...theme.likedBy, { userId: data.userId }],
-              };
-            }
-            return theme;
-          })
-        );
-      }
-    },
-  });
-  const { mutate: mutateDislikeTheme } = useMutation({
-    mutationFn: (themeId: string) => themeDislike(themeId),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries(["user", router.query.id]);
-      if (savedThemes?.length) {
-        queryClient.setQueryData(
-          ["user", router.query.id, "saved"],
-          savedThemes.map((theme) => {
-            if (theme.id === data.themeId) {
-              return {
-                ...theme,
-                likedBy: theme.likedBy.filter(
-                  (user) => user.userId !== data.userId
-                ),
-              };
-            }
-            return theme;
-          })
-        );
-      }
-    },
-  });
+  const { mutate: mutateLikeTheme, isLoading: isLoadingLikeTheme } =
+    useMutation({
+      mutationFn: (themeId: string) => themeLike(themeId),
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["user", router.query.id]);
+        if (savedThemes?.length) {
+          queryClient.setQueryData(
+            ["user", router.query.id, "saved"],
+            savedThemes.map((theme) => {
+              if (theme.id === data.themeId) {
+                return {
+                  ...theme,
+                  likedBy: [...theme.likedBy, { userId: data.userId }],
+                };
+              }
+              return theme;
+            })
+          );
+        }
+      },
+    });
+  const { mutate: mutateDislikeTheme, isLoading: isLoadingDislikeTheme } =
+    useMutation({
+      mutationFn: (themeId: string) => themeDislike(themeId),
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["user", router.query.id]);
+        if (savedThemes?.length) {
+          queryClient.setQueryData(
+            ["user", router.query.id, "saved"],
+            savedThemes.map((theme) => {
+              if (theme.id === data.themeId) {
+                return {
+                  ...theme,
+                  likedBy: theme.likedBy.filter(
+                    (user) => user.userId !== data.userId
+                  ),
+                };
+              }
+              return theme;
+            })
+          );
+        }
+      },
+    });
 
   const { mutate: mutateSaveTheme } = useMutation({
     mutationFn: (themeId: string) => themeSave(themeId),
@@ -483,6 +502,11 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
       mutateDislikeTheme={mutateDislikeTheme}
       mutateUnsaveTheme={mutateUnsaveTheme}
       mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+      setLikeLoading={setLikeLoading}
+      loading={
+        likeLoading === theme.id &&
+        (isLoadingDislikeTheme || isLoadingLikeTheme)
+      }
     />
   ));
 };
