@@ -36,6 +36,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   inappropriateThemes: many(usersToInappropriateThemes),
   following: many(usersToFollows, { relationName: "following" }),
   followers: many(usersToFollows, { relationName: "followers" }),
+  purchaseHistory: many(purchases),
 }));
 
 export const usersToFollows = pgTable(
@@ -251,3 +252,20 @@ export const tags = pgTable("tag", {
   name: text("name").notNull().unique(),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });
+
+export const purchases = pgTable("purchase", {
+  id: text("id").notNull().primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id),
+  stripeSessionId: text("stripeSessionId").notNull().unique(),
+  stripeCustomerId: text("stripeCustomerId").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+});
+
+export const purchasesRelations = relations(purchases, ({ one }) => ({
+  user: one(users, {
+    fields: [purchases.userId],
+    references: [users.id],
+  }),
+}));

@@ -71,6 +71,13 @@
       "when": 1696130722283,
       "tag": "0009_material_magus",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1696208866930,
+      "tag": "0010_noisy_echo",
+      "breakpoints": true
     }
   ]
 }

@@ -1,5 +1,11 @@
-import { prisma } from "@/config/db";
 import stripe from "@/config/stripe";
+import db from "@/db";
+import {
+  purchases as purchasesSchema,
+  users as usersSchema,
+} from "@/db/schema";
+import { createId } from "@paralleldrive/cuid2";
+import { eq } from "drizzle-orm";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const N_PUPA = process.env.PUPU_PER_PURCHASE || "0";
@@ -18,11 +24,11 @@ export default async function handler(
     return res.status(400).json({ error: "Session not found" });
   }
 
-  const existingSession = await prisma.purchase.findMany({
-    where: { stripeSessionId: sessionId },
+  const existingSession = await db.query.purchases.findFirst({
+    where: eq(purchasesSchema.stripeSessionId, sessionId),
   });
 
-  if (existingSession.length > 0) {
+  if (existingSession) {
     return res.status(400).json({ error: "Session already exists" });
   }
 
@@ -38,22 +44,28 @@ export default async function handler(
       return;
     }
 
-    await prisma.purchase.create({
-      data: {
-        stripeSessionId: session.id,
-        stripeCustomerId: session.customer as string,
-        userId: session.metadata?.userId,
+    await db.insert(purchasesSchema).values({
+      id: createId(),
+      stripeSessionId: session.id,
+      stripeCustomerId: session.customer as string,
+      userId: session.metadata?.userId,
+    });
+
+    const currentUser = await db.query.users.findFirst({
+      where: eq(usersSchema.id, session.metadata?.userId),
+      columns: {
+        pupa: true,
       },
     });
 
-    await prisma.user.update({
-      where: { id: session.metadata?.userId },
-      data: {
-        pupa: {
-          increment: Number(N_PUPA),
-        },
-      },
-    });
+    if (currentUser) {
+      await db
+        .update(usersSchema)
+        .set({
+          pupa: Number(currentUser.pupa) + Number(N_PUPA),
+        })
+        .where(eq(usersSchema.id, session.metadata?.userId));
+    }
 
     res.status(200).send("Purchase saved successfully");
   } catch (error) {

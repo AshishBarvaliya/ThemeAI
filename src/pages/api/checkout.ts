@@ -2,7 +2,9 @@ import stripe from "@/config/stripe";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
-import { prisma } from "@/config/db";
+import db from "@/db";
+import { users as usersSchema } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 const priceId = process.env.STRIPE_PRICE_ID;
 
@@ -17,9 +19,9 @@ export default async function handler(
 
   if (session) {
     let stripeCustomerId = "";
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: {
+    const user = await db.query.users.findFirst({
+      where: eq(usersSchema.id, session.user.id),
+      columns: {
         id: true,
         name: true,
         email: true,
@@ -37,18 +39,13 @@ export default async function handler(
           },
         });
 
-        await prisma.user.update({
-          where: { id: session.user.id },
-          data: {
+        await db
+          .update(usersSchema)
+          .set({
             stripeCustomerId: customer.id,
-          },
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            stripeCustomerId: true,
-          },
-        });
+          })
+          .where(eq(usersSchema.id, session.user.id));
+
         stripeCustomerId = customer.id;
       } catch (error) {
         res.status(500).json({ error: "Failed to create customer" });
