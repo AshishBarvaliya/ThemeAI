@@ -12,7 +12,7 @@ import { relations } from "drizzle-orm";
 
 export const users = pgTable("user", {
   id: text("id").notNull().primaryKey(),
-  name: text("name"),
+  name: text("name").notNull(),
   email: text("email").notNull().unique(),
   title: text("title"),
   location: text("location"),
@@ -21,7 +21,6 @@ export const users = pgTable("user", {
   image: text("image"),
   hashedPassword: text("hashedPassword"),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
-  updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
   isActived: boolean("isActive").default(true),
   stripeCustomerId: text("stripeCustomerId"),
   pupa: integer("pupa").default(0),
