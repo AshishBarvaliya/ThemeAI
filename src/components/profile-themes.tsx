@@ -58,7 +58,7 @@ export default function ProfileThemes() {
     {
       id: "createdThemes",
       name: "Created",
-      count: user?.createdThemes.length || 0,
+      count: user?.createdThemes ? user?.createdThemes.length : 0,
       getThemes: () => (
         <CreatedTheme
           mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
@@ -68,7 +68,7 @@ export default function ProfileThemes() {
     {
       id: "likedThemes",
       name: "Liked",
-      count: user?.likedThemes.length || 0,
+      count: user?.likedThemes ? user?.likedThemes.length : 0,
       getThemes: () =>
         session ? (
           <LikedTheme

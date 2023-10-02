@@ -93,7 +93,7 @@ export default function User() {
       const isFollower = user.following?.find(
         (following) => following.followingId === session?.user?.id
       );
-      const isFollowing = user.followers.find(
+      const isFollowing = user.followers?.find(
         (follower) => follower.followerId === session?.user?.id
       );
 
@@ -154,7 +154,7 @@ export default function User() {
               className="flex items-center text-md text-primary-foreground/90 cursor-pointer hover:text-secondary"
             >
               <span className="mr-2 font-semibold">
-                {user?.followers.length}
+                {user?.followers ? user?.followers.length : 0}
               </span>
               Followers
             </Typography>
@@ -165,7 +165,7 @@ export default function User() {
               className="flex items-center text-md text-primary-foreground/90 cursor-pointer hover:text-secondary"
             >
               <span className="mr-2 font-semibold">
-                {user?.following.length}
+                {user?.following ? user?.following.length : 0}
               </span>
               Following
             </Typography>
