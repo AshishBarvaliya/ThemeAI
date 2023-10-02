@@ -26,7 +26,7 @@ export default function User() {
   const { data: user } = useQuery(["user", router.query.id], () =>
     getUser(router.query.id as string)
   );
-  const { mutate: mutateUserFollow } = useMutation({
+  const { mutate: mutateUserFollow, isLoading: isLoadingFollow } = useMutation({
     mutationFn: (userId: string) => followUser(userId),
     onSuccess: ({ followerId, followingId }) => {
       queryClient.invalidateQueries(["user", router.query.id]);
@@ -41,35 +41,34 @@ export default function User() {
             ...user,
             following: [...user.following, { followingId }],
           });
-          // queryClient.invalidateQueries(["following", router.query.id]);
         }
       }
     },
   });
-  const { mutate: mutateUserUnfollow } = useMutation({
-    mutationFn: (userId: string) => unfollowUser(userId),
-    onSuccess: ({ followerId, followingId }) => {
-      queryClient.invalidateQueries(["user", router.query.id]);
-      if (user) {
-        if (router.query.id !== followerId) {
-          queryClient.setQueryData(["user", router.query.id], {
-            ...user,
-            followers: user.followers.filter(
-              (follower) => follower.followerId !== followerId
-            ),
-          });
-        } else {
-          queryClient.setQueryData(["user", router.query.id], {
-            ...user,
-            following: user.following.filter(
-              (following) => following.followingId !== followingId
-            ),
-          });
-          // queryClient.invalidateQueries(["following", router.query.id]);
+  const { mutate: mutateUserUnfollow, isLoading: isLoadingUnfollow } =
+    useMutation({
+      mutationFn: (userId: string) => unfollowUser(userId),
+      onSuccess: ({ followerId, followingId }) => {
+        queryClient.invalidateQueries(["user", router.query.id]);
+        if (user) {
+          if (router.query.id !== followerId) {
+            queryClient.setQueryData(["user", router.query.id], {
+              ...user,
+              followers: user.followers.filter(
+                (follower) => follower.followerId !== followerId
+              ),
+            });
+          } else {
+            queryClient.setQueryData(["user", router.query.id], {
+              ...user,
+              following: user.following.filter(
+                (following) => following.followingId !== followingId
+              ),
+            });
+          }
         }
-      }
-    },
-  });
+      },
+    });
   const [selectedNav, setSelectedNav] = useState("Themes");
 
   useEffect(() => {
@@ -85,7 +84,6 @@ export default function User() {
         <Button
           className="my-4 w-full"
           onClick={() => router.push("/settings")}
-          // disabled={isMutateUserFollowingLoading}
         >
           Edit profile
         </Button>
@@ -108,7 +106,7 @@ export default function User() {
               : mutateUserFollow(user?.id as string)
           }
           variant={isFollowing ? "destructive" : "default"}
-          // disabled={isMutateUserFollowingLoading}
+          disabled={isLoadingFollow || isLoadingUnfollow}
         >
           {isFollowing ? "Unfollow" : isFollower ? "Follow back" : "Follow"}
         </Button>
