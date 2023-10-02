@@ -43,6 +43,8 @@ export const usersRelations = relations(users, ({ many }) => ({
   activities: many(usersTonotifications, {
     relationName: "NotifierNotification",
   }),
+  verificationTokens: many(verificationTokens),
+  resetPasswords: many(resetPasswords),
 }));
 
 export const usersToFollows = pgTable(
@@ -318,3 +320,38 @@ export const usersTonotificationsRelations = relations(
     }),
   })
 );
+
+export const verificationTokens = pgTable("verification_token", {
+  id: text("id").notNull().primaryKey(),
+  token: text("token").notNull().unique(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id),
+  expiresAt: timestamp("expiresAt", { mode: "date" }).notNull(),
+});
+
+export const verificationTokensRelations = relations(
+  verificationTokens,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [verificationTokens.userId],
+      references: [users.id],
+    }),
+  })
+);
+
+export const resetPasswords = pgTable("reset_password", {
+  id: text("id").notNull().primaryKey(),
+  token: text("token").notNull().unique(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id),
+  expiresAt: timestamp("expiresAt", { mode: "date" }).notNull(),
+});
+
+export const resetPasswordsRelations = relations(resetPasswords, ({ one }) => ({
+  user: one(users, {
+    fields: [resetPasswords.userId],
+    references: [users.id],
+  }),
+}));

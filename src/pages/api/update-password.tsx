@@ -1,8 +1,13 @@
-import { prisma } from "@/config/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
+import db from "@/db";
+import { eq } from "drizzle-orm";
+import {
+  resetPasswords as resetPasswordsSchema,
+  users as usersSchema,
+} from "@/db/schema";
 
 export default async function handler(
   req: NextApiRequest,
@@ -28,11 +33,9 @@ export default async function handler(
         return res.status(400).json({ error: "Current password is required" });
       }
       try {
-        const currentuser = await prisma.user.findUnique({
-          where: {
-            id: session?.user?.id,
-          },
-          select: {
+        const currentuser = await db.query.users.findFirst({
+          where: eq(usersSchema.email, session?.user?.email),
+          columns: {
             hashedPassword: true,
           },
         });
@@ -46,32 +49,27 @@ export default async function handler(
           return res.status(400).json({ error: "Invalid current password" });
         }
 
-        const user = await prisma.user.update({
-          where: {
-            id: session?.user?.id,
-          },
-          data: {
+        await db
+          .update(usersSchema)
+          .set({
             hashedPassword: hashedPassword,
-          },
-          select: {
-            id: true,
-            name: true,
-            isActived: true,
-          },
-        });
+          })
+          .where(eq(usersSchema.id, session?.user?.id));
 
-        return res.status(200).json({ user });
+        return res.status(200).json({ message: "Password updated" });
       } catch (error) {
         res.status(500).json({ error: "Failed to update user" });
       }
     }
 
-    const resetPasswordToken = await prisma.resetPassword.findUnique({
-      where: { token },
-      select: {
+    const resetPasswordToken = await db.query.resetPasswords.findFirst({
+      where: eq(resetPasswordsSchema.token, token),
+      columns: {
         expiresAt: true,
+      },
+      with: {
         user: {
-          select: {
+          columns: {
             id: true,
             isActived: true,
           },
@@ -92,21 +90,14 @@ export default async function handler(
     }
 
     try {
-      const user = await prisma.user.update({
-        where: {
-          id: resetPasswordToken.user?.id,
-        },
-        data: {
+      await db
+        .update(usersSchema)
+        .set({
           hashedPassword: hashedPassword,
-        },
-        select: {
-          id: true,
-          name: true,
-          isActived: true,
-        },
-      });
+        })
+        .where(eq(usersSchema.id, resetPasswordToken?.user?.id));
 
-      return res.status(200).json({ user });
+      return res.status(200).json({ message: "Password updated" });
     } catch (error) {
       res.status(500).json({ error: "Failed to update user" });
     }

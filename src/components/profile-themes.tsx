@@ -13,10 +13,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTags, getThemesByUserAndType } from "@/services/theme";
 import { GetThemeTileProps } from "@/interfaces/theme";
 import { ThemeTile } from "@/components/theme-tile";
-import {
-  getUserLikedThemesStatus,
-  getUserSavedThemesStatus,
-} from "@/services/user-details";
 import { useSession } from "next-auth/react";
 import { useHelpers } from "@/hooks/useHelpers";
 import {
@@ -45,14 +41,6 @@ export default function ProfileThemes() {
     getUser(router.query.id as string)
   );
 
-  const { data: themesLikedStatus } = useQuery(
-    ["home", "userlikedthemesstatus"],
-    () => getUserLikedThemesStatus(!!session)
-  );
-  const { data: themesSavedStatus } = useQuery(
-    ["home", "usersavedthemesstatus"],
-    () => getUserSavedThemesStatus(!!session)
-  );
   const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
     mutationFn: (themeId: string) => setMarkAsInappropriate(themeId),
     onSuccess: () => {
@@ -105,9 +93,6 @@ export default function ProfileThemes() {
         ] as TabsProps[])
       : []),
   ];
-
-  const checkLiked = (id: string) => themesLikedStatus?.includes(id);
-  const checkSaved = (id: string) => themesSavedStatus?.includes(id);
 
   useEffect(() => {
     setSelectedTab("createdThemes");
