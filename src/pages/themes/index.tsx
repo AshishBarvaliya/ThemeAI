@@ -1,4 +1,5 @@
 import { ThemeTile } from "@/components/theme-tile";
+import { useToast } from "@/hooks/useToast";
 import { getThemes } from "@/services/theme";
 import {
   setMarkAsInappropriate,
@@ -7,60 +8,37 @@ import {
   themeSave,
   themeUnsave,
 } from "@/services/toggle";
-import {
-  getUserLikedThemesStatus,
-  getUserSavedThemesStatus,
-} from "@/services/user-details";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
 
 export default function Themes() {
   const queryClient = useQueryClient();
-  const { data: session } = useSession();
+  const { addToast } = useToast();
   const { data: themes } = useQuery(["home", "themes"], getThemes);
-  const { data: themesLikedStatus } = useQuery(
-    ["home", "userlikedthemesstatus"],
-    () => getUserLikedThemesStatus(!!session)
-  );
-  const { data: themesSavedStatus } = useQuery(
-    ["home", "usersavedthemesstatus"],
-    () => getUserSavedThemesStatus(!!session)
-  );
-  // const { mutate: mutateLikeTheme } = useMutation({
-  //   mutationFn: (themeId: string) => toggleThemeLike(themeId),
-  //   onSuccess: (data) => {
-  //     if (data.liked) {
-  //       queryClient.setQueryData(
-  //         ["home", "userlikedthemesstatus"],
-  //         [...[themesLikedStatus || []], data.themeId]
-  //       );
-  //     } else {
-  //       queryClient.setQueryData(
-  //         ["home", "userlikedthemesstatus"],
-  //         themesLikedStatus?.filter((id) => id !== data.themeId)
-  //       );
-  //     }
-  //     queryClient.invalidateQueries(["home", "userlikedthemesstatus"]);
-  //     queryClient.invalidateQueries(["home", "themes"]);
-  //   },
-  // });
   const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
     mutationFn: (themeId: string) => setMarkAsInappropriate(themeId),
     onSuccess: () => {
-      queryClient.invalidateQueries(["home", "themes"]);
+      addToast({
+        title: "Mark as inappropriated successfully",
+        type: "success",
+      });
     },
   });
-
-  const checkLiked = (id: string) => themesLikedStatus?.includes(id);
-  const checkSaved = (id: string) => themesSavedStatus?.includes(id);
 
   const { mutate: mutateLikeTheme } = useMutation({
     mutationFn: (themeId: string) => themeLike(themeId),
     onSuccess: (data) => {
-      if (themesLikedStatus !== undefined) {
+      if (themes?.length) {
         queryClient.setQueryData(
-          ["home", "userlikedthemesstatus"],
-          [...themesLikedStatus, data.themeId]
+          ["home", "themes"],
+          themes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                likedBy: [...theme.likedBy, { userId: data.userId }],
+              };
+            }
+            return theme;
+          })
         );
       }
     },
@@ -68,10 +46,20 @@ export default function Themes() {
   const { mutate: mutateDislikeTheme } = useMutation({
     mutationFn: (themeId: string) => themeDislike(themeId),
     onSuccess: (data) => {
-      if (!data.isError && themesLikedStatus !== undefined) {
+      if (themes?.length) {
         queryClient.setQueryData(
-          ["home", "userlikedthemesstatus"],
-          themesLikedStatus.filter((id) => id !== data.themeId)
+          ["home", "themes"],
+          themes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                likedBy: theme.likedBy.filter(
+                  (user) => user.userId !== data.userId
+                ),
+              };
+            }
+            return theme;
+          })
         );
       }
     },
@@ -80,10 +68,18 @@ export default function Themes() {
   const { mutate: mutateSaveTheme } = useMutation({
     mutationFn: (themeId: string) => themeSave(themeId),
     onSuccess: (data) => {
-      if (themesSavedStatus !== undefined) {
+      if (themes?.length) {
         queryClient.setQueryData(
-          ["home", "usersavedthemesstatus"],
-          [...themesSavedStatus, data.themeId]
+          ["home", "themes"],
+          themes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                savedBy: [...theme.savedBy, { userId: data.userId }],
+              };
+            }
+            return theme;
+          })
         );
       }
     },
@@ -91,10 +87,20 @@ export default function Themes() {
   const { mutate: mutateUnsaveTheme } = useMutation({
     mutationFn: (themeId: string) => themeUnsave(themeId),
     onSuccess: (data) => {
-      if (!data.isError && themesSavedStatus !== undefined) {
+      if (themes?.length) {
         queryClient.setQueryData(
-          ["home", "usersavedthemesstatus"],
-          themesSavedStatus.filter((id) => id !== data.themeId)
+          ["home", "themes"],
+          themes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                savedBy: theme.savedBy.filter(
+                  (user) => user.userId !== data.userId
+                ),
+              };
+            }
+            return theme;
+          })
         );
       }
     },
@@ -106,8 +112,6 @@ export default function Themes() {
         <ThemeTile
           key={index}
           theme={theme}
-          checkLiked={checkLiked}
-          checkSaved={checkSaved}
           mutateLikeTheme={mutateLikeTheme}
           mutateSaveTheme={mutateSaveTheme}
           mutateDislikeTheme={mutateDislikeTheme}

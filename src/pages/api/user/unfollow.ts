@@ -2,8 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { eq, and } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { usersToLikedThemes } from "@/db/schema";
 import db from "@/db";
+import { usersToFollows } from "@/db/schema";
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,30 +13,32 @@ export default async function handler(
 
   if (req.method === "POST") {
     if (session) {
-      const { themeId } = req.body;
-      if (!themeId) {
-        return res.status(400).json({ error: "themeId is required" });
+      const { userId } = req.body;
+      if (!userId) {
+        return res.status(400).json({ error: "userId is required" });
+      }
+      if (userId === session.user.id) {
+        return res.status(400).json({ error: "Cannot follow yourself" });
       }
       try {
         await db
-          .update(usersToLikedThemes)
-          .set({
-            status: "N",
-          })
+          .delete(usersToFollows)
           .where(
             and(
-              eq(usersToLikedThemes.themeId, themeId),
-              eq(usersToLikedThemes.userId, session.user.id)
+              eq(usersToFollows.followerId, session.user.id),
+              eq(usersToFollows.followingId, userId)
             )
           );
 
-        return res
-          .status(202)
-          .json({ disliked: true, themeId, userId: session.user.id });
+        res.status(201).json({
+          follow: true,
+          followerId: session.user.id,
+          followingId: userId,
+        });
       } catch (error) {
         res
           .status(500)
-          .json({ error: "An error occurred when disliking the theme." });
+          .json({ error: "An error occurred when unfollowing the user." });
       }
     } else {
       res.status(401).json({ error: "Not authenticated" });

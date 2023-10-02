@@ -34,6 +34,37 @@ export const usersRelations = relations(users, ({ many }) => ({
   likedThemes: many(usersToLikedThemes),
   savedThemes: many(usersToSavedThemes),
   inappropriateThemes: many(usersToInappropriateThemes),
+  following: many(usersToFollows, { relationName: "following" }),
+  followers: many(usersToFollows, { relationName: "followers" }),
+}));
+
+export const usersToFollows = pgTable(
+  "users_to_follows",
+  {
+    followerId: text("followerId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    followingId: text("followingId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+  },
+  (t) => ({
+    pk: primaryKey(t.followerId, t.followingId),
+  })
+);
+
+export const usersToFollowsRelations = relations(usersToFollows, ({ one }) => ({
+  follower: one(users, {
+    fields: [usersToFollows.followerId],
+    references: [users.id],
+    relationName: "following",
+  }),
+  following: one(users, {
+    fields: [usersToFollows.followingId],
+    references: [users.id],
+    relationName: "followers",
+  }),
 }));
 
 export const accounts = pgTable(

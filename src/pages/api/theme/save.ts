@@ -1,7 +1,8 @@
-import { prisma } from "@/config/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import db from "@/db";
+import { usersToSavedThemes } from "@/db/schema";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,52 +17,44 @@ export default async function handler(
         return res.status(400).json({ error: "themeId is required" });
       }
       try {
-        const upsertSave = await prisma.userSaveTheme.upsert({
-          where: {
-            userId_themeId: { userId: session.user.id, themeId },
-          },
-          update: {
-            status: "P",
-          },
-          create: {
+        await db
+          .insert(usersToSavedThemes)
+          .values({
             userId: session.user.id,
             themeId,
             status: "F",
-          },
-          select: {
-            status: true,
-            theme: {
-              select: {
-                userId: true,
-              },
+          })
+          .onConflictDoUpdate({
+            target: [usersToSavedThemes.userId, usersToSavedThemes.themeId],
+            set: {
+              status: "P",
             },
-          },
-        });
+          });
 
-        res.status(201).json({ saved: true, themeId });
+        res.status(201).json({ saved: true, themeId, userId: session.user.id });
 
-        setTimeout(async () => {
-          if (
-            session.user.id !== upsertSave.theme.userId &&
-            upsertSave.status === "F"
-          ) {
-            await prisma.user.update({
-              where: { id: upsertSave.theme.userId },
-              data: {
-                experience: { increment: 15 },
-              },
-            });
-            await prisma.notification.create({
-              data: {
-                recipientId: upsertSave.theme.userId,
-                read: false,
-                type: "SAVE",
-                notifierId: session.user.id,
-                themeId,
-              },
-            });
-          }
-        }, 0);
+        // setTimeout(async () => {
+        //   if (
+        //     session.user.id !== upsertSave.theme.userId &&
+        //     upsertSave.status === "F"
+        //   ) {
+        //     await prisma.user.update({
+        //       where: { id: upsertSave.theme.userId },
+        //       data: {
+        //         experience: { increment: 15 },
+        //       },
+        //     });
+        //     await prisma.notification.create({
+        //       data: {
+        //         recipientId: upsertSave.theme.userId,
+        //         read: false,
+        //         type: "SAVE",
+        //         notifierId: session.user.id,
+        //         themeId,
+        //       },
+        //     });
+        //   }
+        // }, 0);
       } catch (error) {
         res
           .status(500)

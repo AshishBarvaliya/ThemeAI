@@ -10,14 +10,13 @@ import { AvatarFallback } from "@radix-ui/react-avatar";
 import { DotsVerticalIcon, StarFilledIcon } from "@radix-ui/react-icons";
 import { StarIcon } from "lucide-react";
 import moment from "moment";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import NiceAvatar from "react-nice-avatar";
 
 interface ThemeTileProps {
   theme: GetThemeTileProps;
-  checkLiked: (id: string) => boolean | undefined;
-  checkSaved: (id: string) => boolean | undefined;
   mutateLikeTheme: (themeId: string) => void;
   mutateSaveTheme: (themeId: string) => void;
   mutateDislikeTheme: (themeId: string) => void;
@@ -27,8 +26,6 @@ interface ThemeTileProps {
 
 export const ThemeTile: React.FC<ThemeTileProps> = ({
   theme,
-  checkLiked,
-  checkSaved,
   mutateLikeTheme,
   mutateSaveTheme,
   mutateDislikeTheme,
@@ -36,13 +33,18 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
   mutateMarkAsInappropriateTheme,
 }) => {
   const router = useRouter();
+  const { data: session } = useSession();
   const { runIfLoggedInElseOpenLoginDialog } = useHelpers();
   const [copied, setCopied] = useState<null | string>(null);
   const [openMore, setOpenMore] = useState(false);
 
   const mappedTheme = getMappedTheme(theme);
-  const isLiked = checkLiked(theme.id);
-  const isSaved = checkSaved(theme.id);
+  const isLiked = theme.likedBy.find(
+    (user) => user.userId === session?.user.id
+  );
+  const isSaved = theme.savedBy.find(
+    (user) => user.userId === session?.user.id
+  );
 
   return (
     <div className="w-[270px] h-fit border-[0.5px] border-border flex flex-col shadow-lg bg-white fade-in-0 animate-in slide-in-from-right-2">
@@ -89,11 +91,14 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
                   <p
                     className="text-xs cursor-pointer flex items-center p-1 hover:bg-primary/20"
                     onClick={() => {
-                      runIfLoggedInElseOpenLoginDialog(() =>
+                      runIfLoggedInElseOpenLoginDialog(() => {
                         isSaved
                           ? mutateUnsaveTheme(mappedTheme.id)
-                          : mutateSaveTheme(mappedTheme.id)
-                      );
+                          : mutateSaveTheme(mappedTheme.id);
+                        setTimeout(() => {
+                          setOpenMore(false);
+                        }, 200);
+                      });
                     }}
                   >
                     {isSaved ? "Saved" : "Save"}
@@ -106,9 +111,12 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
                   <p
                     className="text-xs cursor-pointer p-1 hover:bg-primary/20"
                     onClick={() => {
-                      runIfLoggedInElseOpenLoginDialog(() =>
-                        mutateMarkAsInappropriateTheme(mappedTheme.id)
-                      );
+                      runIfLoggedInElseOpenLoginDialog(() => {
+                        mutateMarkAsInappropriateTheme(mappedTheme.id);
+                        setTimeout(() => {
+                          setOpenMore(false);
+                        }, 100);
+                      });
                     }}
                   >
                     Mark as inappropriate
@@ -165,10 +173,10 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
         <div className="flex gap-1">
           {mappedTheme.tags.map((tag) => (
             <div
-              key={tag.id}
+              key={tag}
               className="flex items-center border-[0.5px] border-border px-2 py-0.5 rounded-[45px] text-xs"
             >
-              {tag.name}
+              {tag}
             </div>
           ))}
         </div>
@@ -178,7 +186,7 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
               className={cn("h-5 w-5 cursor-pointer hover:text-[red]", {
                 "text-[red]": isLiked,
               })}
-              active={isLiked}
+              active={!!isLiked}
               onClick={() => {
                 runIfLoggedInElseOpenLoginDialog(() =>
                   isLiked

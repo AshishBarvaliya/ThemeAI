@@ -1,9 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { eq, and } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { usersToLikedThemes } from "@/db/schema";
 import db from "@/db";
+import { usersToInappropriateThemes } from "@/db/schema";
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,24 +18,23 @@ export default async function handler(
       }
       try {
         await db
-          .update(usersToLikedThemes)
-          .set({
-            status: "N",
+          .insert(usersToInappropriateThemes)
+          .values({
+            userId: session.user.id,
+            themeId,
           })
-          .where(
-            and(
-              eq(usersToLikedThemes.themeId, themeId),
-              eq(usersToLikedThemes.userId, session.user.id)
-            )
-          );
+          .onConflictDoNothing();
 
-        return res
-          .status(202)
-          .json({ disliked: true, themeId, userId: session.user.id });
+        res.status(201).json({
+          markAsInappropriate: true,
+          themeId,
+          userId: session.user.id,
+        });
       } catch (error) {
-        res
-          .status(500)
-          .json({ error: "An error occurred when disliking the theme." });
+        res.status(500).json({
+          error:
+            "An error occurred when marking this theme as inappropriate the theme.",
+        });
       }
     } else {
       res.status(401).json({ error: "Not authenticated" });

@@ -1,5 +1,7 @@
+import db from "@/db";
+import { tags as tagsSchema } from "@/db/schema";
+import { asc } from "drizzle-orm";
 import { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/config/db";
 
 export default async function handler(
   req: NextApiRequest,
@@ -7,8 +9,8 @@ export default async function handler(
 ) {
   if (req.method === "GET") {
     try {
-      const tags = await prisma.tag.findMany({
-        select: { id: true, name: true },
+      const tags = await db.query.tags.findMany({
+        orderBy: [asc(tagsSchema.name)],
       });
       res.status(200).json(tags);
     } catch (error) {

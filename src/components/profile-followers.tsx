@@ -1,24 +1,45 @@
-import { getAllFollowers } from "@/services/user";
-import { useQuery } from "@tanstack/react-query";
+import {
+  followUser,
+  getAllFollowers,
+  getAllFollowings,
+  unfollowUser,
+} from "@/services/user";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserTile } from "./profile-following";
 import { NextRouter, useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Button } from "./ui/button";
+import { UserProps } from "@/interfaces/user";
 
 interface ProfileFollowersProps {
-  mutateUserFollowing: (id: string) => void;
-  userFollowingStatus: string[] | undefined;
+  user: UserProps;
 }
 
-const ProfileFollowers: React.FC<ProfileFollowersProps> = ({
-  mutateUserFollowing,
-  userFollowingStatus,
-}) => {
+const ProfileFollowers: React.FC<ProfileFollowersProps> = ({ user }) => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { data: session } = useSession();
   const { data: followers } = useQuery(["followers", router.query.id], () =>
     getAllFollowers(router.query.id as string)
   );
+  const { data: followings } = useQuery(["following", router.query.id], () =>
+    getAllFollowings(router.query.id as string)
+  );
+
+  const { mutate: mutateUserFollow } = useMutation({
+    mutationFn: (userId: string) => followUser(userId),
+    onSuccess: ({ followingId }) => {
+      queryClient.invalidateQueries(["user", router.query.id]);
+      queryClient.invalidateQueries(["followers", router.query.id]);
+      queryClient.invalidateQueries(["following", router.query.id]);
+      if (user) {
+        queryClient.setQueryData(["user", router.query.id], {
+          ...user,
+          following: [...user.following, { followingId }],
+        });
+      }
+    },
+  });
 
   return (
     <div className="flex flex-col mt-4 gap-3 px-4 pr-[300px]">
@@ -30,8 +51,8 @@ const ProfileFollowers: React.FC<ProfileFollowersProps> = ({
             session?.user?.id,
             user.id,
             router,
-            mutateUserFollowing,
-            userFollowingStatus
+            mutateUserFollow,
+            !!followings?.find((following) => following.id === user.id)
           )}
         />
       ))}
@@ -43,19 +64,13 @@ export const renderFollowStatusButton = (
   sessionUserId: string | undefined,
   userId: string | undefined,
   router: NextRouter,
-  mutateUserFollowing: (id: string) => void,
-  userFollowingStatus: string[] | undefined
+  mutateUserFollow: (id: string) => void,
+  isFollowing: boolean
 ) => {
-  if (router.query.id === sessionUserId) {
-    const isFollowing = userFollowingStatus?.includes(userId as string);
-
+  if (router.query.id === sessionUserId && !isFollowing) {
     return (
-      <Button
-        size="md"
-        onClick={() => mutateUserFollowing(userId as string)}
-        variant={isFollowing ? "outline" : "default"}
-      >
-        {isFollowing ? "Following" : "Follow back"}
+      <Button size="md" onClick={() => mutateUserFollow(userId as string)}>
+        Follow back
       </Button>
     );
   }

@@ -14,11 +14,9 @@ export interface UserProps {
   organization: string;
   location: string;
   image: string;
-  _count: {
-    createdThemes: number;
-    likedThemes: number;
-    savedThemes: number;
-    following: number;
-    followers: number;
-  };
+  createdThemes: { id: string }[];
+  likedThemes: { themeId: string }[];
+  savedThemes: { themeId: string }[];
+  following: { followingId: string }[];
+  followers: { followerId: string }[];
 }

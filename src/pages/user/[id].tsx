@@ -1,7 +1,7 @@
 import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { getUser, toggleFollowing } from "@/services/user";
+import { followUser, getUser, unfollowUser } from "@/services/user";
 import { useEffect, useState } from "react";
 import NiceAvatar from "react-nice-avatar";
 import { useRouter } from "next/router";
@@ -11,10 +11,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ProfileThemes from "@/components/profile-themes";
 import ProfileFollowers from "@/components/profile-followers";
 import ProfileFollowing from "@/components/profile-following";
-import {
-  getUserFollowersStatus,
-  getUserFollowingStatus,
-} from "@/services/user-details";
 import { useSession } from "next-auth/react";
 import { useHelpers } from "@/hooks/useHelpers";
 import { Button } from "@/components/ui/button";
@@ -27,28 +23,51 @@ export default function User() {
   const { runIfLoggedInElseOpenLoginDialog, setLoginOpen } = useHelpers();
   const { data: session } = useSession();
 
-  const { data: userFollowingStatus, isLoading: isUserFollowingStatusLoading } =
-    useQuery(["home", "userfollowingstatus"], () =>
-      getUserFollowingStatus(!!session)
-    );
-  const { data: userFollowerStatus, isLoading: isUserFollowerStatusLoading } =
-    useQuery(["home", "userfollowersstatus"], () =>
-      getUserFollowersStatus(!!session)
-    );
   const { data: user } = useQuery(["user", router.query.id], () =>
     getUser(router.query.id as string)
   );
-  const {
-    mutate: mutateUserFollowing,
-    isLoading: isMutateUserFollowingLoading,
-  } = useMutation({
-    mutationFn: (userId: string) => toggleFollowing(userId),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["home", "userfollowingstatus"]);
-      queryClient.invalidateQueries(["home", "userfollowersstatus"]);
+  const { mutate: mutateUserFollow } = useMutation({
+    mutationFn: (userId: string) => followUser(userId),
+    onSuccess: ({ followerId, followingId }) => {
       queryClient.invalidateQueries(["user", router.query.id]);
-      queryClient.invalidateQueries(["following", router.query.id]);
-      queryClient.invalidateQueries(["followers", router.query.id]);
+      if (user) {
+        if (router.query.id !== followerId) {
+          queryClient.setQueryData(["user", router.query.id], {
+            ...user,
+            followers: [...user.followers, { followerId }],
+          });
+        } else {
+          queryClient.setQueryData(["user", router.query.id], {
+            ...user,
+            following: [...user.following, { followingId }],
+          });
+          // queryClient.invalidateQueries(["following", router.query.id]);
+        }
+      }
+    },
+  });
+  const { mutate: mutateUserUnfollow } = useMutation({
+    mutationFn: (userId: string) => unfollowUser(userId),
+    onSuccess: ({ followerId, followingId }) => {
+      queryClient.invalidateQueries(["user", router.query.id]);
+      if (user) {
+        if (router.query.id !== followerId) {
+          queryClient.setQueryData(["user", router.query.id], {
+            ...user,
+            followers: user.followers.filter(
+              (follower) => follower.followerId !== followerId
+            ),
+          });
+        } else {
+          queryClient.setQueryData(["user", router.query.id], {
+            ...user,
+            following: user.following.filter(
+              (following) => following.followingId !== followingId
+            ),
+          });
+          // queryClient.invalidateQueries(["following", router.query.id]);
+        }
+      }
     },
   });
   const [selectedNav, setSelectedNav] = useState("Themes");
@@ -59,36 +78,37 @@ export default function User() {
 
   const renderButton = (
     session: Session | null,
-    user: UserProps | undefined,
-    userFollowingStatus: string[] | undefined,
-    userFollowerStatus: string[] | undefined
+    user: UserProps | undefined
   ) => {
     if (session?.user?.id === user?.id) {
       return (
         <Button
           className="my-4 w-full"
           onClick={() => router.push("/settings")}
-          disabled={isMutateUserFollowingLoading}
+          // disabled={isMutateUserFollowingLoading}
         >
           Edit profile
         </Button>
       );
     }
-    if (
-      session &&
-      user &&
-      !isUserFollowerStatusLoading &&
-      !isUserFollowingStatusLoading
-    ) {
-      const isFollowing = userFollowingStatus?.includes(user?.id as string);
-      const isFollower = userFollowerStatus?.includes(user?.id as string);
+    if (session && user) {
+      const isFollower = user.following?.find(
+        (following) => following.followingId === session?.user?.id
+      );
+      const isFollowing = user.followers.find(
+        (follower) => follower.followerId === session?.user?.id
+      );
 
       return (
         <Button
           className="my-4 w-full"
-          onClick={() => mutateUserFollowing(user?.id as string)}
+          onClick={() =>
+            isFollowing
+              ? mutateUserUnfollow(user?.id as string)
+              : mutateUserFollow(user?.id as string)
+          }
           variant={isFollowing ? "destructive" : "default"}
-          disabled={isMutateUserFollowingLoading}
+          // disabled={isMutateUserFollowingLoading}
         >
           {isFollowing ? "Unfollow" : isFollower ? "Follow back" : "Follow"}
         </Button>
@@ -136,7 +156,7 @@ export default function User() {
               className="flex items-center text-md text-primary-foreground/90 cursor-pointer hover:text-secondary"
             >
               <span className="mr-2 font-semibold">
-                {user?._count.followers}
+                {user?.followers.length}
               </span>
               Followers
             </Typography>
@@ -147,12 +167,12 @@ export default function User() {
               className="flex items-center text-md text-primary-foreground/90 cursor-pointer hover:text-secondary"
             >
               <span className="mr-2 font-semibold">
-                {user?._count.following}
+                {user?.following.length}
               </span>
               Following
             </Typography>
           </div>
-          {renderButton(session, user, userFollowingStatus, userFollowerStatus)}
+          {renderButton(session, user)}
           <div className="flex flex-col py-4 w-full px-4 text-sm">
             <Typography
               element="p"
@@ -218,12 +238,9 @@ export default function User() {
           {selectedNav === "Themes" ? (
             <ProfileThemes />
           ) : selectedNav === "Followers" ? (
-            <ProfileFollowers
-              mutateUserFollowing={mutateUserFollowing}
-              userFollowingStatus={userFollowingStatus}
-            />
+            <ProfileFollowers user={user} />
           ) : selectedNav === "Following" ? (
-            <ProfileFollowing mutateUserFollowing={mutateUserFollowing} />
+            <ProfileFollowing user={user} />
           ) : selectedNav === "Purchases" ? (
             <>Purchases</>
           ) : selectedNav === "Experiences" ? (

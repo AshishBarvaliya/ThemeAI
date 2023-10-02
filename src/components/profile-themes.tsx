@@ -26,6 +26,7 @@ import {
   themeSave,
   themeUnsave,
 } from "@/services/toggle";
+import { useToast } from "@/hooks/useToast";
 
 interface TabsProps {
   id: "createdThemes" | "likedThemes" | "savedThemes";
@@ -36,6 +37,7 @@ interface TabsProps {
 
 export default function ProfileThemes() {
   const router = useRouter();
+  const { addToast } = useToast();
   const { data: session } = useSession();
   const { runIfLoggedInElseOpenLoginDialog } = useHelpers();
   const { data: tags } = useQuery(["tags"], getTags);
@@ -51,6 +53,15 @@ export default function ProfileThemes() {
     ["home", "usersavedthemesstatus"],
     () => getUserSavedThemesStatus(!!session)
   );
+  const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
+    mutationFn: (themeId: string) => setMarkAsInappropriate(themeId),
+    onSuccess: () => {
+      addToast({
+        title: "Mark as inappropriated successfully",
+        type: "success",
+      });
+    },
+  });
   const [selectedTab, setSelectedTab] =
     useState<TabsProps["id"]>("createdThemes");
   const [filter, setFilter] = useState("");
@@ -59,30 +70,36 @@ export default function ProfileThemes() {
     {
       id: "createdThemes",
       name: "Created",
-      count: user?._count?.createdThemes || 0,
+      count: user?.createdThemes.length || 0,
       getThemes: () => (
-        <CreatedTheme checkLiked={checkLiked} checkSaved={checkSaved} />
+        <CreatedTheme
+          mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+        />
       ),
     },
     {
       id: "likedThemes",
       name: "Liked",
-      count: user?._count?.likedThemes || 0,
+      count: user?.likedThemes.length || 0,
       getThemes: () =>
         session ? (
-          <LikedTheme checkLiked={checkLiked} checkSaved={checkSaved} />
+          <LikedTheme
+            mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+          />
         ) : (
           <></>
         ),
     },
-    ...(session?.user.id === router.query.id
+    ...(session?.user.id === router.query.id && user
       ? ([
           {
             id: "savedThemes",
             name: "Saved",
-            count: user?._count?.savedThemes || 0,
+            count: user?.savedThemes.length || 0,
             getThemes: () => (
-              <SavedTheme checkLiked={checkLiked} checkSaved={checkSaved} />
+              <SavedTheme
+                mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+              />
             ),
           },
         ] as TabsProps[])
@@ -158,13 +175,11 @@ export default function ProfileThemes() {
 }
 
 interface CreatedThemeProps {
-  checkLiked: (id: string) => boolean | undefined;
-  checkSaved: (id: string) => boolean | undefined;
+  mutateMarkAsInappropriateTheme: (themeId: string) => void;
 }
 
 const CreatedTheme: React.FC<CreatedThemeProps> = ({
-  checkLiked,
-  checkSaved,
+  mutateMarkAsInappropriateTheme,
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -172,34 +187,89 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
     ["user", router.query.id, "created"],
     () => getThemesByUserAndType(router.query.id as string, "created")
   );
-  const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
-    mutationFn: (themeId: string) => setMarkAsInappropriate(themeId),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["home", "themes"]);
-    },
-  });
   const { mutate: mutateLikeTheme } = useMutation({
     mutationFn: (themeId: string) => themeLike(themeId),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["home", "userlikedthemesstatus"]);
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["user", router.query.id]);
+      if (createdThemes?.length) {
+        queryClient.setQueryData(
+          ["user", router.query.id, "created"],
+          createdThemes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                likedBy: [...theme.likedBy, { userId: data.userId }],
+              };
+            }
+            return theme;
+          })
+        );
+      }
     },
   });
   const { mutate: mutateDislikeTheme } = useMutation({
     mutationFn: (themeId: string) => themeDislike(themeId),
     onSuccess: (data) => {
-      console.log(data);
+      queryClient.invalidateQueries(["user", router.query.id]);
+      if (createdThemes?.length) {
+        queryClient.setQueryData(
+          ["user", router.query.id, "created"],
+          createdThemes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                likedBy: theme.likedBy.filter(
+                  (user) => user.userId !== data.userId
+                ),
+              };
+            }
+            return theme;
+          })
+        );
+      }
     },
   });
+
   const { mutate: mutateSaveTheme } = useMutation({
     mutationFn: (themeId: string) => themeSave(themeId),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["home", "usersavedthemesstatus"]);
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["user", router.query.id]);
+      if (createdThemes?.length) {
+        queryClient.setQueryData(
+          ["user", router.query.id, "created"],
+          createdThemes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                savedBy: [...theme.savedBy, { userId: data.userId }],
+              };
+            }
+            return theme;
+          })
+        );
+      }
     },
   });
   const { mutate: mutateUnsaveTheme } = useMutation({
     mutationFn: (themeId: string) => themeUnsave(themeId),
     onSuccess: (data) => {
-      console.log(data);
+      queryClient.invalidateQueries(["user", router.query.id]);
+      if (createdThemes?.length) {
+        queryClient.setQueryData(
+          ["user", router.query.id, "created"],
+          createdThemes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                savedBy: theme.savedBy.filter(
+                  (user) => user.userId !== data.userId
+                ),
+              };
+            }
+            return theme;
+          })
+        );
+      }
     },
   });
 
@@ -207,8 +277,6 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
     <ThemeTile
       key={index}
       theme={theme}
-      checkLiked={checkLiked}
-      checkSaved={checkSaved}
       mutateLikeTheme={mutateLikeTheme}
       mutateSaveTheme={mutateSaveTheme}
       mutateDislikeTheme={mutateDislikeTheme}
@@ -219,8 +287,7 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
 };
 
 const LikedTheme: React.FC<CreatedThemeProps> = ({
-  checkLiked,
-  checkSaved,
+  mutateMarkAsInappropriateTheme,
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -228,34 +295,89 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
     ["user", router.query.id, "liked"],
     () => getThemesByUserAndType(router.query.id as string, "liked")
   );
-  const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
-    mutationFn: (themeId: string) => setMarkAsInappropriate(themeId),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["home", "themes"]);
-    },
-  });
   const { mutate: mutateLikeTheme } = useMutation({
     mutationFn: (themeId: string) => themeLike(themeId),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["home", "userlikedthemesstatus"]);
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["user", router.query.id]);
+      if (likedThemes?.length) {
+        queryClient.setQueryData(
+          ["user", router.query.id, "liked"],
+          likedThemes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                likedBy: [...theme.likedBy, { userId: data.userId }],
+              };
+            }
+            return theme;
+          })
+        );
+      }
     },
   });
   const { mutate: mutateDislikeTheme } = useMutation({
     mutationFn: (themeId: string) => themeDislike(themeId),
     onSuccess: (data) => {
-      console.log(data);
+      queryClient.invalidateQueries(["user", router.query.id]);
+      if (likedThemes?.length) {
+        queryClient.setQueryData(
+          ["user", router.query.id, "liked"],
+          likedThemes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                likedBy: theme.likedBy.filter(
+                  (user) => user.userId !== data.userId
+                ),
+              };
+            }
+            return theme;
+          })
+        );
+      }
     },
   });
+
   const { mutate: mutateSaveTheme } = useMutation({
     mutationFn: (themeId: string) => themeSave(themeId),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["home", "usersavedthemesstatus"]);
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["user", router.query.id]);
+      if (likedThemes?.length) {
+        queryClient.setQueryData(
+          ["user", router.query.id, "liked"],
+          likedThemes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                savedBy: [...theme.savedBy, { userId: data.userId }],
+              };
+            }
+            return theme;
+          })
+        );
+      }
     },
   });
   const { mutate: mutateUnsaveTheme } = useMutation({
     mutationFn: (themeId: string) => themeUnsave(themeId),
     onSuccess: (data) => {
-      console.log(data);
+      queryClient.invalidateQueries(["user", router.query.id]);
+      if (likedThemes?.length) {
+        queryClient.setQueryData(
+          ["user", router.query.id, "liked"],
+          likedThemes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                savedBy: theme.savedBy.filter(
+                  (user) => user.userId !== data.userId
+                ),
+              };
+            }
+            return theme;
+          })
+        );
+      }
     },
   });
 
@@ -263,8 +385,6 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
     <ThemeTile
       key={index}
       theme={theme}
-      checkLiked={checkLiked}
-      checkSaved={checkSaved}
       mutateLikeTheme={mutateLikeTheme}
       mutateSaveTheme={mutateSaveTheme}
       mutateDislikeTheme={mutateDislikeTheme}
@@ -275,8 +395,7 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
 };
 
 const SavedTheme: React.FC<CreatedThemeProps> = ({
-  checkLiked,
-  checkSaved,
+  mutateMarkAsInappropriateTheme,
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -284,34 +403,89 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
     ["user", router.query.id, "saved"],
     () => getThemesByUserAndType(router.query.id as string, "saved")
   );
-  const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
-    mutationFn: (themeId: string) => setMarkAsInappropriate(themeId),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["home", "themes"]);
-    },
-  });
   const { mutate: mutateLikeTheme } = useMutation({
     mutationFn: (themeId: string) => themeLike(themeId),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["home", "userlikedthemesstatus"]);
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["user", router.query.id]);
+      if (savedThemes?.length) {
+        queryClient.setQueryData(
+          ["user", router.query.id, "saved"],
+          savedThemes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                likedBy: [...theme.likedBy, { userId: data.userId }],
+              };
+            }
+            return theme;
+          })
+        );
+      }
     },
   });
   const { mutate: mutateDislikeTheme } = useMutation({
     mutationFn: (themeId: string) => themeDislike(themeId),
     onSuccess: (data) => {
-      console.log(data);
+      queryClient.invalidateQueries(["user", router.query.id]);
+      if (savedThemes?.length) {
+        queryClient.setQueryData(
+          ["user", router.query.id, "saved"],
+          savedThemes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                likedBy: theme.likedBy.filter(
+                  (user) => user.userId !== data.userId
+                ),
+              };
+            }
+            return theme;
+          })
+        );
+      }
     },
   });
+
   const { mutate: mutateSaveTheme } = useMutation({
     mutationFn: (themeId: string) => themeSave(themeId),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["home", "usersavedthemesstatus"]);
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["user", router.query.id]);
+      if (savedThemes?.length) {
+        queryClient.setQueryData(
+          ["user", router.query.id, "saved"],
+          savedThemes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                savedBy: [...theme.savedBy, { userId: data.userId }],
+              };
+            }
+            return theme;
+          })
+        );
+      }
     },
   });
   const { mutate: mutateUnsaveTheme } = useMutation({
     mutationFn: (themeId: string) => themeUnsave(themeId),
     onSuccess: (data) => {
-      console.log(data);
+      queryClient.invalidateQueries(["user", router.query.id]);
+      if (savedThemes?.length) {
+        queryClient.setQueryData(
+          ["home", "themes"],
+          savedThemes.map((theme) => {
+            if (theme.id === data.themeId) {
+              return {
+                ...theme,
+                savedBy: theme.savedBy.filter(
+                  (user) => user.userId !== data.userId
+                ),
+              };
+            }
+            return theme;
+          })
+        );
+      }
     },
   });
 
@@ -319,8 +493,6 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
     <ThemeTile
       key={index}
       theme={theme}
-      checkLiked={checkLiked}
-      checkSaved={checkSaved}
       mutateLikeTheme={mutateLikeTheme}
       mutateSaveTheme={mutateSaveTheme}
       mutateDislikeTheme={mutateDislikeTheme}
