@@ -2,7 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import db from "@/db";
-import { usersToFollows } from "@/db/schema";
+import { usersToFollows, usersTonotifications } from "@/db/schema";
+import { createId } from "@paralleldrive/cuid2";
+import { and, desc, eq } from "drizzle-orm";
+import { isOlderThan24Hours } from "@/lib/api-helpers";
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,16 +33,31 @@ export default async function handler(
           followingId: userId,
         });
 
-        // setTimeout(async () => {
-        //   await prisma.notification.create({
-        //     data: {
-        //       recipientId: userId,
-        //       read: false,
-        //       type: "FOLLOW",
-        //       notifierId: session.user.id,
-        //     },
-        //   });
-        // }, 0);
+        setTimeout(async () => {
+          const oldData = await db.query.usersTonotifications.findMany({
+            where: and(
+              eq(usersTonotifications.recipientId, userId),
+              eq(usersTonotifications.type, "FOLLOW")
+            ),
+            columns: {
+              id: true,
+              createdAt: true,
+            },
+            orderBy: [desc(usersTonotifications.createdAt)],
+          });
+          if (
+            oldData.length === 0 ||
+            (oldData.length > 0 && isOlderThan24Hours(oldData[0].createdAt))
+          ) {
+            await db.insert(usersTonotifications).values({
+              id: createId(),
+              recipientId: userId,
+              read: false,
+              type: "FOLLOW",
+              notifierId: session.user.id,
+            });
+          }
+        }, 0);
       } catch (error) {
         res
           .status(500)

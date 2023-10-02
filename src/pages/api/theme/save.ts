@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import db from "@/db";
 import { usersToSavedThemes } from "@/db/schema";
+import { sendLikeSaveNotification } from "@/lib/api-helpers";
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,7 +18,7 @@ export default async function handler(
         return res.status(400).json({ error: "themeId is required" });
       }
       try {
-        await db
+        const upsertSave = await db
           .insert(usersToSavedThemes)
           .values({
             userId: session.user.id,
@@ -29,32 +30,21 @@ export default async function handler(
             set: {
               status: "P",
             },
+          })
+          .returning({
+            themeId: usersToSavedThemes.themeId,
+            status: usersToSavedThemes.status,
           });
 
         res.status(201).json({ saved: true, themeId, userId: session.user.id });
 
-        // setTimeout(async () => {
-        //   if (
-        //     session.user.id !== upsertSave.theme.userId &&
-        //     upsertSave.status === "F"
-        //   ) {
-        //     await prisma.user.update({
-        //       where: { id: upsertSave.theme.userId },
-        //       data: {
-        //         experience: { increment: 15 },
-        //       },
-        //     });
-        //     await prisma.notification.create({
-        //       data: {
-        //         recipientId: upsertSave.theme.userId,
-        //         read: false,
-        //         type: "SAVE",
-        //         notifierId: session.user.id,
-        //         themeId,
-        //       },
-        //     });
-        //   }
-        // }, 0);
+        setTimeout(async () => {
+          await sendLikeSaveNotification({
+            upsertItem: upsertSave,
+            sessionId: session.user.id,
+            type: "SAVE",
+          });
+        }, 0);
       } catch (error) {
         res
           .status(500)

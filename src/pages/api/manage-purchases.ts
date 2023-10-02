@@ -69,7 +69,6 @@ export default async function handler(
 
     res.status(200).send("Purchase saved successfully");
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to save purchase" });
+    return res.status(500).json({ error: "Failed to save purchase" });
   }
 }

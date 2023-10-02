@@ -37,6 +37,12 @@ export const usersRelations = relations(users, ({ many }) => ({
   following: many(usersToFollows, { relationName: "following" }),
   followers: many(usersToFollows, { relationName: "followers" }),
   purchaseHistory: many(purchases),
+  notifications: many(usersTonotifications, {
+    relationName: "ReceiverNotification",
+  }),
+  activities: many(usersTonotifications, {
+    relationName: "NotifierNotification",
+  }),
 }));
 
 export const usersToFollows = pgTable(
@@ -123,6 +129,7 @@ export const themesRelations = relations(themes, ({ one, many }) => ({
   savedBy: many(usersToSavedThemes),
   inappropriateBy: many(usersToInappropriateThemes),
   tags: many(themesToTags),
+  activities: many(usersTonotifications),
 }));
 
 export const statusEnum = pgEnum("like_save_status", ["F", "P", "N"]);
@@ -269,3 +276,45 @@ export const purchasesRelations = relations(purchases, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export const notificationTypeEnum = pgEnum("notification_type", [
+  "FOLLOW",
+  "LIKE",
+  "SAVE",
+  "REWARD",
+]);
+
+export const usersTonotifications = pgTable("users_to_notifications", {
+  id: text("id").notNull().primaryKey(),
+  read: boolean("read").default(false),
+  type: notificationTypeEnum("type").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+  pupa: integer("pupa").default(0),
+  recipientId: text("recipientId")
+    .notNull()
+    .references(() => users.id),
+  notifierId: text("notifierId")
+    .notNull()
+    .references(() => users.id),
+  themeId: text("themeId").references(() => themes.id),
+});
+
+export const usersTonotificationsRelations = relations(
+  usersTonotifications,
+  ({ one }) => ({
+    recipient: one(users, {
+      fields: [usersTonotifications.recipientId],
+      references: [users.id],
+      relationName: "ReceiverNotification",
+    }),
+    notifier: one(users, {
+      fields: [usersTonotifications.notifierId],
+      references: [users.id],
+      relationName: "NotifierNotification",
+    }),
+    theme: one(themes, {
+      fields: [usersTonotifications.themeId],
+      references: [themes.id],
+    }),
+  })
+);
