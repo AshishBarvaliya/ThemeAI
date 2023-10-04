@@ -11,12 +11,16 @@ type Context = {
   loginOpen: boolean;
   setLoginOpen: Dispatch<SetStateAction<boolean>>;
   runIfLoggedInElseOpenLoginDialog: (fn: () => void) => void;
+  themeSearchQuery: string;
+  setThemeSearchQuery: Dispatch<SetStateAction<string>>;
 };
 
 const HelpersContext = createContext({
   loginOpen: false,
   setLoginOpen: () => {},
   runIfLoggedInElseOpenLoginDialog: () => {},
+  themeSearchQuery: "",
+  setThemeSearchQuery: () => {},
 } as Context);
 
 export const HelpersProvider = ({
@@ -25,6 +29,7 @@ export const HelpersProvider = ({
   children: React.ReactNode;
 }) => {
   const [loginOpen, setLoginOpen] = useState(false);
+  const [themeSearchQuery, setThemeSearchQuery] = useState("");
   const { status } = useSession();
 
   const runIfLoggedInElseOpenLoginDialog = (fn: () => void) => {
@@ -41,6 +46,8 @@ export const HelpersProvider = ({
         loginOpen,
         setLoginOpen,
         runIfLoggedInElseOpenLoginDialog,
+        themeSearchQuery,
+        setThemeSearchQuery,
       }}
     >
       {children}

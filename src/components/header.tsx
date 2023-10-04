@@ -30,11 +30,12 @@ import MagicWand from "@/assets/svgs/magic-wand";
 import { useHelpers } from "@/hooks/useHelpers";
 import { buyPupa, managePurchase } from "@/services/stripe";
 import { useToast } from "@/hooks/useToast";
+import { SeachBar } from "./ui/input";
 
 const Header = () => {
   const router = useRouter();
   const { addToast } = useToast();
-  const { loginOpen, setLoginOpen } = useHelpers();
+  const { loginOpen, setLoginOpen, setThemeSearchQuery } = useHelpers();
   const { status, data: session } = useSession();
   const [singupOpen, setSingupOpen] = useState(false);
   const [userProfileOpen, setUserProfileOpen] = useState(false);
@@ -122,10 +123,26 @@ const Header = () => {
   }, [status]);
 
   return (
-    <div className="fixed bg-background max-w-screen-2xl flex border-b-[0.5px] border-border w-full justify-between py-2 px-6 h-[60px] z-10">
-      <Link href="/themes" className="flex">
-        <Logo />
-      </Link>
+    <div className="fixed bg-background max-w-screen-2xl flex border-b-[0.5px] border-border w-full justify-between py-2 px-6 h-[60px]">
+      <div className="flex items-center flex-1 pr-6">
+        <div className="w-[176px]">
+          <Link href="/themes" className="flex">
+            <Logo />
+          </Link>
+        </div>
+        {router.pathname === "/themes" ? (
+          <div className="flex flex-1">
+            <SeachBar
+              id="font-search"
+              name="font-search"
+              placeholder="Search by font, name, or description"
+              autoComplete="off"
+              onRemoveCallback={() => setThemeSearchQuery("")}
+              onSearch={(string: string) => setThemeSearchQuery(string)}
+            />
+          </div>
+        ) : null}
+      </div>
 
       <ul className="flex items-center gap-8">
         {router.pathname === "/" && (
@@ -177,7 +194,7 @@ const Header = () => {
                             src={session?.user.image}
                             alt="profile image"
                           />
-                          <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
+                          <AvatarFallback className="bg-primary text-primary-foreground text-md">
                             {session?.user.name?.split(" ")[0][0]}
                           </AvatarFallback>
                         </>

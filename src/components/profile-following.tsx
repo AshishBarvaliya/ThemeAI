@@ -72,7 +72,7 @@ export const UserTile = ({
   return (
     <div
       key={user.id}
-      className="flex border-[0.5px] border-border p-1 fade-in-0 animate-in slide-in-from-top-2"
+      className="flex border-[0.5px] border-border p-1 fade-in-0 animate-in slide-in-from-top-2 bg-white"
     >
       <Avatar className="h-12 w-12 border-[0.5px] border-border rounded-[6px]">
         {user.avatar ? (

@@ -79,6 +79,7 @@ const FontPicker: React.FC<FontPickerProps> = ({
               <SeachBar
                 id="font-search"
                 name="font-search"
+                usecase="font"
                 placeholder="Search by font"
                 autoComplete="off"
                 onRemoveCallback={() => setFilteredFonts(GOOGLE_FONTS)}
