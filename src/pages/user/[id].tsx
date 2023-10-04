@@ -196,7 +196,7 @@ export default function User() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col w-full ml-[300px] bg-white">
+      <div className="flex flex-col w-full ml-[300px] bg-black/5">
         <div
           className="flex justify-between flex-col border-b-[0.5px] px-6 py-3 pb-1.5 border-border fixed bg-background z-10 shadow-md"
           style={{
@@ -232,7 +232,7 @@ export default function User() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col mt-[56px] bg-background/10 flex-1">
+        <div className="flex flex-col mt-[56px] overflow-y-auto flex-1">
           {selectedNav === "Themes" ? (
             <ProfileThemes />
           ) : selectedNav === "Followers" ? (

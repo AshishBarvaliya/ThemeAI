@@ -3,7 +3,7 @@ import LearningTemplate from "@/assets/templates/learning/learning-mini";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import Typography from "@/components/ui/typography";
 import { useHelpers } from "@/hooks/useHelpers";
-import { ColorsProps, GetThemeTileProps } from "@/interfaces/theme";
+import { ColorsProps, GetThemeTileProps, TagProps } from "@/interfaces/theme";
 import { getMappedTheme } from "@/lib/theme";
 import { cn, generateAllShades, getLuminance } from "@/lib/utils";
 import { AvatarFallback } from "@radix-ui/react-avatar";
@@ -12,7 +12,7 @@ import { StarIcon } from "lucide-react";
 import moment from "moment";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import NiceAvatar from "react-nice-avatar";
 
 interface ThemeTileProps {
@@ -24,6 +24,7 @@ interface ThemeTileProps {
   mutateMarkAsInappropriateTheme: (themeId: string) => void;
   setLikeLoading: (themeId: string) => void;
   loading: boolean;
+  allTags: TagProps[] | undefined;
 }
 
 export const ThemeTile: React.FC<ThemeTileProps> = ({
@@ -35,8 +36,10 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
   mutateMarkAsInappropriateTheme,
   setLikeLoading,
   loading,
+  allTags,
 }) => {
   const router = useRouter();
+  const moreMenuContainerRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
   const { runIfLoggedInElseOpenLoginDialog } = useHelpers();
   const [copied, setCopied] = useState<null | string>(null);
@@ -50,12 +53,29 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
     (user) => user.userId === session?.user.id
   );
 
+  const handleOutsideClick = (event: any) => {
+    if (
+      moreMenuContainerRef.current &&
+      !moreMenuContainerRef.current.contains(event.target)
+    ) {
+      setOpenMore(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
+
   return (
     <div className="w-[270px] h-fit border-[0.5px] border-border flex flex-col shadow-lg bg-white fade-in-0 animate-in slide-in-from-right-2">
       <div className="flex gap-1 items-center p-1 border-b-[0.5px] border-border ">
         <div className="flex flex-1 gap-2 items-center">
           <Avatar
-            className="h-6 w-6 border-[0.5px] border-border cursor-pointer hover:shadow-normal hover:-translate-x-px hover:-translate-y-px"
+            className="flex h-6 w-6 border-[0.5px] items-center justify-center bg-primary border-border cursor-pointer hover:shadow-normal hover:-translate-x-px hover:-translate-y-px"
             onClick={() => router.push(`/user/${theme.user.id}`)}
           >
             {mappedTheme.user.avatar ? (
@@ -66,7 +86,7 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
             ) : (
               <>
                 <AvatarImage src={mappedTheme.user.image} alt="profile image" />
-                <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
+                <AvatarFallback className="flex bg-primary text-primary-foreground text-xs">
                   {mappedTheme.user.name.split(" ")[0][0]}
                 </AvatarFallback>
               </>
@@ -75,58 +95,53 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
           <p className="text-xs">{mappedTheme.user.name}</p>
         </div>
         <div className="flex items-center">
-          <div className="py-1 cursor-pointer">
+          <div
+            className="relative py-1 cursor-pointer"
+            ref={moreMenuContainerRef}
+          >
             <DotsVerticalIcon
               className="h-4 w-4 hover:stroke-primary-foreground"
               onClick={() => setOpenMore(!openMore)}
             />
             {openMore ? (
-              <>
-                <div
-                  className="fixed top-0 left-0 bottom-0 right-0 z-10"
+              <div
+                data-state={openMore ? "open" : "closed"}
+                className="absolute mt-1 gap-1 flex z-20 flex-col p-2 w-[160px] -ml-[20px] bg-white border-[0.5px] border-border shadow-dropshadow data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2"
+              >
+                <p
+                  className="text-xs cursor-pointer flex items-center p-1 hover:bg-primary/20"
                   onClick={() => {
-                    setOpenMore(false);
+                    runIfLoggedInElseOpenLoginDialog(() => {
+                      isSaved
+                        ? mutateUnsaveTheme(mappedTheme.id)
+                        : mutateSaveTheme(mappedTheme.id);
+                      setTimeout(() => {
+                        setOpenMore(false);
+                      }, 200);
+                    });
                   }}
-                />
-                <div
-                  data-state={openMore ? "open" : "closed"}
-                  className="absolute mt-1 gap-1 flex z-20 flex-col p-2 w-[160px] -ml-[20px] bg-white border-[0.5px] border-border shadow-dropshadow data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2"
                 >
-                  <p
-                    className="text-xs cursor-pointer flex items-center p-1 hover:bg-primary/20"
-                    onClick={() => {
-                      runIfLoggedInElseOpenLoginDialog(() => {
-                        isSaved
-                          ? mutateUnsaveTheme(mappedTheme.id)
-                          : mutateSaveTheme(mappedTheme.id);
-                        setTimeout(() => {
-                          setOpenMore(false);
-                        }, 200);
-                      });
-                    }}
-                  >
-                    {isSaved ? "Saved" : "Save"}
-                    {isSaved ? (
-                      <StarFilledIcon className="h-3.5 w-3.5 ml-1 text-warning" />
-                    ) : (
-                      <StarIcon className="h-3.5 w-3.5 ml-1" />
-                    )}
-                  </p>
-                  <p
-                    className="text-xs cursor-pointer p-1 hover:bg-primary/20"
-                    onClick={() => {
-                      runIfLoggedInElseOpenLoginDialog(() => {
-                        mutateMarkAsInappropriateTheme(mappedTheme.id);
-                        setTimeout(() => {
-                          setOpenMore(false);
-                        }, 100);
-                      });
-                    }}
-                  >
-                    Mark as inappropriate
-                  </p>
-                </div>
-              </>
+                  {isSaved ? "Saved" : "Save"}
+                  {isSaved ? (
+                    <StarFilledIcon className="h-3.5 w-3.5 ml-1 text-warning" />
+                  ) : (
+                    <StarIcon className="h-3.5 w-3.5 ml-1" />
+                  )}
+                </p>
+                <p
+                  className="text-xs cursor-pointer p-1 hover:bg-primary/20"
+                  onClick={() => {
+                    runIfLoggedInElseOpenLoginDialog(() => {
+                      mutateMarkAsInappropriateTheme(mappedTheme.id);
+                      setTimeout(() => {
+                        setOpenMore(false);
+                      }, 100);
+                    });
+                  }}
+                >
+                  Mark as inappropriate
+                </p>
+              </div>
             ) : null}
           </div>
         </div>
@@ -142,7 +157,7 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
         className="flex flex-col border-t-[0.5px] p-1.5 gap-2"
         style={{ borderColor: mappedTheme.colors.primary }}
       >
-        <Typography element={"p"} as="p" className="text-lg">
+        <Typography element={"p"} as="p" className="text-lg truncate">
           {mappedTheme.name}
         </Typography>
         <div className="flex gap-2">
@@ -174,13 +189,13 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
             );
           })}
         </div>
-        <div className="flex gap-1">
-          {mappedTheme.tags.map((tag) => (
+        <div className="flex gap-1 overflow-x-auto">
+          {mappedTheme.tags.map((tagId) => (
             <div
-              key={tag}
-              className="flex items-center border-[0.5px] border-border px-2 py-0.5 rounded-[45px] text-xs"
+              key={tagId}
+              className="flex items-center border-[0.5px] border-border px-2 py-0.5 rounded-[45px] text-xs whitespace-nowrap"
             >
-              {tag}
+              {allTags?.find((tag) => tag.id === tagId)?.name}
             </div>
           ))}
         </div>

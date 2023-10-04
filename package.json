@@ -41,6 +41,7 @@
     "drizzle-orm": "^0.28.6",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.13",
+    "lorem-ipsum": "^2.0.8",
     "lucide-react": "0.263.1",
     "moment": "^2.29.4",
     "next": "13.4.13",

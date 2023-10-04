@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTags, getThemesByUserAndType } from "@/services/theme";
-import { GetThemeTileProps } from "@/interfaces/theme";
+import { GetThemeTileProps, TagProps } from "@/interfaces/theme";
 import { ThemeTile } from "@/components/theme-tile";
 import { useSession } from "next-auth/react";
 import { useHelpers } from "@/hooks/useHelpers";
@@ -62,6 +62,7 @@ export default function ProfileThemes() {
       getThemes: () => (
         <CreatedTheme
           mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+          tags={tags}
         />
       ),
     },
@@ -73,6 +74,7 @@ export default function ProfileThemes() {
         session ? (
           <LikedTheme
             mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+            tags={tags}
           />
         ) : (
           <></>
@@ -87,6 +89,7 @@ export default function ProfileThemes() {
             getThemes: () => (
               <SavedTheme
                 mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+                tags={tags}
               />
             ),
           },
@@ -113,7 +116,7 @@ export default function ProfileThemes() {
                 } else setSelectedTab(tab.id);
               }}
               className={cn(
-                "border-[0.5px] border-border px-2.5 h-8 flex items-center text-xs cursor-pointer hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
+                "border-[0.5px] border-border bg-white px-2.5 h-8 flex items-center text-xs cursor-pointer hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
                 {
                   "bg-primary": selectedTab === tab.id,
                 }
@@ -152,7 +155,7 @@ export default function ProfileThemes() {
           </div>
         </div>
       </div>
-      <div className="flex gap-4 px-4 flex-wrap">
+      <div className="flex gap-4 px-4 flex-wrap pb-4">
         {tabs.find((tab) => tab.id === selectedTab)?.getThemes()}
       </div>
     </>
@@ -161,10 +164,12 @@ export default function ProfileThemes() {
 
 interface CreatedThemeProps {
   mutateMarkAsInappropriateTheme: (themeId: string) => void;
+  tags: TagProps[] | undefined;
 }
 
 const CreatedTheme: React.FC<CreatedThemeProps> = ({
   mutateMarkAsInappropriateTheme,
+  tags,
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -271,6 +276,7 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
       mutateUnsaveTheme={mutateUnsaveTheme}
       mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
       setLikeLoading={setLikeLoading}
+      allTags={tags}
       loading={
         likeLoading === theme.id &&
         (isLoadingDislikeTheme || isLoadingLikeTheme)
@@ -281,6 +287,7 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
 
 const LikedTheme: React.FC<CreatedThemeProps> = ({
   mutateMarkAsInappropriateTheme,
+  tags,
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -387,6 +394,7 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
       mutateUnsaveTheme={mutateUnsaveTheme}
       mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
       setLikeLoading={setLikeLoading}
+      allTags={tags}
       loading={
         likeLoading === theme.id &&
         (isLoadingDislikeTheme || isLoadingLikeTheme)
@@ -397,6 +405,7 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
 
 const SavedTheme: React.FC<CreatedThemeProps> = ({
   mutateMarkAsInappropriateTheme,
+  tags,
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -503,6 +512,7 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
       mutateUnsaveTheme={mutateUnsaveTheme}
       mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
       setLikeLoading={setLikeLoading}
+      allTags={tags}
       loading={
         likeLoading === theme.id &&
         (isLoadingDislikeTheme || isLoadingLikeTheme)

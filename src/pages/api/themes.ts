@@ -3,7 +3,7 @@ import { createId } from "@paralleldrive/cuid2";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 import { tileThemeProps } from "@/constants/theme";
-import { eq, desc, ne, and } from "drizzle-orm";
+import { eq, desc, ne, and, or, ilike } from "drizzle-orm";
 import { TagProps } from "@/interfaces/theme";
 import {
   tags as tagsSchema,
@@ -14,6 +14,8 @@ import {
   usersToSavedThemes,
 } from "@/db/schema";
 import db from "@/db";
+
+const THEMES_PER_PAGE = Number(process.env.THEMES_PER_PAGE || 10);
 
 interface ThemeProps {
   id: string;
@@ -185,11 +187,29 @@ export default async function handler(
         }
       }
       try {
+        const query = req.query.search as string;
+        const page = Number((req.query.page as string) || 1);
         const themes = await db.query.themes.findMany({
-          where: eq(themesSchema.isPrivate, false),
+          where: and(
+            eq(themesSchema.isPrivate, false),
+            or(
+              ilike(themesSchema.name, `%${query}%`),
+              ilike(themesSchema.color_1_reason, `%${query}%`),
+              ilike(themesSchema.color_2_reason, `%${query}%`),
+              ilike(themesSchema.color_3_reason, `%${query}%`),
+              ilike(themesSchema.color_4_reason, `%${query}%`),
+              ilike(themesSchema.font_1, `%${query}%`),
+              ilike(themesSchema.font_1_reason, `%${query}%`),
+              ilike(themesSchema.font_2, `%${query}%`),
+              ilike(themesSchema.font_2_reason, `%${query}%`),
+              ilike(themesSchema.prompt, `%${query}%`)
+            )
+          ),
           columns: tileThemeProps.columns,
           with: tileThemeProps.with,
           orderBy: [desc(themesSchema.createdAt)],
+          limit: THEMES_PER_PAGE,
+          offset: (page - 1) * THEMES_PER_PAGE,
         });
 
         return res.status(200).json(themes);
