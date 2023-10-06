@@ -22,6 +22,7 @@ export const sendLikeSaveNotification = async ({
       where: eq(themesSchema.id, upsertItem[0].themeId),
       columns: {
         id: true,
+        popularity: true,
       },
       with: {
         user: {
@@ -39,6 +40,13 @@ export const sendLikeSaveNotification = async ({
           experience: Number(currentTheme?.user.experience || 0) + 15,
         })
         .where(eq(usersSchema.id, currentTheme?.user.id));
+
+      await db
+        .update(themesSchema)
+        .set({
+          popularity: Number(currentTheme?.popularity || 0) + 1,
+        })
+        .where(eq(themesSchema.id, upsertItem[0].themeId));
 
       await db.insert(usersTonotifications).values({
         id: createId(),

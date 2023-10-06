@@ -189,6 +189,7 @@ export default async function handler(
       try {
         const query = req.query.search as string;
         const page = Number((req.query.page as string) || 1);
+        const type = req.query.type as string;
         const themes = await db.query.themes.findMany({
           where: and(
             eq(themesSchema.isPrivate, false),
@@ -207,7 +208,11 @@ export default async function handler(
           ),
           columns: tileThemeProps.columns,
           with: tileThemeProps.with,
-          orderBy: [desc(themesSchema.createdAt)],
+          orderBy: [
+            type === "popular"
+              ? desc(themesSchema.popularity)
+              : desc(themesSchema.createdAt),
+          ],
           limit: THEMES_PER_PAGE,
           offset: (page - 1) * THEMES_PER_PAGE,
         });

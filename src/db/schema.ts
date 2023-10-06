@@ -116,6 +116,7 @@ export const themes = pgTable("theme", {
   isPrivate: boolean("isPrivate").default(false),
   isAIGenerated: boolean("isAIGenerated").default(false),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+  popularity: integer("popularity").default(0),
   userId: text("userId")
     .notNull()
     .references(() => users.id),

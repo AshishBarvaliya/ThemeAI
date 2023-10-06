@@ -1,0 +1,1 @@
+ALTER TABLE "theme" ADD COLUMN "popularity" integer DEFAULT 0;

@@ -24,16 +24,19 @@ export default function Themes() {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { addToast } = useToast();
+  const { themeType } = useHelpers();
   const { themeSearchQuery, setThemeSearchQuery } = useHelpers();
   const [likeLoading, setLikeLoading] = useState<string | null>(null);
   const { data: tags } = useQuery(["tags"], getTags);
   const {
     data: themes,
+    isLoading,
     fetchNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ["home", "themes", themeSearchQuery],
-    queryFn: ({ pageParam = 1 }) => getThemes(pageParam, themeSearchQuery),
+    queryKey: ["home", "themes", themeSearchQuery, themeType],
+    queryFn: ({ pageParam = 1 }) =>
+      getThemes(pageParam, themeSearchQuery, themeType),
     getNextPageParam: (_lastPage, pages) => pages.length + 1,
   });
   const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
@@ -154,7 +157,7 @@ export default function Themes() {
 
   return (
     <div className="flex bg-black/5 w-full">
-      {themes?.pages[0]?.length ? (
+      {isLoading ? null : themes?.pages[0]?.length ? (
         <div
           className="flex flex-wrap p-5 overflow-y-auto px-10 gap-6"
           onScroll={handleScroll}

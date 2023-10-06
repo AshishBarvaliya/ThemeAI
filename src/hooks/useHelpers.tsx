@@ -13,6 +13,8 @@ type Context = {
   runIfLoggedInElseOpenLoginDialog: (fn: () => void) => void;
   themeSearchQuery: string;
   setThemeSearchQuery: Dispatch<SetStateAction<string>>;
+  themeType: "explore" | "foryou" | "popular";
+  setThemeType: Dispatch<SetStateAction<"explore" | "foryou" | "popular">>;
 };
 
 const HelpersContext = createContext({
@@ -21,6 +23,8 @@ const HelpersContext = createContext({
   runIfLoggedInElseOpenLoginDialog: () => {},
   themeSearchQuery: "",
   setThemeSearchQuery: () => {},
+  themeType: "explore",
+  setThemeType: () => {},
 } as Context);
 
 export const HelpersProvider = ({
@@ -30,6 +34,7 @@ export const HelpersProvider = ({
 }) => {
   const [loginOpen, setLoginOpen] = useState(false);
   const [themeSearchQuery, setThemeSearchQuery] = useState("");
+  const [themeType, setThemeType] = useState<Context["themeType"]>("explore");
   const { status } = useSession();
 
   const runIfLoggedInElseOpenLoginDialog = (fn: () => void) => {
@@ -48,6 +53,8 @@ export const HelpersProvider = ({
         runIfLoggedInElseOpenLoginDialog,
         themeSearchQuery,
         setThemeSearchQuery,
+        themeType,
+        setThemeType,
       }}
     >
       {children}

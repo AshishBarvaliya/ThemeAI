@@ -1,11 +1,4 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { SortByThemesProps, cn, getSortedThemes } from "@/lib/utils";
 import { getUser } from "@/services/user";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -23,6 +16,8 @@ import {
   themeUnsave,
 } from "@/services/toggle";
 import { useToast } from "@/hooks/useToast";
+import { FiterTags } from "./filter-tags";
+import { SortThemes } from "./sort-themes";
 
 interface TabsProps {
   id: "createdThemes" | "likedThemes" | "savedThemes";
@@ -52,7 +47,9 @@ export default function ProfileThemes() {
   });
   const [selectedTab, setSelectedTab] =
     useState<TabsProps["id"]>("createdThemes");
-  const [filter, setFilter] = useState("");
+  const [filters, setFilters] = useState<string[]>([]);
+  const [sortItem, setSortItem] =
+    useState<SortByThemesProps["sortBy"]>("Newest");
 
   const tabs: TabsProps[] = [
     {
@@ -63,6 +60,7 @@ export default function ProfileThemes() {
         <CreatedTheme
           mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
           tags={tags}
+          sortItem={sortItem}
         />
       ),
     },
@@ -75,6 +73,7 @@ export default function ProfileThemes() {
           <LikedTheme
             mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
             tags={tags}
+            sortItem={sortItem}
           />
         ) : (
           <></>
@@ -90,6 +89,7 @@ export default function ProfileThemes() {
               <SavedTheme
                 mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
                 tags={tags}
+                sortItem={sortItem}
               />
             ),
           },
@@ -128,30 +128,14 @@ export default function ProfileThemes() {
         </div>
         <div className="flex">
           <div className="flex items-center gap-3">
-            <Select onValueChange={setFilter}>
-              <SelectTrigger className="w-[120px] h-8 text-xs">
-                <SelectValue placeholder="Filter by tag" />
-              </SelectTrigger>
-              <SelectContent>
-                {tags?.map((tag) => (
-                  <SelectItem key={tag.id} value={tag.name} className="text-xs">
-                    {tag.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select onValueChange={setFilter}>
-              <SelectTrigger className="w-[70px] h-8 text-xs">
-                <SelectValue placeholder="Sort" />
-              </SelectTrigger>
-              <SelectContent>
-                {tags?.map((tag) => (
-                  <SelectItem key={tag.id} value={tag.name} className="text-xs">
-                    {tag.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {tags && (
+              <FiterTags
+                tags={tags}
+                setSelected={setFilters}
+                selected={filters}
+              />
+            )}
+            <SortThemes setSortItem={setSortItem} />
           </div>
         </div>
       </div>
@@ -165,10 +149,12 @@ export default function ProfileThemes() {
 interface CreatedThemeProps {
   mutateMarkAsInappropriateTheme: (themeId: string) => void;
   tags: TagProps[] | undefined;
+  sortItem: SortByThemesProps["sortBy"];
 }
 
 const CreatedTheme: React.FC<CreatedThemeProps> = ({
   mutateMarkAsInappropriateTheme,
+  sortItem,
   tags,
 }) => {
   const queryClient = useQueryClient();
@@ -266,7 +252,12 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
     },
   });
 
-  return createdThemes?.map((theme: GetThemeTileProps, index: number) => (
+  const sortedThemes = getSortedThemes({
+    themes: createdThemes || [],
+    sortBy: sortItem,
+  });
+
+  return sortedThemes?.map((theme: GetThemeTileProps, index: number) => (
     <ThemeTile
       key={index}
       theme={theme}
@@ -287,6 +278,7 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
 
 const LikedTheme: React.FC<CreatedThemeProps> = ({
   mutateMarkAsInappropriateTheme,
+  sortItem,
   tags,
 }) => {
   const queryClient = useQueryClient();
@@ -384,7 +376,12 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
     },
   });
 
-  return likedThemes?.map((theme: GetThemeTileProps, index: number) => (
+  const sortedThemes = getSortedThemes({
+    themes: likedThemes || [],
+    sortBy: sortItem,
+  });
+
+  return sortedThemes?.map((theme: GetThemeTileProps, index: number) => (
     <ThemeTile
       key={index}
       theme={theme}
@@ -405,6 +402,7 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
 
 const SavedTheme: React.FC<CreatedThemeProps> = ({
   mutateMarkAsInappropriateTheme,
+  sortItem,
   tags,
 }) => {
   const queryClient = useQueryClient();
@@ -502,7 +500,12 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
     },
   });
 
-  return savedThemes?.map((theme: GetThemeTileProps, index: number) => (
+  const sortedThemes = getSortedThemes({
+    themes: savedThemes || [],
+    sortBy: sortItem,
+  });
+
+  return sortedThemes?.map((theme: GetThemeTileProps, index: number) => (
     <ThemeTile
       key={index}
       theme={theme}
