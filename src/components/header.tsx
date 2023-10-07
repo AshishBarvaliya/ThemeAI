@@ -31,11 +31,20 @@ import { useHelpers } from "@/hooks/useHelpers";
 import { buyPupa, managePurchase } from "@/services/stripe";
 import { useToast } from "@/hooks/useToast";
 import { SeachBar } from "./ui/input";
+import { FiterTags } from "./filter-tags";
+import { useQuery } from "@tanstack/react-query";
+import { getTags } from "@/services/theme";
 
 const Header = () => {
   const router = useRouter();
   const { addToast } = useToast();
-  const { loginOpen, setLoginOpen, setThemeSearchQuery } = useHelpers();
+  const {
+    loginOpen,
+    setLoginOpen,
+    setThemeSearchQuery,
+    filterTags,
+    setFilterTags,
+  } = useHelpers();
   const { status, data: session } = useSession();
   const [singupOpen, setSingupOpen] = useState(false);
   const [userProfileOpen, setUserProfileOpen] = useState(false);
@@ -50,6 +59,7 @@ const Header = () => {
     open: false,
     type: "pleaseVerify",
   });
+  const { data: tags } = useQuery(["tags"], getTags);
 
   const isAuthenticated = status === "authenticated";
 
@@ -122,6 +132,12 @@ const Header = () => {
     }
   }, [status]);
 
+  useEffect(() => {
+    if (filterTags?.length) {
+      setThemeSearchQuery("");
+    }
+  }, [filterTags]);
+
   return (
     <div className="fixed bg-background max-w-screen-2xl flex border-b-[0.5px] border-border w-full justify-between py-2 px-6 h-[60px]">
       <div className="flex items-center flex-1 pr-6">
@@ -131,14 +147,28 @@ const Header = () => {
           </Link>
         </div>
         {router.pathname === "/themes" ? (
-          <div className="flex flex-1">
-            <SeachBar
-              id="font-search"
-              name="font-search"
-              placeholder="Search by font, name, or description"
-              autoComplete="off"
-              onRemoveCallback={() => setThemeSearchQuery("")}
-              onSearch={(string: string) => setThemeSearchQuery(string)}
+          <div className="flex flex-1 gap-4">
+            <div className="flex items-center flex-1">
+              <SeachBar
+                id="font-search"
+                name="font-search"
+                placeholder="Search by font, name, or description"
+                autoComplete="off"
+                onRemoveCallback={() => {
+                  setThemeSearchQuery("");
+                  setFilterTags([]);
+                }}
+                onSearch={(string: string) => {
+                  setThemeSearchQuery(string);
+                  setFilterTags([]);
+                }}
+              />
+            </div>
+            <FiterTags
+              tags={tags || []}
+              selected={filterTags}
+              setSelected={setFilterTags}
+              isHeader
             />
           </div>
         ) : null}

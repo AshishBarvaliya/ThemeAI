@@ -190,6 +190,43 @@ export default async function handler(
         const query = req.query.search as string;
         const page = Number((req.query.page as string) || 1);
         const type = req.query.type as string;
+        const tags = req.query.tags as string;
+        if (tags) {
+          const tagsArray = tags.split(",");
+          const themes = await db.query.themesToTags.findMany({
+            where: or(
+              ...tagsArray.map((tag) => eq(themesToTagsSchema.tagId, tag))
+            ),
+            with: {
+              theme: {
+                columns: {
+                  ...tileThemeProps.columns,
+                  popularity: true,
+                  isPrivate: true,
+                },
+                with: tileThemeProps.with,
+              },
+            },
+          });
+
+          return res.status(200).json(
+            themes
+              .sort((a: any, b: any) => {
+                return type === "popular"
+                  ? b.theme.popularity - a.theme.popularity
+                  : // @ts-ignore
+                    new Date(b.theme.createdAt) - new Date(a.theme.createdAt);
+              })
+              .filter((theme) => {
+                return theme.theme.isPrivate === false;
+              })
+              .map((theme) => {
+                const { popularity, ...rest } = theme.theme;
+                return { ...rest };
+              })
+          );
+        }
+
         const themes = await db.query.themes.findMany({
           where: and(
             eq(themesSchema.isPrivate, false),
@@ -219,6 +256,7 @@ export default async function handler(
 
         return res.status(200).json(themes);
       } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: "Failed to fetch themes" });
       }
     }

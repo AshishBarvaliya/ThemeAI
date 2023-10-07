@@ -42,9 +42,12 @@ export const postTheme = async () => {
 export const getThemes = async (
   page: number,
   themeSearchQuery: string,
-  type: "explore" | "foryou" | "popular"
+  type: "explore" | "foryou" | "popular",
+  tags: string[]
 ): Promise<GetThemeTileProps[]> => {
-  const apiUrl = `/api/themes?page=${page}&search=${themeSearchQuery}&type=${type}`;
+  const apiUrl = `/api/themes?page=${page}&search=${themeSearchQuery}&type=${type}${
+    tags ? `&tags=${tags.join(",")}` : ""
+  }`;
   const response = await axios.get(apiUrl);
 
   return response.data as GetThemeTileProps[];

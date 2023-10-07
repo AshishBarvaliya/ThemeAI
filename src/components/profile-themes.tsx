@@ -47,7 +47,15 @@ export default function ProfileThemes() {
   });
   const [selectedTab, setSelectedTab] =
     useState<TabsProps["id"]>("createdThemes");
-  const [filters, setFilters] = useState<string[]>([]);
+  const [filters, setFilters] = useState<{
+    createdThemes: string[];
+    likedThemes: string[];
+    savedThemes: string[];
+  }>({
+    createdThemes: [],
+    likedThemes: [],
+    savedThemes: [],
+  });
   const [sortItem, setSortItem] =
     useState<SortByThemesProps["sortBy"]>("Newest");
 
@@ -61,6 +69,7 @@ export default function ProfileThemes() {
           mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
           tags={tags}
           sortItem={sortItem}
+          filters={filters.createdThemes}
         />
       ),
     },
@@ -74,6 +83,7 @@ export default function ProfileThemes() {
             mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
             tags={tags}
             sortItem={sortItem}
+            filters={filters.likedThemes}
           />
         ) : (
           <></>
@@ -90,6 +100,7 @@ export default function ProfileThemes() {
                 mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
                 tags={tags}
                 sortItem={sortItem}
+                filters={filters.savedThemes}
               />
             ),
           },
@@ -131,8 +142,10 @@ export default function ProfileThemes() {
             {tags && (
               <FiterTags
                 tags={tags}
-                setSelected={setFilters}
-                selected={filters}
+                setSelected={(selected) =>
+                  setFilters({ ...filters, [selectedTab]: selected })
+                }
+                selected={filters[selectedTab]}
               />
             )}
             <SortThemes setSortItem={setSortItem} />
@@ -150,12 +163,14 @@ interface CreatedThemeProps {
   mutateMarkAsInappropriateTheme: (themeId: string) => void;
   tags: TagProps[] | undefined;
   sortItem: SortByThemesProps["sortBy"];
+  filters: string[];
 }
 
 const CreatedTheme: React.FC<CreatedThemeProps> = ({
   mutateMarkAsInappropriateTheme,
   sortItem,
   tags,
+  filters,
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -257,29 +272,36 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
     sortBy: sortItem,
   });
 
-  return sortedThemes?.map((theme: GetThemeTileProps, index: number) => (
-    <ThemeTile
-      key={index}
-      theme={theme}
-      mutateLikeTheme={mutateLikeTheme}
-      mutateSaveTheme={mutateSaveTheme}
-      mutateDislikeTheme={mutateDislikeTheme}
-      mutateUnsaveTheme={mutateUnsaveTheme}
-      mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
-      setLikeLoading={setLikeLoading}
-      allTags={tags}
-      loading={
-        likeLoading === theme.id &&
-        (isLoadingDislikeTheme || isLoadingLikeTheme)
-      }
-    />
-  ));
+  return sortedThemes
+    ?.filter((theme) =>
+      filters.length
+        ? theme.tags.some((tag) => filters.includes(tag.tagId))
+        : true
+    )
+    .map((theme: GetThemeTileProps, index: number) => (
+      <ThemeTile
+        key={index}
+        theme={theme}
+        mutateLikeTheme={mutateLikeTheme}
+        mutateSaveTheme={mutateSaveTheme}
+        mutateDislikeTheme={mutateDislikeTheme}
+        mutateUnsaveTheme={mutateUnsaveTheme}
+        mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+        setLikeLoading={setLikeLoading}
+        allTags={tags}
+        loading={
+          likeLoading === theme.id &&
+          (isLoadingDislikeTheme || isLoadingLikeTheme)
+        }
+      />
+    ));
 };
 
 const LikedTheme: React.FC<CreatedThemeProps> = ({
   mutateMarkAsInappropriateTheme,
   sortItem,
   tags,
+  filters,
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -381,29 +403,36 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
     sortBy: sortItem,
   });
 
-  return sortedThemes?.map((theme: GetThemeTileProps, index: number) => (
-    <ThemeTile
-      key={index}
-      theme={theme}
-      mutateLikeTheme={mutateLikeTheme}
-      mutateSaveTheme={mutateSaveTheme}
-      mutateDislikeTheme={mutateDislikeTheme}
-      mutateUnsaveTheme={mutateUnsaveTheme}
-      mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
-      setLikeLoading={setLikeLoading}
-      allTags={tags}
-      loading={
-        likeLoading === theme.id &&
-        (isLoadingDislikeTheme || isLoadingLikeTheme)
-      }
-    />
-  ));
+  return sortedThemes
+    ?.filter((theme) =>
+      filters.length
+        ? theme.tags.some((tag) => filters.includes(tag.tagId))
+        : true
+    )
+    .map((theme: GetThemeTileProps, index: number) => (
+      <ThemeTile
+        key={index}
+        theme={theme}
+        mutateLikeTheme={mutateLikeTheme}
+        mutateSaveTheme={mutateSaveTheme}
+        mutateDislikeTheme={mutateDislikeTheme}
+        mutateUnsaveTheme={mutateUnsaveTheme}
+        mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+        setLikeLoading={setLikeLoading}
+        allTags={tags}
+        loading={
+          likeLoading === theme.id &&
+          (isLoadingDislikeTheme || isLoadingLikeTheme)
+        }
+      />
+    ));
 };
 
 const SavedTheme: React.FC<CreatedThemeProps> = ({
   mutateMarkAsInappropriateTheme,
   sortItem,
   tags,
+  filters,
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -505,21 +534,27 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
     sortBy: sortItem,
   });
 
-  return sortedThemes?.map((theme: GetThemeTileProps, index: number) => (
-    <ThemeTile
-      key={index}
-      theme={theme}
-      mutateLikeTheme={mutateLikeTheme}
-      mutateSaveTheme={mutateSaveTheme}
-      mutateDislikeTheme={mutateDislikeTheme}
-      mutateUnsaveTheme={mutateUnsaveTheme}
-      mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
-      setLikeLoading={setLikeLoading}
-      allTags={tags}
-      loading={
-        likeLoading === theme.id &&
-        (isLoadingDislikeTheme || isLoadingLikeTheme)
-      }
-    />
-  ));
+  return sortedThemes
+    ?.filter((theme) =>
+      filters.length
+        ? theme.tags.some((tag) => filters.includes(tag.tagId))
+        : true
+    )
+    .map((theme: GetThemeTileProps, index: number) => (
+      <ThemeTile
+        key={index}
+        theme={theme}
+        mutateLikeTheme={mutateLikeTheme}
+        mutateSaveTheme={mutateSaveTheme}
+        mutateDislikeTheme={mutateDislikeTheme}
+        mutateUnsaveTheme={mutateUnsaveTheme}
+        mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+        setLikeLoading={setLikeLoading}
+        allTags={tags}
+        loading={
+          likeLoading === theme.id &&
+          (isLoadingDislikeTheme || isLoadingLikeTheme)
+        }
+      />
+    ));
 };
