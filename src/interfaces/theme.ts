@@ -20,6 +20,11 @@ export interface TagProps {
   name: string;
 }
 
+export interface GetTagProps {
+  id: string;
+  name: string;
+}
+
 export interface ThemeProps {
   id: string;
   name: string;

@@ -24,16 +24,19 @@ export default function Themes() {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { addToast } = useToast();
-  const { themeSearchQuery, setThemeSearchQuery } = useHelpers();
+  const { themeType, filterTags } = useHelpers();
+  const { themeSearchQuery, setThemeSearchQuery, setFilterTags } = useHelpers();
   const [likeLoading, setLikeLoading] = useState<string | null>(null);
   const { data: tags } = useQuery(["tags"], getTags);
   const {
     data: themes,
+    isLoading,
     fetchNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ["home", "themes", themeSearchQuery],
-    queryFn: ({ pageParam = 1 }) => getThemes(pageParam, themeSearchQuery),
+    queryKey: ["home", "themes", themeSearchQuery, themeType, filterTags],
+    queryFn: ({ pageParam = 1 }) =>
+      getThemes(pageParam, themeSearchQuery, themeType, filterTags),
     getNextPageParam: (_lastPage, pages) => pages.length + 1,
   });
   const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
@@ -51,20 +54,23 @@ export default function Themes() {
       mutationFn: (themeId: string) => themeLike(themeId),
       onSuccess: (data) => {
         if (themes?.pages?.length) {
-          queryClient.setQueryData(["home", "themes", themeSearchQuery], {
-            ...themes,
-            pages: themes.pages.map((page) =>
-              page.map((theme) => {
-                if (theme.id === data.themeId) {
-                  return {
-                    ...theme,
-                    likedBy: [...theme.likedBy, { userId: data.userId }],
-                  };
-                }
-                return theme;
-              })
-            ),
-          });
+          queryClient.setQueryData(
+            ["home", "themes", themeSearchQuery, themeType, filterTags],
+            {
+              ...themes,
+              pages: themes.pages.map((page) =>
+                page.map((theme) => {
+                  if (theme.id === data.themeId) {
+                    return {
+                      ...theme,
+                      likedBy: [...theme.likedBy, { userId: data.userId }],
+                    };
+                  }
+                  return theme;
+                })
+              ),
+            }
+          );
         }
       },
     });
@@ -73,22 +79,25 @@ export default function Themes() {
       mutationFn: (themeId: string) => themeDislike(themeId),
       onSuccess: (data) => {
         if (themes?.pages?.length) {
-          queryClient.setQueryData(["home", "themes", themeSearchQuery], {
-            ...themes,
-            pages: themes.pages.map((page) =>
-              page.map((theme) => {
-                if (theme.id === data.themeId) {
-                  return {
-                    ...theme,
-                    likedBy: theme.likedBy.filter(
-                      (user) => user.userId !== data.userId
-                    ),
-                  };
-                }
-                return theme;
-              })
-            ),
-          });
+          queryClient.setQueryData(
+            ["home", "themes", themeSearchQuery, themeType, filterTags],
+            {
+              ...themes,
+              pages: themes.pages.map((page) =>
+                page.map((theme) => {
+                  if (theme.id === data.themeId) {
+                    return {
+                      ...theme,
+                      likedBy: theme.likedBy.filter(
+                        (user) => user.userId !== data.userId
+                      ),
+                    };
+                  }
+                  return theme;
+                })
+              ),
+            }
+          );
         }
       },
     });
@@ -97,20 +106,23 @@ export default function Themes() {
     mutationFn: (themeId: string) => themeSave(themeId),
     onSuccess: (data) => {
       if (themes?.pages?.length) {
-        queryClient.setQueryData(["home", "themes", themeSearchQuery], {
-          ...themes,
-          pages: themes.pages.map((page) =>
-            page.map((theme) => {
-              if (theme.id === data.themeId) {
-                return {
-                  ...theme,
-                  savedBy: [...theme.savedBy, { userId: data.userId }],
-                };
-              }
-              return theme;
-            })
-          ),
-        });
+        queryClient.setQueryData(
+          ["home", "themes", themeSearchQuery, themeType, filterTags],
+          {
+            ...themes,
+            pages: themes.pages.map((page) =>
+              page.map((theme) => {
+                if (theme.id === data.themeId) {
+                  return {
+                    ...theme,
+                    savedBy: [...theme.savedBy, { userId: data.userId }],
+                  };
+                }
+                return theme;
+              })
+            ),
+          }
+        );
       }
     },
   });
@@ -137,7 +149,6 @@ export default function Themes() {
       }
     },
   });
-
   const handleScroll = (e: any) => {
     const threshold = 500;
     const distanceFromBottom = e.target.scrollHeight - e.target.scrollTop;
@@ -146,7 +157,8 @@ export default function Themes() {
       distanceFromBottom <= e.target.clientHeight + threshold &&
       !isFetchingNextPage &&
       themes?.pages?.length &&
-      themes?.pages[themes?.pages?.length - 1]?.length
+      themes?.pages[themes?.pages?.length - 1]?.length &&
+      filterTags.length === 0
     ) {
       fetchNextPage();
     }
@@ -154,7 +166,7 @@ export default function Themes() {
 
   return (
     <div className="flex bg-black/5 w-full">
-      {themes?.pages[0]?.length ? (
+      {isLoading ? null : themes?.pages[0]?.length ? (
         <div
           className="flex flex-wrap p-5 overflow-y-auto px-10 gap-6"
           onScroll={handleScroll}
@@ -201,6 +213,7 @@ export default function Themes() {
                 themeSearchQuery,
               ]);
               setThemeSearchQuery("");
+              setFilterTags([]);
             }}
           >
             Create a theme

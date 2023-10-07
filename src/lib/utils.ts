@@ -1,4 +1,9 @@
-import { ColorsProps, IColor, ShadesProps } from "@/interfaces/theme";
+import {
+  ColorsProps,
+  GetThemeTileProps,
+  IColor,
+  ShadesProps,
+} from "@/interfaces/theme";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -122,4 +127,30 @@ export const getLuminance = (hex: string) => {
     shade:
       luminance > 0.5 ? "hsla(0, 0%, 0%, 0.15)" : "hsla(0, 100%, 100%, 0.15)",
   };
+};
+
+export interface SortByThemesProps {
+  themes: GetThemeTileProps[];
+  sortBy: "Newest" | "Oldest" | "Most Saved" | "Most Liked";
+}
+
+export const getSortedThemes = ({ themes, sortBy }: SortByThemesProps) => {
+  switch (sortBy) {
+    case "Newest":
+      return [...themes].sort(
+        // @ts-ignore
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+    case "Oldest":
+      return [...themes].sort(
+        // @ts-ignore
+        (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+      );
+    case "Most Liked":
+      return [...themes].sort((a, b) => b.likedBy.length - a.likedBy.length);
+    case "Most Saved":
+      return [...themes].sort((a, b) => b.savedBy.length - a.savedBy.length);
+    default:
+      return themes;
+  }
 };

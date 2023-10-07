@@ -49,7 +49,7 @@ const SeachBar = React.forwardRef<
     const [searchString, setSearchString] = React.useState("");
 
     return (
-      <div className="flex w-full relative">
+      <div className="flex w-full relative max-w-[600px]">
         <input
           type={type}
           className={cn(
