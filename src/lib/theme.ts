@@ -4,6 +4,7 @@ export const getMappedTheme = (theme: GetThemeTileProps): MappedThemeProps => ({
   id: theme.id,
   name: theme.name,
   user: theme.user,
+  template: theme.template,
   colors: {
     bg: theme.color_1,
     primary: theme.color_2,

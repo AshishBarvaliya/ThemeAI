@@ -8,6 +8,9 @@ import { FollowUserProps, UserProps } from "@/interfaces/user";
 import { NextRouter, useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { AwardIcon } from "./award-icon";
+import { USER_LEVELS } from "@/constants/user";
+import { DotFilledIcon } from "@radix-ui/react-icons";
 
 interface ProfileFollowingProps {
   user: UserProps | undefined;
@@ -92,10 +95,29 @@ export const UserTile = ({
       </Avatar>
       <div className="flex justify-between flex-1">
         <div className="flex flex-col ml-3 justify-between">
-          <div>{user.name}</div>
-          <Typography element={"p"} as="p" className="text-xs">
-            {user.title}
-          </Typography>
+          <div className="flex items-center gap-2">
+            {user.name}
+            {user?.level && (
+              <AwardIcon
+                className="h-3 w-3"
+                level={user.level}
+                info={USER_LEVELS[user.level].name}
+              />
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <Typography element={"p"} as="p" className="text-xs">
+              {user.createdThemes}
+              <span className="text-primary-foreground/70 ml-1">Themes</span>
+            </Typography>
+            <DotFilledIcon className="h-3 w-3" />
+            <Typography element={"p"} as="p" className="text-xs">
+              {user.experience}
+              <span className="text-primary-foreground/70 ml-1">
+                Experiences
+              </span>
+            </Typography>
+          </div>
         </div>
         <div className="flex items-center gap-3 mr-2">
           {button}

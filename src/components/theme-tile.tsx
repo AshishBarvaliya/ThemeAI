@@ -1,5 +1,6 @@
 import HeartIcon from "@/assets/icons/heart";
 import LearningTemplate from "@/assets/templates/learning/learning-mini";
+import MarketingTemplate from "@/assets/templates/marketing/marketing-mini";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import Typography from "@/components/ui/typography";
 import { useHelpers } from "@/hooks/useHelpers";
@@ -14,6 +15,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import NiceAvatar from "react-nice-avatar";
+import { AwardIcon } from "./award-icon";
+import { USER_LEVELS } from "@/constants/user";
 
 interface ThemeTileProps {
   theme: GetThemeTileProps;
@@ -93,6 +96,11 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
             )}
           </Avatar>
           <p className="text-xs">{mappedTheme.user.name}</p>
+          <AwardIcon
+            level={mappedTheme.user.level}
+            className="h-3 w-3"
+            info={USER_LEVELS[mappedTheme.user.level].name}
+          />
         </div>
         <div className="flex items-center">
           <div
@@ -146,12 +154,20 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
           </div>
         </div>
       </div>
-      <div className=" cursor-pointer">
-        <LearningTemplate
-          colors={mappedTheme.colors}
-          shades={generateAllShades(mappedTheme.colors)}
-          fonts={mappedTheme.fonts}
-        />
+      <div className="cursor-pointer">
+        {mappedTheme.template === "marketing" ? (
+          <MarketingTemplate
+            colors={mappedTheme.colors}
+            shades={generateAllShades(mappedTheme.colors)}
+            fonts={mappedTheme.fonts}
+          />
+        ) : (
+          <LearningTemplate
+            colors={mappedTheme.colors}
+            shades={generateAllShades(mappedTheme.colors)}
+            fonts={mappedTheme.fonts}
+          />
+        )}
       </div>
       <div
         className="flex flex-col border-t-[0.5px] p-1.5 gap-2"

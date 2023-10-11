@@ -11,6 +11,7 @@ export const tileThemeProps = {
     color_4: true,
     font_1: true,
     font_2: true,
+    template: true,
     createdAt: true,
     isAIGenerated: true,
   },
@@ -21,6 +22,7 @@ export const tileThemeProps = {
         name: true,
         avatar: true,
         image: true,
+        level: true,
       },
     },
     tags: {

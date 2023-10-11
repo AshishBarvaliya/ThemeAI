@@ -91,3 +91,11 @@ export const getAllFollowers = async (userId: string) => {
     (e: any) => e.follower
   ) as FollowUserProps[];
 };
+
+export const getUserStats = async (userId: string) => {
+  if (!userId) return;
+  const apiUrl = `/api/user?id=${userId}&type=stats`;
+  const response = await axios.get(apiUrl);
+
+  return response.data;
+};

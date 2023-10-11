@@ -41,15 +41,31 @@ export default async function handler(
                       avatar: true,
                       image: true,
                       title: true,
+                      experience: true,
+                      level: true,
+                    },
+                    with: {
+                      createdThemes: {
+                        columns: {
+                          id: true,
+                        },
+                      },
                     },
                   },
                 },
               },
             },
           });
-          return res
-            .status(200)
-            .json({ followings: followings?.following || [] });
+          return res.status(200).json({
+            followings:
+              followings?.following?.map((following) => ({
+                following: {
+                  ...following.following,
+                  createdThemes: (following.following?.createdThemes ?? [])
+                    .length,
+                },
+              })) || [],
+          });
         } catch (error) {
           return res
             .status(500)
@@ -73,19 +89,80 @@ export default async function handler(
                       avatar: true,
                       image: true,
                       title: true,
+                      experience: true,
+                      level: true,
+                    },
+                    with: {
+                      createdThemes: {
+                        columns: {
+                          id: true,
+                        },
+                      },
                     },
                   },
                 },
               },
             },
           });
-          return res
-            .status(200)
-            .json({ followers: followers?.followers || [] });
+          return res.status(200).json({
+            followers:
+              followers?.followers?.map((follower) => ({
+                follower: {
+                  ...follower.follower,
+                  createdThemes: (follower.follower?.createdThemes ?? [])
+                    .length,
+                },
+              })) || [],
+          });
         } catch (error) {
           return res
             .status(500)
             .json({ error: "An error occurred while fetching followers" });
+        }
+      }
+      if (type === "stats") {
+        try {
+          const stats: any = await db.query.users.findFirst({
+            where: eq(usersSchema.id, userId),
+            columns: {
+              id: true,
+            },
+            with: {
+              createdThemes: {
+                columns: {
+                  id: true,
+                },
+                with: {
+                  likedBy: {
+                    columns: {
+                      userId: true,
+                    },
+                    where: ne(usersToLikedThemes.status, "N"),
+                  },
+                  savedBy: {
+                    columns: {
+                      userId: true,
+                    },
+                    where: ne(usersToSavedThemes.status, "N"),
+                  },
+                },
+              },
+            },
+          });
+          return res.status(200).json({
+            likes: stats?.createdThemes?.reduce(
+              (a: any, b: any) => a + b?.likedBy?.length,
+              0
+            ),
+            saves: stats?.createdThemes?.reduce(
+              (a: any, b: any) => a + b?.savedBy?.length,
+              0
+            ),
+          });
+        } catch (error) {
+          return res
+            .status(500)
+            .json({ error: "An error occurred while fetching stats" });
         }
       }
 
@@ -102,6 +179,7 @@ export default async function handler(
                 email: true,
                 image: true,
                 experience: true,
+                level: true,
                 avatar: true,
                 pupa: true,
                 title: true,
@@ -155,6 +233,7 @@ export default async function handler(
                 email: true,
                 image: true,
                 experience: true,
+                level: true,
                 avatar: true,
                 title: true,
                 organization: true,
