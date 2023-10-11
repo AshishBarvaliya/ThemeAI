@@ -25,6 +25,7 @@ export const users = pgTable("user", {
   stripeCustomerId: text("stripeCustomerId"),
   pupa: integer("pupa").default(0),
   experience: integer("experience").default(0),
+  level: integer("level").default(0),
   avatar: text("avatar"),
 });
 
@@ -112,6 +113,7 @@ export const themes = pgTable("theme", {
   font_1_reason: text("font_1_reason").notNull(),
   font_2: text("font_2").notNull(),
   font_2_reason: text("font_2_reason").notNull(),
+  template: text("template").notNull(),
   prompt: text("prompt"),
   isPrivate: boolean("isPrivate").default(false),
   isAIGenerated: boolean("isAIGenerated").default(false),

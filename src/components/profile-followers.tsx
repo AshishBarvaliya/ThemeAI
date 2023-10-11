@@ -1,9 +1,4 @@
-import {
-  followUser,
-  getAllFollowers,
-  getAllFollowings,
-  unfollowUser,
-} from "@/services/user";
+import { followUser, getAllFollowers, getAllFollowings } from "@/services/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserTile } from "./profile-following";
 import { NextRouter, useRouter } from "next/router";

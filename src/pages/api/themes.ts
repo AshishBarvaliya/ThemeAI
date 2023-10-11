@@ -32,6 +32,7 @@ interface ThemeProps {
   font_1_reason: string;
   font_2: string;
   font_2_reason: string;
+  template: string;
   prompt: string;
   isPrivate: boolean;
   isAIGenerated: boolean;
@@ -66,6 +67,7 @@ export default async function handler(
             font_2: true,
             font_2_reason: true,
             createdAt: true,
+            template: true,
             isAIGenerated: true,
             isPrivate: true,
             prompt: true,
@@ -281,6 +283,7 @@ export default async function handler(
         prompt = "",
         isPrivate,
         isAIGenerated = false,
+        template = "learning",
         tags = [],
       }: ThemeProps = req.body;
 
@@ -321,6 +324,7 @@ export default async function handler(
             font_2_reason,
             prompt,
             isPrivate,
+            template,
             isAIGenerated,
             userId: session.user.id,
           })

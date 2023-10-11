@@ -3,7 +3,10 @@ export interface FollowUserProps {
   name: string;
   avatar: string;
   image: string;
+  experience: number;
   title: string;
+  level: number;
+  createdThemes: number;
 }
 
 export interface UserProps {
@@ -13,7 +16,9 @@ export interface UserProps {
   title: string;
   organization: string;
   location: string;
+  experience: number;
   image: string;
+  level: number;
   createdThemes: { id: string }[];
   likedThemes: { themeId: string }[];
   savedThemes: { themeId: string }[];

@@ -1,7 +1,12 @@
 import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { followUser, getUser, unfollowUser } from "@/services/user";
+import {
+  followUser,
+  getUser,
+  getUserStats,
+  unfollowUser,
+} from "@/services/user";
 import { useEffect, useState } from "react";
 import NiceAvatar from "react-nice-avatar";
 import { useRouter } from "next/router";
@@ -16,6 +21,12 @@ import { useHelpers } from "@/hooks/useHelpers";
 import { Button } from "@/components/ui/button";
 import { Session } from "next-auth";
 import { UserProps } from "@/interfaces/user";
+import { USER_LEVELS } from "@/constants/user";
+import { AwardIcon } from "@/components/award-icon";
+import HeartIcon from "@/assets/icons/heart";
+import { StarFilledIcon } from "@radix-ui/react-icons";
+import PeopleFillIcon from "@/assets/icons/people-fill";
+import BrushIcon from "@/assets/icons/brush-icon";
 
 export default function User() {
   const queryClient = useQueryClient();
@@ -25,6 +36,9 @@ export default function User() {
 
   const { data: user } = useQuery(["user", router.query.id], () =>
     getUser(router.query.id as string)
+  );
+  const { data: statsData } = useQuery(["user", router.query.id, "stats"], () =>
+    getUserStats(router.query.id as string)
   );
   const { mutate: mutateUserFollow, isLoading: isLoadingFollow } = useMutation({
     mutationFn: (userId: string) => followUser(userId),
@@ -82,7 +96,7 @@ export default function User() {
     if (session?.user?.id === user?.id) {
       return (
         <Button
-          className="my-4 w-full"
+          className="my-3.5 w-full"
           onClick={() => router.push("/settings")}
         >
           Edit profile
@@ -99,7 +113,7 @@ export default function User() {
 
       return (
         <Button
-          className="my-4 w-full"
+          className="my-3.5 w-full"
           onClick={() =>
             isFollowing
               ? mutateUserUnfollow(user?.id as string)
@@ -113,31 +127,77 @@ export default function User() {
       );
     }
     return (
-      <Button className="my-4 w-full" onClick={() => setLoginOpen(true)}>
+      <Button className="my-3.5 w-full" onClick={() => setLoginOpen(true)}>
         Follow
       </Button>
     );
   };
+  const stats = [
+    {
+      title: "Followers",
+      value: user?.followers?.length || 0,
+      icon: <PeopleFillIcon className="h-4 w-4" />,
+    },
+    {
+      title: "Following",
+      value: user?.following?.length || 0,
+      icon: <PeopleFillIcon className="h-4 w-4" />,
+    },
+    {
+      title: "Experiences",
+      value: user?.experience || 0,
+      icon: <BrushIcon className="h-4 w-4" />,
+    },
+    {
+      title: "Likes",
+      value: statsData?.likes || 0,
+      icon: <HeartIcon className="h-4 w-4 text-[red]" active />,
+    },
+    {
+      title: "Saves",
+      value: statsData?.saves || 0,
+      icon: <StarFilledIcon className="h-4 w-4 text-warning" />,
+    },
+  ];
 
   return (
     <div className="flex w-full">
       <div className="flex flex-col fixed h-full border-border border-r-[0.5px] w-[300px] items-center shadow-lg">
-        <div className="flex flex-col w-full p-6 items-center">
-          <Avatar className="h-[200px] w-[200px] border-[0.5px] border-border shadow-md">
-            {user?.avatar ? (
-              <NiceAvatar
-                className="h-[200px] w-[200px]"
-                {...JSON.parse(user?.avatar)}
-              />
-            ) : (
-              <>
-                <AvatarImage src={user?.image} alt="profile image" />
-                <AvatarFallback className="bg-primary text-primary-foreground text-[130px]">
-                  {user?.name?.split(" ")[0][0]}
-                </AvatarFallback>
-              </>
+        <div className="flex flex-col w-full p-6 pt-4 items-center">
+          <div className="relative">
+            <Avatar
+              className={cn(
+                "h-[190px] w-[190px] border-border shadow-md",
+                user?.level === 0 ? "border-[0.5px]" : "border-[3px]",
+                user?.level
+                  ? USER_LEVELS[user?.level].borderColor
+                  : "border-border"
+              )}
+            >
+              {user?.avatar ? (
+                <NiceAvatar
+                  className="h-[190px] w-[190px]"
+                  {...JSON.parse(user?.avatar)}
+                />
+              ) : (
+                <>
+                  <AvatarImage src={user?.image} alt="profile image" />
+                  <AvatarFallback className="bg-primary text-primary-foreground text-[130px]">
+                    {user?.name?.split(" ")[0][0]}
+                  </AvatarFallback>
+                </>
+              )}
+            </Avatar>
+            {user?.level && (
+              <div className="absolute right-1 bottom-8">
+                <AwardIcon
+                  className="h-7 w-7"
+                  level={user.level}
+                  info={USER_LEVELS[user.level].name}
+                />
+              </div>
             )}
-          </Avatar>
+          </div>
           <div className="flex flex-col mt-4 justify-center text-center">
             <Typography
               element="h3"
@@ -146,32 +206,20 @@ export default function User() {
             >
               {user?.name || "-"}
             </Typography>
-          </div>
-          <div className="flex w-full justify-center items-center mt-4 mb-2">
-            <Typography
-              element="p"
-              as="p"
-              className="flex items-center text-md text-primary-foreground/90 cursor-pointer hover:text-secondary"
-            >
-              <span className="mr-2 font-semibold">
-                {user?.followers ? user?.followers.length : 0}
-              </span>
-              Followers
-            </Typography>
-            <div className="w-[1px] h-full bg-border mx-4" />
-            <Typography
-              element="p"
-              as="p"
-              className="flex items-center text-md text-primary-foreground/90 cursor-pointer hover:text-secondary"
-            >
-              <span className="mr-2 font-semibold">
-                {user?.following ? user?.following.length : 0}
-              </span>
-              Following
-            </Typography>
+            {user ? (
+              <div className="flex items-center">
+                <Typography
+                  element="p"
+                  as="p"
+                  className="text-primary-foreground/80"
+                >
+                  {USER_LEVELS[user.level].experiencesTitle}
+                </Typography>
+              </div>
+            ) : null}
           </div>
           {renderButton(session, user)}
-          <div className="flex flex-col py-4 w-full px-4 text-sm">
+          <div className="flex flex-col py-3 w-full px-4 text-sm">
             <Typography
               element="p"
               as="p"
@@ -193,6 +241,34 @@ export default function User() {
             >
               <MapPin className="mr-2 h-4 w-4" /> {user?.location || "-"}
             </Typography>
+          </div>
+          <div className="flex flex-col w-full py-4 border-t border-border/20">
+            <Typography
+              element="p"
+              as="p"
+              className="text-primary-foreground/90 font-bold mb-2"
+            >
+              Community Stats
+            </Typography>
+            {stats.map((stat, index) => (
+              <div className="flex items-center gap-2" key={index}>
+                {stat.icon}
+                <Typography
+                  element="p"
+                  as="p"
+                  className="text-primary-foreground/70 font-medium mr-1"
+                >
+                  {stat.title}
+                </Typography>
+                <Typography
+                  element="p"
+                  as="p"
+                  className="text-primary-foreground font-medium"
+                >
+                  {stat.value}
+                </Typography>
+              </div>
+            ))}
           </div>
         </div>
       </div>

@@ -57,6 +57,7 @@ export interface GetThemeTileProps {
   font_1: string;
   font_2: string;
   isAIGenerated: boolean;
+  template: string;
   tags: { tagId: string }[];
   createdAt?: Date;
   user: {
@@ -64,6 +65,7 @@ export interface GetThemeTileProps {
     name: string;
     avatar: string;
     image: string;
+    level: number;
   };
   likedBy: { userId: string }[];
   savedBy: { userId: string }[];
@@ -76,11 +78,13 @@ export interface MappedThemeProps {
   fonts: FontObjProps;
   tags: string[];
   createdAt?: Date;
+  template: string;
   user: {
     id: string;
     name: string;
     avatar: string;
     image: string;
+    level: number;
   };
   likes: number;
   saves: number;

@@ -1,4 +1,5 @@
-import LearningTemplate from "@/assets/templates/learning/learning";
+import LearningTemplate from "@/assets/templates/learning/learning-mini";
+import MarketingTemplate from "@/assets/templates/marketing/marketing-mini";
 import ColorPicker from "@/components/color-picker";
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
 import { ExportThemeDialog } from "@/components/export-theme-dialog";
@@ -11,23 +12,42 @@ import { generateAllShades } from "@/lib/utils";
 import { ArrowLeftIcon, DownloadIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 
-const defaultColors = {
-  bg: "#FFFFFF",
-  primary: "#1C1C1C",
-  accent: "#1B1AFF",
-  extra: "#FFBB37",
-};
+const defaultColors = [
+  {
+    bg: "#FFFFFF",
+    primary: "#1C1C1C",
+    accent: "#1B1AFF",
+    extra: "#FFBB37",
+  },
+  {
+    bg: "#FFFFFF",
+    primary: "#000000",
+    accent: "#B9FF66",
+    extra: "#FFBB37",
+  },
+];
+
+const defaultFonts = [
+  {
+    primary: GOOGLE_FONTS[0],
+    secondary: GOOGLE_FONTS[1],
+  },
+  {
+    primary: {
+      fontFamily: "Space Grotesk",
+      weights: ["300", "400", "500", "600", "700"],
+    },
+    secondary: GOOGLE_FONTS[1],
+  },
+];
 
 const CreateTheme = () => {
   const [openColorPicker, setOpenColorPicker] = useState<string | null>(null);
   const [openSaveThemeDialog, setOpenSaveThemeDialog] = useState(false);
   const [openExportThemeDialog, setOpenExportThemeDialog] = useState(false);
   const [openSure, setOpenSure] = useState(false);
-  const [fonts, setFonts] = useState<FontObjProps>({
-    primary: GOOGLE_FONTS[0],
-    secondary: GOOGLE_FONTS[1],
-  });
-  const [colors, setColors] = useState<ColorsProps>(defaultColors);
+  const [fonts, setFonts] = useState<FontObjProps>(defaultFonts[1]);
+  const [colors, setColors] = useState<ColorsProps>(defaultColors[1]);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -43,7 +63,7 @@ const CreateTheme = () => {
             const unsaved = Object.keys(colors).some(
               (key) =>
                 colors[key as keyof ColorsProps] !==
-                defaultColors[key as keyof ColorsProps]
+                defaultColors[1][key as keyof ColorsProps]
             );
             if (unsaved) {
               setOpenSure(true);
@@ -121,7 +141,7 @@ const CreateTheme = () => {
         </div>
       </div>
       <div className="flex mt-[72px]">
-        <LearningTemplate
+        <MarketingTemplate
           colors={colors}
           shades={generateAllShades(colors)}
           fonts={fonts}
