@@ -3,7 +3,7 @@ import { createId } from "@paralleldrive/cuid2";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 import { tileThemeProps } from "@/constants/theme";
-import { eq, desc, ne, and, or, ilike } from "drizzle-orm";
+import { eq, desc, ne, and, or, ilike, asc } from "drizzle-orm";
 import { TagProps } from "@/interfaces/theme";
 import {
   tags as tagsSchema,
@@ -69,7 +69,6 @@ export default async function handler(
             createdAt: true,
             template: true,
             isAIGenerated: true,
-            isPrivate: true,
             prompt: true,
           },
           with: {
@@ -77,6 +76,18 @@ export default async function handler(
               columns: {
                 id: true,
                 name: true,
+                avatar: true,
+                image: true,
+                title: true,
+                experience: true,
+                level: true,
+              },
+              with: {
+                createdThemes: {
+                  columns: {
+                    id: true,
+                  },
+                },
               },
             },
             tags: {
@@ -102,7 +113,7 @@ export default async function handler(
         if (!theme) {
           return res.status(404).json({ error: "Theme not found" });
         }
-        res.status(200).json(theme);
+        return res.status(200).json(theme);
       } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Failed to fetch theme" });
@@ -122,7 +133,10 @@ export default async function handler(
                   createdThemes: {
                     columns: tileThemeProps.columns,
                     with: tileThemeProps.with,
-                    orderBy: [desc(themesSchema.createdAt)],
+                    orderBy: [
+                      desc(themesSchema.createdAt),
+                      asc(themesSchema.name),
+                    ],
                   },
                 },
               });
@@ -135,7 +149,10 @@ export default async function handler(
                     where: eq(themesSchema.isPrivate, false),
                     columns: tileThemeProps.columns,
                     with: tileThemeProps.with,
-                    orderBy: [desc(themesSchema.createdAt)],
+                    orderBy: [
+                      desc(themesSchema.createdAt),
+                      asc(themesSchema.name),
+                    ],
                   },
                 },
               });
@@ -251,6 +268,7 @@ export default async function handler(
             type === "popular"
               ? desc(themesSchema.popularity)
               : desc(themesSchema.createdAt),
+            asc(themesSchema.name),
           ],
           limit: THEMES_PER_PAGE,
           offset: (page - 1) * THEMES_PER_PAGE,

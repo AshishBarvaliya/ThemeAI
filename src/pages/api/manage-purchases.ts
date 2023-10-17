@@ -49,6 +49,7 @@ export default async function handler(
       stripeSessionId: session.id,
       stripeCustomerId: session.customer as string,
       userId: session.metadata?.userId,
+      pupa: Number(N_PUPA),
     });
 
     const currentUser = await db.query.users.findFirst({

@@ -43,7 +43,7 @@ const ProfileFollowing: React.FC<ProfileFollowingProps> = ({ user }) => {
     });
 
   return (
-    <div className="flex flex-col mt-4 gap-3 px-4 pr-[300px]">
+    <div className="flex flex-col mt-4 gap-3 px-4 w-[75%]">
       {followings?.map((user) => (
         <UserTile
           key={user.id}

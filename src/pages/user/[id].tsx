@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import {
   followUser,
+  getHasNewNotifications,
   getUser,
   getUserStats,
   unfollowUser,
@@ -27,6 +28,8 @@ import HeartIcon from "@/assets/icons/heart";
 import { StarFilledIcon } from "@radix-ui/react-icons";
 import PeopleFillIcon from "@/assets/icons/people-fill";
 import BrushIcon from "@/assets/icons/brush-icon";
+import ProfileNotifications from "@/components/profile-notifications";
+import ProfilePurchases from "@/components/profile-purchases";
 
 export default function User() {
   const queryClient = useQueryClient();
@@ -39,6 +42,10 @@ export default function User() {
   );
   const { data: statsData } = useQuery(["user", router.query.id, "stats"], () =>
     getUserStats(router.query.id as string)
+  );
+  const { data: notificationStatus } = useQuery(
+    ["user", "notification", "new"],
+    getHasNewNotifications
   );
   const { mutate: mutateUserFollow, isLoading: isLoadingFollow } = useMutation({
     mutationFn: (userId: string) => followUser(userId),
@@ -160,6 +167,33 @@ export default function User() {
     },
   ];
 
+  const navigations = [
+    {
+      title: "Themes",
+      component: <ProfileThemes />,
+    },
+    {
+      title: "Followers",
+      component: <ProfileFollowers user={user} />,
+    },
+    {
+      title: "Following",
+      component: <ProfileFollowing user={user} />,
+    },
+    ...(session?.user?.id === router.query.id
+      ? [
+          {
+            title: "Purchases",
+            component: <ProfilePurchases />,
+          },
+          {
+            title: "Notifications",
+            component: <ProfileNotifications />,
+          },
+        ]
+      : []),
+  ];
+
   return (
     <div className="flex w-full">
       <div className="flex flex-col fixed h-full border-border border-r-[0.5px] w-[300px] items-center shadow-lg">
@@ -206,7 +240,7 @@ export default function User() {
             >
               {user?.name || "-"}
             </Typography>
-            {user ? (
+            {user && user.level !== undefined ? (
               <div className="flex items-center">
                 <Typography
                   element="p"
@@ -282,44 +316,41 @@ export default function User() {
         >
           <div className="flex w-full">
             <div className="flex gap-2">
-              {["Themes", "Followers", "Following"].map((tab, index) => (
+              {navigations.map((tab, index) => (
                 <Label
                   key={index}
                   className={cn(
                     "flex relative px-3 py-3 cursor-pointer hover:bg-primary/25 font-semibold",
                     {
-                      "bg-background text-secondary": selectedNav === tab,
+                      "bg-background text-secondary": selectedNav === tab.title,
                     }
                   )}
                   onClick={() => {
-                    if (tab === "Followers" || tab === "Following") {
+                    if (
+                      (tab.title === "Followers" ||
+                        tab.title === "Following") &&
+                      session?.user.id !== user?.id
+                    ) {
                       runIfLoggedInElseOpenLoginDialog(() =>
-                        setSelectedNav(tab)
+                        setSelectedNav(tab.title)
                       );
-                    } else setSelectedNav(tab);
+                    } else setSelectedNav(tab.title);
                   }}
                 >
-                  {tab}
-                  {selectedNav === tab && (
+                  {tab.title}
+                  {selectedNav === tab.title && (
                     <div className="absolute -bottom-[7px] -ml-3 h-[3px] w-full bg-secondary" />
                   )}
+                  {tab.title === "Notifications" && notificationStatus?.new ? (
+                    <div className="absolute top-2 rounded-full w-[7px] h-[7px] bg-red-600 right-1" />
+                  ) : null}
                 </Label>
               ))}
             </div>
           </div>
         </div>
         <div className="flex flex-col mt-[56px] overflow-y-auto flex-1">
-          {selectedNav === "Themes" ? (
-            <ProfileThemes />
-          ) : selectedNav === "Followers" ? (
-            <ProfileFollowers user={user} />
-          ) : selectedNav === "Following" ? (
-            <ProfileFollowing user={user} />
-          ) : selectedNav === "Purchases" ? (
-            <>Purchases</>
-          ) : selectedNav === "Experiences" ? (
-            <>Experiences</>
-          ) : null}
+          {navigations.find((tab) => tab.title === selectedNav)?.component}
         </div>
       </div>
     </div>

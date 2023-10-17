@@ -94,7 +94,7 @@ export default function ProfileThemes() {
           {
             id: "savedThemes",
             name: "Saved",
-            count: user?.savedThemes.length || 0,
+            count: user?.savedThemes ? user?.savedThemes.length : 0,
             getThemes: () => (
               <SavedTheme
                 mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
@@ -120,7 +120,10 @@ export default function ProfileThemes() {
             <div
               key={index}
               onClick={() => {
-                if (tab.id === ("likedThemes" as TabsProps["id"])) {
+                if (
+                  tab.id === ("likedThemes" as TabsProps["id"]) &&
+                  session?.user.id !== router.query.id
+                ) {
                   runIfLoggedInElseOpenLoginDialog(() =>
                     setSelectedTab(tab.id)
                   );

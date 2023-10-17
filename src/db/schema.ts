@@ -270,6 +270,7 @@ export const purchases = pgTable("purchase", {
     .notNull()
     .references(() => users.id),
   stripeSessionId: text("stripeSessionId").notNull().unique(),
+  pupa: integer("pupa").default(0),
   stripeCustomerId: text("stripeCustomerId").notNull(),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });

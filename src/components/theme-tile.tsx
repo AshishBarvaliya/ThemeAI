@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import NiceAvatar from "react-nice-avatar";
 import { AwardIcon } from "./award-icon";
 import { USER_LEVELS } from "@/constants/user";
+import { Button } from "./ui/button";
 
 interface ThemeTileProps {
   theme: GetThemeTileProps;
@@ -154,7 +155,7 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
           </div>
         </div>
       </div>
-      <div className="cursor-pointer">
+      <div className="relative parent_hover">
         {mappedTheme.template === "marketing" ? (
           <MarketingTemplate
             colors={mappedTheme.colors}
@@ -168,6 +169,14 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
             fonts={mappedTheme.fonts}
           />
         )}
+        <div className="hidden_child absolute top-0 bg-black/30 w-full h-full items-center justify-center flex">
+          <Button
+            size={"md"}
+            onClick={() => router.push(`/themes/${mappedTheme.id}`)}
+          >
+            Preview
+          </Button>
+        </div>
       </div>
       <div
         className="flex flex-col border-t-[0.5px] p-1.5 gap-2"
