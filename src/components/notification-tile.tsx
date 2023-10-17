@@ -7,11 +7,14 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import LearningTemplate from "@/assets/templates/learning/learning-mini";
 import { generateAllShades } from "@/lib/utils";
+import { useRouter } from "next/router";
 
 interface INotificationTileProps {
   notification: INotification;
-  toggleFollow: (id: string) => void;
+  userFollow: (id: string) => void;
   isFollowing?: boolean;
+  disabled?: boolean;
+  isRead: boolean;
 }
 
 const getMessage = (notification: INotification) => {
@@ -52,13 +55,17 @@ const getMessage = (notification: INotification) => {
 
 export const NotificationTile: React.FC<INotificationTileProps> = ({
   notification,
-  toggleFollow,
+  userFollow,
   isFollowing,
+  disabled,
+  isRead,
 }) => {
+  const router = useRouter();
+
   return (
     <div
       key={notification.id}
-      className="flex border-[0.5px] border-border p-1 fade-in-0 max-h-[57px] shadow-md animate-in slide-in-from-top-2"
+      className="flex relative bg-white border-[0.5px] border-border p-1 fade-in-0 max-h-[57px] shadow-md animate-in slide-in-from-top-2"
     >
       <Avatar className="h-12 w-12 border-[0.5px] border-border rounded-[6px]">
         {notification.notifier.avatar ? (
@@ -90,10 +97,15 @@ export const NotificationTile: React.FC<INotificationTileProps> = ({
           <div className="flex items-center mr-2">
             <Button
               size="md"
-              onClick={() => toggleFollow(notification.notifier.id)}
+              onClick={() =>
+                isFollowing
+                  ? router.push(`/user/${notification.notifier.id}`)
+                  : userFollow(notification.notifier.id)
+              }
+              disabled={disabled}
               variant={isFollowing ? "outline" : "default"}
             >
-              {isFollowing ? "Following" : "Follow back"}
+              {isFollowing ? "View profile" : "Follow back"}
             </Button>
           </div>
         ) : (
@@ -125,6 +137,9 @@ export const NotificationTile: React.FC<INotificationTileProps> = ({
           </div>
         )}
       </div>
+      {!isRead && (
+        <div className="absolute w-[3px] top-0 h-full right-0 bg-secondary" />
+      )}
     </div>
   );
 };

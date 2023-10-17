@@ -127,6 +127,13 @@
       "when": 1696892794775,
       "tag": "0017_mysterious_rumiko_fujikawa",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "5",
+      "when": 1697497227113,
+      "tag": "0018_true_magus",
+      "breakpoints": true
     }
   ]
 }

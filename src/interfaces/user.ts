@@ -17,6 +17,7 @@ export interface UserProps {
   organization: string;
   location: string;
   experience: number;
+  pupa?: number;
   image: string;
   level: number;
   createdThemes: { id: string }[];

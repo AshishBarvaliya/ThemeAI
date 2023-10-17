@@ -72,6 +72,20 @@ export const getNotifications = async () => {
   return response.data as INotification[];
 };
 
+export const markNotificationAsRead = async () => {
+  const apiUrl = `/api/notifications`;
+  const response = await axios.post(apiUrl);
+
+  return response.data;
+};
+
+export const getHasNewNotifications = async () => {
+  const apiUrl = `/api/notifications?new=1`;
+  const response = await axios.get(apiUrl);
+
+  return response.data;
+};
+
 export const getAllFollowings = async (userId: string) => {
   if (!userId) return;
   const apiUrl = `/api/user?id=${userId}&type=following`;
@@ -98,4 +112,17 @@ export const getUserStats = async (userId: string) => {
   const response = await axios.get(apiUrl);
 
   return response.data;
+};
+
+interface PurchaseHistory {
+  id: string;
+  createdAt: string;
+  pupa: number;
+}
+
+export const getPurchaseHistory = async () => {
+  const apiUrl = `/api/purchase-history`;
+  const response = await axios.get(apiUrl);
+
+  return response.data as PurchaseHistory[];
 };

@@ -298,7 +298,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                     {Object.keys(colors).map((color, index) => (
                       <div
                         key={index}
-                        className="flex text-lg"
+                        className="flex text-md"
                         style={{ fontFamily: "IBM Plex Mono" }}
                       >
                         {generatecolorVariable(color as keyof ColorsProps)}

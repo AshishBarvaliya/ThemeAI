@@ -17,10 +17,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { LoginDialog } from "./login-dialog";
 import Logo from "@/assets/svgs/logo";
-import {
-  VerificationDialog,
-  VerificationDialogProps,
-} from "./verification-dialog";
+import { VerificationDialog } from "./verification-dialog";
 import { RegisterDialog } from "./register-dialog";
 import { UserProfileDialog } from "./user-profile-dialog";
 import { ResetPasswordDialog } from "./reset-password";
@@ -34,6 +31,7 @@ import { SeachBar } from "./ui/input";
 import { FiterTags } from "./filter-tags";
 import { useQuery } from "@tanstack/react-query";
 import { getTags } from "@/services/theme";
+import { getHasNewNotifications, getUser } from "@/services/user";
 
 const Header = () => {
   const router = useRouter();
@@ -44,6 +42,8 @@ const Header = () => {
     setThemeSearchQuery,
     filterTags,
     setFilterTags,
+    verifyDialogState,
+    setVerifyDialogState,
   } = useHelpers();
   const { status, data: session } = useSession();
   const [singupOpen, setSingupOpen] = useState(false);
@@ -52,14 +52,16 @@ const Header = () => {
   const [newPasswordDialog, setNewPasswordDialog] = useState(false);
   const [generateThemeDialog, setGenerateThemeDialog] = useState(false);
 
-  const [verifyDialogState, setVerifyDialogState] = useState<{
-    open: boolean;
-    type: VerificationDialogProps["type"];
-  }>({
-    open: false,
-    type: "pleaseVerify",
-  });
   const { data: tags } = useQuery(["tags"], getTags);
+
+  const { data: user } = useQuery(["user", session?.user.id], () =>
+    getUser(session?.user.id as string)
+  );
+
+  const { data: notificationStatus } = useQuery(
+    ["user", "notification", "new"],
+    getHasNewNotifications
+  );
 
   const isAuthenticated = status === "authenticated";
 
@@ -79,11 +81,13 @@ const Header = () => {
       setVerifyDialogState({
         open: true,
         type: "invalid",
+        clearURL: true,
       });
     } else if (router.asPath === "/themes?verify=0&error=expired") {
       setVerifyDialogState({
         open: true,
         type: "expired",
+        clearURL: true,
       });
     } else if (router.asPath === "/themes?verify=0&error=verified") {
       if (status === "authenticated" && !session?.user.isActived) {
@@ -92,6 +96,7 @@ const Header = () => {
         setVerifyDialogState({
           open: true,
           type: "alreadyVerified",
+          clearURL: true,
         });
         router.push("/themes", undefined, { shallow: true });
       }
@@ -102,6 +107,7 @@ const Header = () => {
         setVerifyDialogState({
           open: true,
           type: "verified",
+          clearURL: true,
         });
         router.push("/themes", undefined, { shallow: true });
       }
@@ -128,7 +134,11 @@ const Header = () => {
       !session?.user.isActived &&
       router.asPath === "/themes"
     ) {
-      setVerifyDialogState({ open: true, type: "pleaseVerify" });
+      setVerifyDialogState({
+        open: true,
+        type: "pleaseVerify",
+        clearURL: true,
+      });
     }
   }, [status]);
 
@@ -248,34 +258,44 @@ const Header = () => {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs">
+                        Available prompts:
+                        <span className="font-bold px-1">
+                          {user?.pupa || 0}
+                        </span>
+                      </p>
+                      <Button
+                        onClick={() => {
+                          buyPupa().then(({ url }) => {
+                            router.push(url);
+                          });
+                        }}
+                        size={"sm"}
+                      >
+                        Buy
+                      </Button>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
                   <DropdownMenuGroup>
                     <DropdownMenuItem
-                      className="cursor-pointer"
+                      className="cursor-pointer items-center flex"
                       onClick={() => router.push("/user/" + session?.user.id)}
                     >
                       Profile
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => {
-                        buyPupa().then(({ url }) => {
-                          router.push(url);
-                        });
-                      }}
-                    >
-                      Buy Promts
+                      {notificationStatus?.new && (
+                        <span className="ml-4 h-4 flex items-center bg-red-100 text-red-600 border-[0.5px] border-red-500 rounded-[20px] px-1.5">
+                          <div className="text-[10px]">New</div>
+                        </span>
+                      )}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="cursor-pointer"
                       onClick={() => router.push("/settings")}
                     >
                       Settings
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => router.push("/notifications")}
-                    >
-                      Notifications
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
@@ -301,6 +321,7 @@ const Header = () => {
       <VerificationDialog
         open={verifyDialogState.open}
         setVerifyDialogState={setVerifyDialogState}
+        clearURL={verifyDialogState.clearURL}
         type={verifyDialogState.type}
         setLoginOpen={setLoginOpen}
         setUserProfileOpen={setUserProfileOpen}

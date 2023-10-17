@@ -286,6 +286,7 @@ export default async function handler(
               title: true,
               organization: true,
               location: true,
+              level: true,
             },
             with: {
               followers: {

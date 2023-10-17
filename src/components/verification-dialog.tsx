@@ -15,6 +15,7 @@ export interface VerificationDialogProps {
     React.SetStateAction<{
       open: boolean;
       type: VerificationDialogProps["type"];
+      clearURL: boolean;
     }>
   >;
   type:
@@ -26,12 +27,14 @@ export interface VerificationDialogProps {
     | "verified";
   setUserProfileOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setLoginOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  clearURL: boolean;
 }
 
 export const VerificationDialog: React.FC<VerificationDialogProps> = ({
   open,
   setVerifyDialogState,
   type,
+  clearURL,
   setUserProfileOpen,
   setLoginOpen,
 }) => {
@@ -64,9 +67,13 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
           });
         })
         .finally(() => {
-          setVerifyDialogState((prev) => ({ open: false, type: prev.type }));
+          setVerifyDialogState((prev) => ({
+            open: false,
+            type: prev.type,
+            clearURL: true,
+          }));
           setLoading(false);
-          router.push("/themes", undefined, { shallow: true });
+          clearURL && router.push("/themes", undefined, { shallow: true });
         });
     }
   };
@@ -130,8 +137,12 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
     <Dialog
       open={open}
       onOpenChange={(toggle) => {
-        setVerifyDialogState((prev) => ({ open: toggle, type: prev.type }));
-        router.push("/themes", undefined, { shallow: true });
+        setVerifyDialogState((prev) => ({
+          open: toggle,
+          type: prev.type,
+          clearURL: true,
+        }));
+        clearURL && router.push("/themes", undefined, { shallow: true });
       }}
     >
       <DialogContent className="p-8 border max-w-[400px] border-border bg-white rounded-none">
@@ -164,6 +175,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
                   setVerifyDialogState((prev) => ({
                     open: false,
                     type: prev.type,
+                    clearURL: true,
                   }));
                   setLoginOpen(true);
                 }
@@ -179,6 +191,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
                 setVerifyDialogState((prev) => ({
                   open: false,
                   type: prev.type,
+                  clearURL: true,
                 }));
                 setUserProfileOpen(true);
               }}
@@ -192,6 +205,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
                 setVerifyDialogState((prev) => ({
                   open: false,
                   type: prev.type,
+                  clearURL: true,
                 }));
                 setLoginOpen(true);
               }}
