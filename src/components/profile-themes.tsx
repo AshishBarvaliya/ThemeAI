@@ -18,6 +18,8 @@ import {
 import { useToast } from "@/hooks/useToast";
 import { FiterTags } from "./filter-tags";
 import { SortThemes } from "./sort-themes";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
 
 interface TabsProps {
   id: "createdThemes" | "likedThemes" | "savedThemes";
@@ -31,6 +33,7 @@ export default function ProfileThemes() {
   const { addToast } = useToast();
   const { data: session } = useSession();
   const { runIfLoggedInElseOpenLoginDialog } = useHelpers();
+  const [privateOnly, setPrivateOnly] = useState(false);
   const { data: tags } = useQuery(["tags"], getTags);
   const { data: user } = useQuery(["user", router.query.id], () =>
     getUser(router.query.id as string)
@@ -70,6 +73,7 @@ export default function ProfileThemes() {
           tags={tags}
           sortItem={sortItem}
           filters={filters.createdThemes}
+          privateOnly={privateOnly}
         />
       ),
     },
@@ -142,6 +146,26 @@ export default function ProfileThemes() {
         </div>
         <div className="flex">
           <div className="flex items-center gap-3">
+            {session?.user.id === router.query.id &&
+            selectedTab === "createdThemes" ? (
+              <div className="flex items-center">
+                <Label
+                  htmlFor="privateOnly"
+                  className="cursor-pointer flex items-center mr-2"
+                >
+                  Private only
+                </Label>
+                <Switch
+                  id="privateOnly"
+                  name="privateOnly"
+                  className="border border-border cursor-pointer h-4 w-7"
+                  // @ts-ignore
+                  thumbClassName="h-3.5 w-3.5 data-[state=checked]:translate-x-3"
+                  checked={privateOnly}
+                  onCheckedChange={() => setPrivateOnly((prev) => !prev)}
+                />
+              </div>
+            ) : null}
             {tags && (
               <FiterTags
                 tags={tags}
@@ -167,6 +191,7 @@ interface CreatedThemeProps {
   tags: TagProps[] | undefined;
   sortItem: SortByThemesProps["sortBy"];
   filters: string[];
+  privateOnly?: boolean;
 }
 
 const CreatedTheme: React.FC<CreatedThemeProps> = ({
@@ -174,8 +199,10 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
   sortItem,
   tags,
   filters,
+  privateOnly,
 }) => {
   const queryClient = useQueryClient();
+  const { data: session } = useSession();
   const router = useRouter();
   const [likeLoading, setLikeLoading] = useState<string | null>(null);
   const { data: createdThemes } = useQuery(
@@ -275,7 +302,12 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
     sortBy: sortItem,
   });
 
-  return sortedThemes
+  const privateFiltered =
+    privateOnly && session?.user.id === router.query.id
+      ? sortedThemes?.filter((theme) => theme.isPrivate)
+      : sortedThemes;
+
+  return privateFiltered
     ?.filter((theme) =>
       filters.length
         ? theme.tags.some((tag) => filters.includes(tag.tagId))

@@ -131,7 +131,7 @@ export default async function handler(
                 where: eq(usersSchema.id, userId),
                 with: {
                   createdThemes: {
-                    columns: tileThemeProps.columns,
+                    columns: { ...tileThemeProps.columns, isPrivate: true },
                     with: tileThemeProps.with,
                     orderBy: [
                       desc(themesSchema.createdAt),
