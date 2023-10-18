@@ -48,7 +48,7 @@ export default function User() {
   );
   const { data: notificationStatus } = useQuery(
     ["user", "notification", "new"],
-    getHasNewNotifications
+    () => getHasNewNotifications(session?.user?.id)
   );
   const { mutate: mutateUserFollow, isLoading: isLoadingFollow } = useMutation({
     mutationFn: (userId: string) => followUser(userId),
