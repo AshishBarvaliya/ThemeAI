@@ -7,6 +7,7 @@ import {
 } from "@/db/schema";
 import { createId } from "@paralleldrive/cuid2";
 import moment from "moment";
+import { USER_LEVELS } from "@/constants/user";
 
 export const sendLikeSaveNotification = async ({
   upsertItem,
@@ -29,17 +30,35 @@ export const sendLikeSaveNotification = async ({
           columns: {
             id: true,
             experience: true,
+            level: true,
+            pupa: true,
           },
         },
       },
     });
     if (currentTheme && sessionId !== currentTheme.user.id) {
-      await db
-        .update(usersSchema)
-        .set({
-          experience: Number(currentTheme?.user.experience || 0) + 15,
-        })
-        .where(eq(usersSchema.id, currentTheme?.user.id));
+      const experience = Number(currentTheme?.user.experience || 0) + 15;
+      const level = Number(currentTheme?.user.level || 0);
+
+      if (level < 5 && USER_LEVELS[level].requiredExperience <= experience) {
+        await db
+          .update(usersSchema)
+          .set({
+            level: level + 1,
+            experience,
+            pupa:
+              Number(currentTheme?.user.pupa || 0) +
+              USER_LEVELS[level + 1].prompts,
+          })
+          .where(eq(usersSchema.id, currentTheme?.user.id));
+      } else {
+        await db
+          .update(usersSchema)
+          .set({
+            experience,
+          })
+          .where(eq(usersSchema.id, currentTheme?.user.id));
+      }
 
       await db
         .update(themesSchema)

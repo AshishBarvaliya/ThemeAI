@@ -81,9 +81,6 @@ export default function ProfileNotifications() {
     {
       name: "Follow",
     },
-    {
-      name: "Reward",
-    },
   ];
 
   const reads: string[] = [];

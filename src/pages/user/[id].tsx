@@ -25,17 +25,20 @@ import { UserProps } from "@/interfaces/user";
 import { USER_LEVELS } from "@/constants/user";
 import { AwardIcon } from "@/components/award-icon";
 import HeartIcon from "@/assets/icons/heart";
-import { StarFilledIcon } from "@radix-ui/react-icons";
+import { QuestionMarkCircledIcon, StarFilledIcon } from "@radix-ui/react-icons";
 import PeopleFillIcon from "@/assets/icons/people-fill";
 import BrushIcon from "@/assets/icons/brush-icon";
 import ProfileNotifications from "@/components/profile-notifications";
 import ProfilePurchases from "@/components/profile-purchases";
+import { LevelProgress } from "@/components/level-progress";
+import { RewardDialog } from "@/components/reward-dialog";
 
 export default function User() {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { runIfLoggedInElseOpenLoginDialog, setLoginOpen } = useHelpers();
   const { data: session } = useSession();
+  const [openRewardDialog, setOpenRewardDialog] = useState(false);
 
   const { data: user } = useQuery(["user", router.query.id], () =>
     getUser(router.query.id as string)
@@ -154,6 +157,13 @@ export default function User() {
       title: "Experiences",
       value: user?.experience || 0,
       icon: <BrushIcon className="h-4 w-4" />,
+      helper:
+        session?.user?.id === user?.id ? (
+          <QuestionMarkCircledIcon
+            className="h-4 w-4 cursor-pointer hover:text-secondary"
+            onClick={() => setOpenRewardDialog(true)}
+          />
+        ) : null,
     },
     {
       title: "Likes",
@@ -216,21 +226,21 @@ export default function User() {
               ) : (
                 <>
                   <AvatarImage src={user?.image} alt="profile image" />
-                  <AvatarFallback className="bg-primary text-primary-foreground text-[130px]">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-[120px]">
                     {user?.name?.split(" ")[0][0]}
                   </AvatarFallback>
                 </>
               )}
             </Avatar>
-            {user?.level && (
-              <div className="absolute right-1 bottom-8">
+            {user?.level ? (
+              <div className="absolute right-[6px] bottom-7">
                 <AwardIcon
-                  className="h-7 w-7"
+                  className="h-[26px] w-[26px]"
                   level={user.level}
                   info={USER_LEVELS[user.level].name}
                 />
               </div>
-            )}
+            ) : null}
           </div>
           <div className="flex flex-col mt-4 justify-center text-center">
             <Typography
@@ -252,6 +262,15 @@ export default function User() {
               </div>
             ) : null}
           </div>
+          {user &&
+            user.level !== undefined &&
+            user.id === session?.user?.id && (
+              <LevelProgress
+                level={user?.level}
+                experiences={user?.experience}
+                setOpenRewardDialog={setOpenRewardDialog}
+              />
+            )}
           {renderButton(session, user)}
           <div className="flex flex-col py-3 w-full px-4 text-sm">
             <Typography
@@ -301,6 +320,7 @@ export default function User() {
                 >
                   {stat.value}
                 </Typography>
+                {stat.helper}
               </div>
             ))}
           </div>
@@ -353,6 +373,11 @@ export default function User() {
           {navigations.find((tab) => tab.title === selectedNav)?.component}
         </div>
       </div>
+      <RewardDialog
+        open={openRewardDialog}
+        setOpen={setOpenRewardDialog}
+        userLevel={user?.level || 0}
+      />
     </div>
   );
 }

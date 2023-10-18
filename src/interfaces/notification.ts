@@ -2,7 +2,7 @@ export interface INotification {
   id: string;
   createdAt: Date;
   read: boolean;
-  type: "FOLLOW" | "LIKE" | "SAVE" | "REWARD";
+  type: "FOLLOW" | "LIKE" | "SAVE";
   pupa?: string;
   theme?: {
     id: string;
