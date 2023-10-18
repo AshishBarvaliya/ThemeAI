@@ -38,10 +38,6 @@ export default function ProfileNotifications() {
       mutationFn: () => markNotificationAsRead(),
       onSuccess: ({ markAsRead }) => {
         queryClient.invalidateQueries(["user", "notification", "new"]);
-        addToast({
-          title: "Notifications mark as read successfully",
-          type: "success",
-        });
         if (markAsRead) {
           queryClient.setQueriesData(
             ["user", "notifications"],

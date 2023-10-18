@@ -79,7 +79,8 @@ export const markNotificationAsRead = async () => {
   return response.data;
 };
 
-export const getHasNewNotifications = async () => {
+export const getHasNewNotifications = async (id?: string) => {
+  if (!id) return new Promise((_, reject) => reject());
   const apiUrl = `/api/notifications?new=1`;
   const response = await axios.get(apiUrl);
 

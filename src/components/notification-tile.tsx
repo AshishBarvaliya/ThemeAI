@@ -42,7 +42,7 @@ const getMessage = (notification: INotification) => {
         </Link>
         {` ${notification.type === "LIKE" ? "liked" : "saved"} your `}
         <Link
-          href={`/user/${notification?.theme?.id}`}
+          href={`/themes/${notification?.theme?.id}`}
           className="font-semibold cursor-pointer hover:text-secondary hover:underline"
         >
           {notification?.theme?.name}
