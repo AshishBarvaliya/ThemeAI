@@ -14,6 +14,7 @@ import {
   usersToSavedThemes,
 } from "@/db/schema";
 import db from "@/db";
+import { USER_LEVELS } from "@/constants/user";
 
 const THEMES_PER_PAGE = Number(process.env.THEMES_PER_PAGE || 10);
 
@@ -131,7 +132,7 @@ export default async function handler(
                 where: eq(usersSchema.id, userId),
                 with: {
                   createdThemes: {
-                    columns: tileThemeProps.columns,
+                    columns: { ...tileThemeProps.columns, isPrivate: true },
                     with: tileThemeProps.with,
                     orderBy: [
                       desc(themesSchema.createdAt),
@@ -357,9 +358,46 @@ export default async function handler(
           );
         }
 
-        return res
+        res
           .status(201)
           .json({ message: "Theme have been created", theme: createdTheme[0] });
+
+        setTimeout(async () => {
+          const user = await db.query.users.findFirst({
+            where: eq(usersSchema.id, session.user.id),
+            columns: {
+              id: true,
+              experience: true,
+              level: true,
+              pupa: true,
+            },
+          });
+          if (user) {
+            const experience = Number(user.experience || 0) + 10;
+            const level = Number(user.level || 0);
+
+            if (
+              level < 5 &&
+              USER_LEVELS[level].requiredExperience <= experience
+            ) {
+              await db
+                .update(usersSchema)
+                .set({
+                  level: level + 1,
+                  experience,
+                  pupa: Number(user.pupa || 0) + USER_LEVELS[level + 1].prompts,
+                })
+                .where(eq(usersSchema.id, user.id));
+            } else {
+              await db
+                .update(usersSchema)
+                .set({
+                  experience,
+                })
+                .where(eq(usersSchema.id, user.id));
+            }
+          }
+        }, 0);
       } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Failed to create theme" });

@@ -57,6 +57,7 @@ export interface GetThemeTileProps {
   font_1: string;
   font_2: string;
   isAIGenerated: boolean;
+  isPrivate?: boolean;
   template: string;
   tags: { tagId: string }[];
   createdAt?: Date;

@@ -286,7 +286,6 @@ export const notificationTypeEnum = pgEnum("notification_type", [
   "FOLLOW",
   "LIKE",
   "SAVE",
-  "REWARD",
 ]);
 
 export const usersTonotifications = pgTable("users_to_notifications", {

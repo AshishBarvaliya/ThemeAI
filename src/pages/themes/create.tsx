@@ -1,5 +1,4 @@
-import LearningTemplate from "@/assets/templates/learning/learning-mini";
-import MarketingTemplate from "@/assets/templates/marketing/marketing-mini";
+import MarketingTemplate from "@/assets/templates/marketing/marketing";
 import ColorPicker from "@/components/color-picker";
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
 import { ExportThemeDialog } from "@/components/export-theme-dialog";
