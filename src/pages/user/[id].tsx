@@ -182,14 +182,18 @@ export default function User() {
       title: "Themes",
       component: <ProfileThemes />,
     },
-    {
-      title: "Followers",
-      component: <ProfileFollowers user={user} />,
-    },
-    {
-      title: "Following",
-      component: <ProfileFollowing user={user} />,
-    },
+    ...(user
+      ? [
+          {
+            title: "Followers",
+            component: <ProfileFollowers user={user} />,
+          },
+          {
+            title: "Following",
+            component: <ProfileFollowing user={user} />,
+          },
+        ]
+      : []),
     ...(session?.user?.id === router.query.id
       ? [
           {
@@ -204,7 +208,7 @@ export default function User() {
       : []),
   ];
 
-  return (
+  return user ? (
     <div className="flex w-full">
       <div className="flex flex-col fixed h-full border-border border-r-[0.5px] w-[300px] items-center shadow-lg">
         <div className="flex flex-col w-full p-6 pt-4 items-center">
@@ -379,5 +383,5 @@ export default function User() {
         userLevel={user?.level || 0}
       />
     </div>
-  );
+  ) : null;
 }

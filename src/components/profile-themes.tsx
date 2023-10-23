@@ -20,6 +20,8 @@ import { FiterTags } from "./filter-tags";
 import { SortThemes } from "./sort-themes";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
+import { EmptyState } from "./empty-state";
+import { Heart, PenTool, Star } from "lucide-react";
 
 interface TabsProps {
   id: "createdThemes" | "likedThemes" | "savedThemes";
@@ -179,7 +181,7 @@ export default function ProfileThemes() {
           </div>
         </div>
       </div>
-      <div className="flex gap-4 px-4 flex-wrap pb-4">
+      <div className="flex gap-4 px-4 h-full flex-wrap pb-4">
         {tabs.find((tab) => tab.id === selectedTab)?.getThemes()}
       </div>
     </>
@@ -205,7 +207,7 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
   const { data: session } = useSession();
   const router = useRouter();
   const [likeLoading, setLikeLoading] = useState<string | null>(null);
-  const { data: createdThemes } = useQuery(
+  const { data: createdThemes, isLoading: isLoadingCreatedThemes } = useQuery(
     ["user", router.query.id, "created"],
     () => getThemesByUserAndType(router.query.id as string, "created")
   );
@@ -307,29 +309,42 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
       ? sortedThemes?.filter((theme) => theme.isPrivate)
       : sortedThemes;
 
-  return privateFiltered
-    ?.filter((theme) =>
-      filters.length
-        ? theme.tags.some((tag) => filters.includes(tag.tagId))
-        : true
-    )
-    .map((theme: GetThemeTileProps, index: number) => (
-      <ThemeTile
-        key={index}
-        theme={theme}
-        mutateLikeTheme={mutateLikeTheme}
-        mutateSaveTheme={mutateSaveTheme}
-        mutateDislikeTheme={mutateDislikeTheme}
-        mutateUnsaveTheme={mutateUnsaveTheme}
-        mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
-        setLikeLoading={setLikeLoading}
-        allTags={tags}
-        loading={
-          likeLoading === theme.id &&
-          (isLoadingDislikeTheme || isLoadingLikeTheme)
-        }
-      />
-    ));
+  return isLoadingCreatedThemes ? (
+    <div className="flex justify-center items-center flex-1 h-full">
+      Loading...
+    </div>
+  ) : createdThemes?.length === 0 ? (
+    <EmptyState
+      icon={<PenTool className="w-6 h-6" />}
+      title="You havn't created any themes yet!"
+      buttonText="Create a theme"
+      onClick={() => router.push("/themes/create")}
+    />
+  ) : (
+    privateFiltered
+      ?.filter((theme) =>
+        filters.length
+          ? theme.tags.some((tag) => filters.includes(tag.tagId))
+          : true
+      )
+      .map((theme: GetThemeTileProps, index: number) => (
+        <ThemeTile
+          key={index}
+          theme={theme}
+          mutateLikeTheme={mutateLikeTheme}
+          mutateSaveTheme={mutateSaveTheme}
+          mutateDislikeTheme={mutateDislikeTheme}
+          mutateUnsaveTheme={mutateUnsaveTheme}
+          mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+          setLikeLoading={setLikeLoading}
+          allTags={tags}
+          loading={
+            likeLoading === theme.id &&
+            (isLoadingDislikeTheme || isLoadingLikeTheme)
+          }
+        />
+      ))
+  );
 };
 
 const LikedTheme: React.FC<CreatedThemeProps> = ({
@@ -341,7 +356,7 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
   const queryClient = useQueryClient();
   const router = useRouter();
   const [likeLoading, setLikeLoading] = useState<string | null>(null);
-  const { data: likedThemes } = useQuery(
+  const { data: likedThemes, isLoading: isLoadingLikedThemes } = useQuery(
     ["user", router.query.id, "liked"],
     () => getThemesByUserAndType(router.query.id as string, "liked")
   );
@@ -438,29 +453,42 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
     sortBy: sortItem,
   });
 
-  return sortedThemes
-    ?.filter((theme) =>
-      filters.length
-        ? theme.tags.some((tag) => filters.includes(tag.tagId))
-        : true
-    )
-    .map((theme: GetThemeTileProps, index: number) => (
-      <ThemeTile
-        key={index}
-        theme={theme}
-        mutateLikeTheme={mutateLikeTheme}
-        mutateSaveTheme={mutateSaveTheme}
-        mutateDislikeTheme={mutateDislikeTheme}
-        mutateUnsaveTheme={mutateUnsaveTheme}
-        mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
-        setLikeLoading={setLikeLoading}
-        allTags={tags}
-        loading={
-          likeLoading === theme.id &&
-          (isLoadingDislikeTheme || isLoadingLikeTheme)
-        }
-      />
-    ));
+  return isLoadingLikedThemes ? (
+    <div className="flex justify-center items-center flex-1 h-full">
+      Loading...
+    </div>
+  ) : likedThemes?.length === 0 ? (
+    <EmptyState
+      icon={<Heart className="w-6 h-6" />}
+      title="You havn't liked any themes yet!"
+      buttonText="Browse themes"
+      onClick={() => router.push("/themes")}
+    />
+  ) : (
+    sortedThemes
+      ?.filter((theme) =>
+        filters.length
+          ? theme.tags.some((tag) => filters.includes(tag.tagId))
+          : true
+      )
+      .map((theme: GetThemeTileProps, index: number) => (
+        <ThemeTile
+          key={index}
+          theme={theme}
+          mutateLikeTheme={mutateLikeTheme}
+          mutateSaveTheme={mutateSaveTheme}
+          mutateDislikeTheme={mutateDislikeTheme}
+          mutateUnsaveTheme={mutateUnsaveTheme}
+          mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+          setLikeLoading={setLikeLoading}
+          allTags={tags}
+          loading={
+            likeLoading === theme.id &&
+            (isLoadingDislikeTheme || isLoadingLikeTheme)
+          }
+        />
+      ))
+  );
 };
 
 const SavedTheme: React.FC<CreatedThemeProps> = ({
@@ -472,7 +500,7 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
   const queryClient = useQueryClient();
   const router = useRouter();
   const [likeLoading, setLikeLoading] = useState<string | null>(null);
-  const { data: savedThemes } = useQuery(
+  const { data: savedThemes, isLoading: isLoadingSavedThemes } = useQuery(
     ["user", router.query.id, "saved"],
     () => getThemesByUserAndType(router.query.id as string, "saved")
   );
@@ -569,27 +597,40 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
     sortBy: sortItem,
   });
 
-  return sortedThemes
-    ?.filter((theme) =>
-      filters.length
-        ? theme.tags.some((tag) => filters.includes(tag.tagId))
-        : true
-    )
-    .map((theme: GetThemeTileProps, index: number) => (
-      <ThemeTile
-        key={index}
-        theme={theme}
-        mutateLikeTheme={mutateLikeTheme}
-        mutateSaveTheme={mutateSaveTheme}
-        mutateDislikeTheme={mutateDislikeTheme}
-        mutateUnsaveTheme={mutateUnsaveTheme}
-        mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
-        setLikeLoading={setLikeLoading}
-        allTags={tags}
-        loading={
-          likeLoading === theme.id &&
-          (isLoadingDislikeTheme || isLoadingLikeTheme)
-        }
-      />
-    ));
+  return isLoadingSavedThemes ? (
+    <div className="flex justify-center items-center flex-1 h-full">
+      Loading...
+    </div>
+  ) : savedThemes?.length === 0 ? (
+    <EmptyState
+      icon={<Star className="w-6 h-6" />}
+      title="You havn't saved any themes yet!"
+      buttonText="Browse themes"
+      onClick={() => router.push("/themes")}
+    />
+  ) : (
+    sortedThemes
+      ?.filter((theme) =>
+        filters.length
+          ? theme.tags.some((tag) => filters.includes(tag.tagId))
+          : true
+      )
+      .map((theme: GetThemeTileProps, index: number) => (
+        <ThemeTile
+          key={index}
+          theme={theme}
+          mutateLikeTheme={mutateLikeTheme}
+          mutateSaveTheme={mutateSaveTheme}
+          mutateDislikeTheme={mutateDislikeTheme}
+          mutateUnsaveTheme={mutateUnsaveTheme}
+          mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
+          setLikeLoading={setLikeLoading}
+          allTags={tags}
+          loading={
+            likeLoading === theme.id &&
+            (isLoadingDislikeTheme || isLoadingLikeTheme)
+          }
+        />
+      ))
+  );
 };
