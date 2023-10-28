@@ -133,27 +133,34 @@ const Header = () => {
       <div className="flex items-center flex-1 pr-6">
         <div className="w-[176px]">
           <Link href="/themes" className="flex">
-            <Logo />
+            <h1
+              className="text-3xl text-black font-bold"
+              style={{
+                fontFamily: "Monoton",
+                textShadow:
+                  "1px 1px 0px #eb452b, 2px 2px 0px #46b59b, 3px 3px 0px #052939, 4px 4px 0px #c11a2b",
+              }}
+            >
+              T
+            </h1>
           </Link>
         </div>
         {router.pathname === "/themes" ? (
           <div className="flex flex-1 gap-4">
-            <div className="flex items-center flex-1">
-              <SeachBar
-                id="font-search"
-                name="font-search"
-                placeholder="Search by font, name, or description"
-                autoComplete="off"
-                onRemoveCallback={() => {
-                  setThemeSearchQuery("");
-                  setFilterTags([]);
-                }}
-                onSearch={(string: string) => {
-                  setThemeSearchQuery(string);
-                  setFilterTags([]);
-                }}
-              />
-            </div>
+            <SeachBar
+              id="font-search"
+              name="font-search"
+              placeholder="Search by font, name, or description"
+              autoComplete="off"
+              onRemoveCallback={() => {
+                setThemeSearchQuery("");
+                setFilterTags([]);
+              }}
+              onSearch={(string: string) => {
+                setThemeSearchQuery(string);
+                setFilterTags([]);
+              }}
+            />
             <FiterTags
               tags={tags || []}
               selected={filterTags}
