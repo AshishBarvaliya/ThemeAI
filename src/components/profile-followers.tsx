@@ -6,6 +6,8 @@ import { useSession } from "next-auth/react";
 import { Button } from "./ui/button";
 import { UserProps } from "@/interfaces/user";
 import { useState } from "react";
+import { EmptyState } from "./empty-state";
+import { User2 } from "lucide-react";
 
 interface ProfileFollowersProps {
   user: UserProps | undefined;
@@ -16,8 +18,9 @@ const ProfileFollowers: React.FC<ProfileFollowersProps> = ({ user }) => {
   const router = useRouter();
   const { data: session } = useSession();
   const [loadingUser, setLoadingUser] = useState<string | null>(null);
-  const { data: followers } = useQuery(["followers", router.query.id], () =>
-    getAllFollowers(router.query.id as string)
+  const { data: followers, isLoading: isLoadingFollowers } = useQuery(
+    ["followers", router.query.id],
+    () => getAllFollowers(router.query.id as string)
   );
   const { data: followings } = useQuery(["following", router.query.id], () =>
     getAllFollowings(router.query.id as string)
@@ -40,23 +43,34 @@ const ProfileFollowers: React.FC<ProfileFollowersProps> = ({ user }) => {
     });
 
   return (
-    <div className="flex flex-col mt-4 gap-3 px-4 w-[75%]">
-      {followers?.map((user) => (
-        <UserTile
-          key={user.id}
-          user={user}
-          button={renderFollowStatusButton(
-            session?.user?.id,
-            user.id,
-            router,
-            mutateUserFollow,
-            !!followings?.find((following) => following.id === user.id),
-            loadingUser,
-            setLoadingUser,
-            isLoadingUnfollow
-          )}
+    <div className="flex h-full flex-col mt-4 gap-3 px-4 w-[75%]">
+      {isLoadingFollowers ? (
+        <div className="flex justify-center items-center flex-1 h-full">
+          Loading...
+        </div>
+      ) : followings?.length === 0 ? (
+        <EmptyState
+          icon={<User2 className="w-6 h-6" />}
+          title="You don't have any followers"
         />
-      ))}
+      ) : (
+        followers?.map((user) => (
+          <UserTile
+            key={user.id}
+            user={user}
+            button={renderFollowStatusButton(
+              session?.user?.id,
+              user.id,
+              router,
+              mutateUserFollow,
+              !!followings?.find((following) => following.id === user.id),
+              loadingUser,
+              setLoadingUser,
+              isLoadingUnfollow
+            )}
+          />
+        ))
+      )}
     </div>
   );
 };

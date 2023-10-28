@@ -2,8 +2,8 @@ import { INotification } from "@/interfaces/notification";
 import { FollowUserProps, UserProps } from "@/interfaces/user";
 import axios from "axios";
 
-export const getUser = async (id: string) => {
-  if (!id) return;
+export const getUser = async (id?: string) => {
+  if (!id) return null;
   const apiUrl = `/api/user?id=${id}`;
   const response = await axios.get(apiUrl);
 
@@ -108,7 +108,7 @@ export const getAllFollowers = async (userId: string) => {
 };
 
 export const getUserStats = async (userId: string) => {
-  if (!userId) return;
+  if (!userId) return null;
   const apiUrl = `/api/user?id=${userId}&type=stats`;
   const response = await axios.get(apiUrl);
 

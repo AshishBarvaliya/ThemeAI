@@ -17,15 +17,15 @@ import {
   SelectValue,
 } from "./ui/select";
 import { INotification } from "@/interfaces/notification";
-import { useToast } from "@/hooks/useToast";
+import { EmptyState } from "./empty-state";
+import { BellIcon } from "@radix-ui/react-icons";
 
 export default function ProfileNotifications() {
   const queryClient = useQueryClient();
-  const { addToast } = useToast();
   const { data: session } = useSession();
   const [filter, setFilter] = useState("All");
   const [loadingUser, setLoadingUser] = useState<string | null>(null);
-  const { data: notifications } = useQuery(
+  const { data: notifications, isLoading: isLoadingNotifications } = useQuery(
     ["user", "notifications"],
     getNotifications
   );
@@ -94,7 +94,7 @@ export default function ProfileNotifications() {
   }
 
   return (
-    <div className="flex w-[75%] flex-col py-4 gap-4 overflow-y-auto px-4">
+    <div className="flex h-full w-[75%] flex-col py-4 gap-4 overflow-y-auto px-4">
       <div className="flex justify-between">
         <Button
           size={"md"}
@@ -116,28 +116,41 @@ export default function ProfileNotifications() {
           </SelectContent>
         </Select>
       </div>
-      {(filter === "All"
-        ? notifications
-        : notifications?.filter(
-            (notification) => notification.type === filter.toUpperCase()
-          )
-      )?.map((notification) => (
-        <NotificationTile
-          key={notification.id}
-          notification={notification}
-          userFollow={(id) => {
-            setLoadingUser(id);
-            mutateUserFollow(id);
-          }}
-          isRead={!reads.find((id) => id === notification.id)}
-          disabled={loadingUser === notification.notifier.id && isLoadingFollow}
-          isFollowing={
-            !!followings?.find(
-              (following) => following.id === notification.notifier.id
-            )
-          }
+      {isLoadingNotifications ? (
+        <div className="flex justify-center items-center flex-1 h-full">
+          Loading...
+        </div>
+      ) : notifications?.length === 0 ? (
+        <EmptyState
+          icon={<BellIcon className="w-6 h-6" />}
+          title="No notifications for you yet"
         />
-      ))}
+      ) : (
+        (filter === "All"
+          ? notifications
+          : notifications?.filter(
+              (notification) => notification.type === filter.toUpperCase()
+            )
+        )?.map((notification) => (
+          <NotificationTile
+            key={notification.id}
+            notification={notification}
+            userFollow={(id) => {
+              setLoadingUser(id);
+              mutateUserFollow(id);
+            }}
+            isRead={!reads.find((id) => id === notification.id)}
+            disabled={
+              loadingUser === notification.notifier.id && isLoadingFollow
+            }
+            isFollowing={
+              !!followings?.find(
+                (following) => following.id === notification.notifier.id
+              )
+            }
+          />
+        ))
+      )}
     </div>
   );
 }

@@ -16,7 +16,7 @@ const Layout = ({
 
   const width = router.pathname === "/themes/create" ? "250px" : "200px";
 
-  return session.status === "loading" ? null : (
+  return (
     <div className="flex flex-col items-center">
       <Header />
       <main className="flex w-full h-screen max-w-screen-2xl pt-[60px]">
@@ -29,6 +29,11 @@ const Layout = ({
           children
         )}
       </main>
+      {session.status === "loading" ? (
+        <div className="fixed top-0 left-0 right-0 bottom-0 backdrop-blur-sm bg-black/20 z-100 flex items-center justify-center">
+          <div className="loader" />
+        </div>
+      ) : null}
     </div>
   );
 };

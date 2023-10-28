@@ -11,6 +11,8 @@ import { useState } from "react";
 import { AwardIcon } from "./award-icon";
 import { USER_LEVELS } from "@/constants/user";
 import { DotFilledIcon } from "@radix-ui/react-icons";
+import { EmptyState } from "./empty-state";
+import { User2 } from "lucide-react";
 
 interface ProfileFollowingProps {
   user: UserProps | undefined;
@@ -21,8 +23,9 @@ const ProfileFollowing: React.FC<ProfileFollowingProps> = ({ user }) => {
   const router = useRouter();
   const { data: session } = useSession();
   const [loadingUser, setLoadingUser] = useState<string | null>(null);
-  const { data: followings } = useQuery(["following", router.query.id], () =>
-    getAllFollowings(router.query.id as string)
+  const { data: followings, isLoading: isLoadingFollwings } = useQuery(
+    ["following", router.query.id],
+    () => getAllFollowings(router.query.id as string)
   );
 
   const { mutate: mutateUserUnfollow, isLoading: isLoadingFollow } =
@@ -43,22 +46,33 @@ const ProfileFollowing: React.FC<ProfileFollowingProps> = ({ user }) => {
     });
 
   return (
-    <div className="flex flex-col mt-4 gap-3 px-4 w-[75%]">
-      {followings?.map((user) => (
-        <UserTile
-          key={user.id}
-          user={user}
-          button={renderFollowStatusButton(
-            session?.user?.id,
-            user.id,
-            router,
-            mutateUserUnfollow,
-            loadingUser,
-            setLoadingUser,
-            isLoadingFollow
-          )}
+    <div className="flex h-full flex-col mt-4 gap-3 px-4 w-[75%]">
+      {isLoadingFollwings ? (
+        <div className="flex justify-center items-center flex-1 h-full">
+          Loading...
+        </div>
+      ) : followings?.length === 0 ? (
+        <EmptyState
+          icon={<User2 className="w-6 h-6" />}
+          title="You don't follow anyone"
         />
-      ))}
+      ) : (
+        followings?.map((user) => (
+          <UserTile
+            key={user.id}
+            user={user}
+            button={renderFollowStatusButton(
+              session?.user?.id,
+              user.id,
+              router,
+              mutateUserUnfollow,
+              loadingUser,
+              setLoadingUser,
+              isLoadingFollow
+            )}
+          />
+        ))
+      )}
     </div>
   );
 };
