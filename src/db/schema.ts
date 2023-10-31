@@ -357,3 +357,12 @@ export const resetPasswordsRelations = relations(resetPasswords, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export const supportTickets = pgTable("support_ticket", {
+  id: text("id").notNull().primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+  description: text("description").notNull(),
+  topic: text("topic").notNull(),
+});
