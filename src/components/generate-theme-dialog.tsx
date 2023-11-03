@@ -51,8 +51,13 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
     setLoading(true);
     e.preventDefault();
     axios
-      .post("/api/themes", {})
-      .then(() => {
+      .post("/api/generate", {
+        isDark: data.isDark,
+        sameSaturation: data.sameSaturation,
+        details: data.prompt,
+      })
+      .then((res) => {
+        console.log(res.data);
         addToast({ title: "New theme has been registered!", type: "success" });
         setLoading(false);
         setOpen(false);
@@ -189,7 +194,10 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
                   disabled={loading}
                   onClick={(e) => {
                     if (data.prompt.trim().length === 0) {
-                      // setIsNameError(true);
+                      addToast({
+                        title: "Prompt is required",
+                        type: "error",
+                      });
                       return;
                     }
                     generateTheme(e);

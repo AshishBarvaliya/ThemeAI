@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import { landingMenu } from "@/constants/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { LoginDialog } from "./login-dialog";
-import Logo from "@/assets/svgs/logo";
 import { VerificationDialog } from "./verification-dialog";
 import { RegisterDialog } from "./register-dialog";
 import { UserProfileDialog } from "./user-profile-dialog";

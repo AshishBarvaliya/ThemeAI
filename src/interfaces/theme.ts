@@ -37,9 +37,7 @@ export interface ThemeProps {
   color_4: string;
   color_4_reason: string;
   font_1: string;
-  font_1_reason: string;
   font_2: string;
-  font_2_reason: string;
   prompt: string;
   isPrivate: boolean;
   isAIGenerated: boolean;

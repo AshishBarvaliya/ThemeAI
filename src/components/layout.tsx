@@ -16,7 +16,13 @@ const Layout = ({
 
   const width = router.pathname === "/themes/create" ? "250px" : "200px";
 
-  return (
+  const staticLoading =
+    session.status === "loading" &&
+    (router.pathname === "/" ||
+      router.pathname === "/terms" ||
+      router.pathname === "/privacy");
+
+  return staticLoading ? null : (
     <div className="flex flex-col items-center">
       <Header />
       <main className="flex w-full h-screen max-w-screen-2xl pt-[60px]">

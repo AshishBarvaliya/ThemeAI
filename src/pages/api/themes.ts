@@ -30,9 +30,7 @@ interface ThemeProps {
   color_4: string;
   color_4_reason: string;
   font_1: string;
-  font_1_reason: string;
   font_2: string;
-  font_2_reason: string;
   template: string;
   prompt: string;
   isPrivate: boolean;
@@ -64,9 +62,7 @@ export default async function handler(
             color_4: true,
             color_4_reason: true,
             font_1: true,
-            font_1_reason: true,
             font_2: true,
-            font_2_reason: true,
             createdAt: true,
             template: true,
             isAIGenerated: true,
@@ -257,9 +253,7 @@ export default async function handler(
               ilike(themesSchema.color_3_reason, `%${query}%`),
               ilike(themesSchema.color_4_reason, `%${query}%`),
               ilike(themesSchema.font_1, `%${query}%`),
-              ilike(themesSchema.font_1_reason, `%${query}%`),
               ilike(themesSchema.font_2, `%${query}%`),
-              ilike(themesSchema.font_2_reason, `%${query}%`),
               ilike(themesSchema.prompt, `%${query}%`)
             )
           ),
@@ -296,9 +290,7 @@ export default async function handler(
         color_4,
         color_4_reason,
         font_1,
-        font_1_reason,
         font_2,
-        font_2_reason,
         prompt = "",
         isPrivate,
         isAIGenerated = false,
@@ -338,9 +330,7 @@ export default async function handler(
             color_4,
             color_4_reason,
             font_1,
-            font_1_reason,
             font_2,
-            font_2_reason,
             prompt,
             isPrivate,
             template,

@@ -110,9 +110,7 @@ export const themes = pgTable("theme", {
   color_4: text("color_4").notNull(),
   color_4_reason: text("color_4_reason").notNull(),
   font_1: text("font_1").notNull(),
-  font_1_reason: text("font_1_reason").notNull(),
   font_2: text("font_2").notNull(),
-  font_2_reason: text("font_2_reason").notNull(),
   template: text("template").notNull(),
   prompt: text("prompt"),
   isPrivate: boolean("isPrivate").default(false),
@@ -357,3 +355,12 @@ export const resetPasswordsRelations = relations(resetPasswords, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export const supportTickets = pgTable("support_ticket", {
+  id: text("id").notNull().primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+  description: text("description").notNull(),
+  topic: text("topic").notNull(),
+});

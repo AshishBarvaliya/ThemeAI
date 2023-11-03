@@ -37,8 +37,6 @@ interface FormDataProps {
   color2Reason: string;
   color3Reason: string;
   color4Reason: string;
-  font1Reason: string;
-  font2Reason: string;
   isPrivate: boolean;
 }
 
@@ -47,8 +45,6 @@ const formKeyValueMapping = {
   color2Reason: "Primary color",
   color3Reason: "Accent color",
   color4Reason: "Complementary color",
-  font1Reason: "Primary font",
-  font2Reason: "Secondary font",
 };
 
 export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
@@ -68,8 +64,6 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
     color2Reason: "",
     color3Reason: "",
     color4Reason: "",
-    font1Reason: "",
-    font2Reason: "",
     isPrivate: false,
   });
 
@@ -89,8 +83,6 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
         color_2_reason: data.color2Reason,
         color_3_reason: data.color3Reason,
         color_4_reason: data.color4Reason,
-        font_1_reason: data.font1Reason,
-        font_2_reason: data.font2Reason,
         isPrivate: data.isPrivate,
         tags: selectedTags,
       })
@@ -212,44 +204,6 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                     setData((prev) => ({
                       ...prev,
                       color4Reason: e.target.value,
-                    }))
-                  }
-                />
-                <Label htmlFor="color1Reason" className="mt-4 mb-1">
-                  Primary font
-                </Label>
-                <Input
-                  id="font1Reason"
-                  name="font1Reason"
-                  value={data.font1Reason}
-                  autoComplete="off"
-                  className="w-[750px] pr-[104px]"
-                  placeholder="Modern, versatile design ensures professionalism across varying sizes."
-                  postElement={<FontTooltip font={fonts.primary.fontFamily} />}
-                  onChange={(e) =>
-                    setData((prev) => ({
-                      ...prev,
-                      font1Reason: e.target.value,
-                    }))
-                  }
-                />
-                <Label htmlFor="color1Reason" className="mt-4 mb-1">
-                  Secondary font
-                </Label>
-                <Input
-                  id="font2Reason"
-                  name="font2Reason"
-                  autoComplete="off"
-                  value={data.font2Reason}
-                  className="w-[750px] pr-[104px]"
-                  placeholder="Balanced, warm sans-serif offers clean design with broad support."
-                  postElement={
-                    <FontTooltip font={fonts.secondary.fontFamily} />
-                  }
-                  onChange={(e) =>
-                    setData((prev) => ({
-                      ...prev,
-                      font2Reason: e.target.value,
                     }))
                   }
                 />
