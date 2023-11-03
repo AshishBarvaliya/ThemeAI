@@ -63,11 +63,9 @@ export default async function handler(
           font_1:
             GOOGLE_FONTS[Math.floor(Math.random() * GOOGLE_FONTS.length)]
               .fontFamily,
-          font_1_reason: lorem.generateWords(8),
           font_2:
             GOOGLE_FONTS[Math.floor(Math.random() * GOOGLE_FONTS.length)]
               .fontFamily,
-          font_2_reason: lorem.generateWords(7),
           prompt: lorem.generateWords(15),
           isPrivate: [false, true][Math.floor(Math.random() * 2)],
           template: ["marketing", "learning"][Math.floor(Math.random() * 2)],

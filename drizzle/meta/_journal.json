@@ -141,6 +141,13 @@
       "when": 1698790970469,
       "tag": "0019_open_jean_grey",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "5",
+      "when": 1698962841833,
+      "tag": "0020_left_patriot",
+      "breakpoints": true
     }
   ]
 }
