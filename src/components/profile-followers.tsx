@@ -48,7 +48,7 @@ const ProfileFollowers: React.FC<ProfileFollowersProps> = ({ user }) => {
         <div className="flex justify-center items-center flex-1 h-full">
           Loading...
         </div>
-      ) : followings?.length === 0 ? (
+      ) : followers?.length === 0 ? (
         <EmptyState
           icon={<User2 className="w-6 h-6" />}
           title="You don't have any followers"

@@ -307,12 +307,13 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                   </div>
                 )}
                 {colorFormat === "IMAGE" ? (
-                  <Button className="mt-4" onClick={downloadCanvas}>
-                    <Download className="mr-2 h-5 w-5" /> Download
+                  <Button className="mt-4" size={"md"} onClick={downloadCanvas}>
+                    <Download className="mr-1.5 h-3 w-3" /> Download
                   </Button>
                 ) : (
                   <Button
                     className="mt-4"
+                    size={"md"}
                     onClick={() =>
                       navigator.clipboard
                         .writeText(
@@ -330,7 +331,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                         )
                     }
                   >
-                    <CopySlash className="mr-1.5 h-4 w-4" /> Copy
+                    <CopySlash className="mr-1.5 h-3 w-3" /> Copy
                   </Button>
                 )}
               </TabsContent>
@@ -359,7 +360,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                             }
                             size={"md"}
                           >
-                            <Download className="mr-2 h-4 w-4" /> Download
+                            <Download className="mr-1.5 h-3 w-3" /> Download
                           </Button>
                           <Button
                             onClick={() =>
@@ -372,7 +373,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                             }
                             size={"md"}
                           >
-                            <OpenInNewWindowIcon className="mr-2 h-4 w-4" />{" "}
+                            <OpenInNewWindowIcon className="mr-1.5 h-3 w-3" />{" "}
                             Open
                           </Button>
                         </div>

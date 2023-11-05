@@ -32,13 +32,14 @@ const Header = () => {
     setFilterTags,
     verifyDialogState,
     setVerifyDialogState,
+    generateThemeDialog,
+    setGenerateThemeDialog,
   } = useHelpers();
   const { status, data: session } = useSession();
   const [singupOpen, setSingupOpen] = useState(false);
   const [userProfileOpen, setUserProfileOpen] = useState(false);
   const [resetPasswordDialog, setResetPasswordDialog] = useState(false);
   const [newPasswordDialog, setNewPasswordDialog] = useState(false);
-  const [generateThemeDialog, setGenerateThemeDialog] = useState(false);
 
   const { data: tags } = useQuery(["tags"], getTags);
 

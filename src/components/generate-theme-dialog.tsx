@@ -18,6 +18,7 @@ import { Textarea } from "./ui/textarea";
 import MagicWand from "@/assets/svgs/magic-wand";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/router";
+import { useHelpers } from "@/hooks/useHelpers";
 
 interface GenerateThemeDialogProps {
   open: boolean;
@@ -31,7 +32,6 @@ const PROMPT_LIMIT = parseInt(
 interface FormDataProps {
   prompt: string;
   isDark: boolean;
-  sameSaturation: boolean;
 }
 
 export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
@@ -40,11 +40,11 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
 }) => {
   const { addToast } = useToast();
   const router = useRouter();
+  const { setGeneratedTheme } = useHelpers();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<FormDataProps>({
     prompt: "",
     isDark: false,
-    sameSaturation: false,
   });
 
   const generateTheme = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -53,14 +53,17 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
     axios
       .post("/api/generate", {
         isDark: data.isDark,
-        sameSaturation: data.sameSaturation,
         details: data.prompt,
       })
       .then((res) => {
-        console.log(res.data);
-        addToast({ title: "New theme has been registered!", type: "success" });
+        setGeneratedTheme({
+          ...res.data,
+          isDark: data.isDark,
+          prompt: data.prompt,
+        });
         setLoading(false);
         setOpen(false);
+        router.push("/themes/generated");
       })
       .catch((error) => {
         addToast({ title: error.response.data.error, type: "error" });
@@ -130,51 +133,6 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
                     className="cursor-pointer flex items-center"
                   >
                     Dark mode
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2 mt-5">
-                  <Switch
-                    id="sameSaturation"
-                    name="sameSaturation"
-                    className="border border-border cursor-pointer"
-                    checked={data.sameSaturation}
-                    onCheckedChange={() =>
-                      setData((prev) => ({
-                        ...prev,
-                        sameSaturation: !data.sameSaturation,
-                      }))
-                    }
-                  />
-                  <Label
-                    htmlFor="sameSaturation"
-                    className="cursor-pointer flex items-center"
-                  >
-                    Consistent saturation
-                    <InfoIcon
-                      info={
-                        <div className="flex flex-col">
-                          <p>Saturation refers to how “pure” a color is.</p>
-                          <p>
-                            Same color saturation create a consistent color
-                            intensity in your design
-                          </p>
-                          <p className="mt-1">
-                            Ex. consistent saturation at 30%
-                          </p>
-                          <div className="flex gap-2 mt-1">
-                            {["#f5ccab", "#88c28e", "#9b88c2", "#c288bd"].map(
-                              (color) => (
-                                <div
-                                  key={color}
-                                  className="w-6 h-6"
-                                  style={{ backgroundColor: color }}
-                                ></div>
-                              )
-                            )}
-                          </div>
-                        </div>
-                      }
-                    />
                   </Label>
                 </div>
               </div>
