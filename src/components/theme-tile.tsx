@@ -18,6 +18,13 @@ import NiceAvatar from "react-nice-avatar";
 import { AwardIcon } from "./award-icon";
 import { USER_LEVELS } from "@/constants/user";
 import { Button } from "./ui/button";
+import MagicWand from "@/assets/svgs/magic-wand";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 interface ThemeTileProps {
   theme: GetThemeTileProps;
@@ -75,8 +82,13 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
   }, []);
 
   return (
-    <div className="w-[270px] h-fit border-[0.5px] border-border flex flex-col shadow-lg bg-white fade-in-0 animate-in slide-in-from-right-2">
-      <div className="flex gap-1 items-center p-1 border-b-[0.5px] border-border ">
+    <div
+      className={cn(
+        "relative w-[270px] h-fit border-[0.5px] border-border flex flex-col shadow-lg bg-white fade-in-0 animate-in slide-in-from-right-2",
+        theme.isAIGenerated && "border-none"
+      )}
+    >
+      <div className="flex gap-1 items-center p-1 border-b-[0.5px] border-border bg-white">
         <div className="flex flex-1 gap-2 items-center">
           <Avatar
             className="flex h-6 w-6 border-[0.5px] items-center justify-center bg-primary border-border cursor-pointer hover:shadow-normal hover:-translate-x-px hover:-translate-y-px"
@@ -103,7 +115,19 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
             info={USER_LEVELS[mappedTheme.user.level].name}
           />
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
+          {mappedTheme.isAIGenerated ? (
+            <TooltipProvider>
+              <Tooltip delayDuration={100}>
+                <TooltipTrigger asChild>
+                  <div>
+                    <MagicWand className="h-3 w-3" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>{"AI Generated"}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : null}
           <div
             className="relative py-1 cursor-pointer"
             ref={moreMenuContainerRef}
@@ -155,7 +179,7 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
           </div>
         </div>
       </div>
-      <div className="relative parent_hover">
+      <div className="relative parent_hover bg-white">
         {mappedTheme.template === "marketing" ? (
           <MarketingTemplate
             colors={mappedTheme.colors}
@@ -179,7 +203,7 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
         </div>
       </div>
       <div
-        className="flex flex-col border-t-[0.5px] p-1.5 gap-2"
+        className="flex flex-col border-t-[0.5px] p-1.5 gap-2 bg-white"
         style={{ borderColor: mappedTheme.colors.primary }}
       >
         <Typography element={"p"} as="p" className="text-lg truncate">
@@ -253,6 +277,9 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
           </p>
         </div>
       </div>
+      {theme.isAIGenerated ? (
+        <div className="absolute gradient-border -top-[1px] -right-[1px] -left-[1px] -bottom-[1px]" />
+      ) : null}
     </div>
   );
 };

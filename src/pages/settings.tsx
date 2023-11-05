@@ -141,6 +141,7 @@ export default function Settings() {
                 <>
                   <Button
                     className="mr-4"
+                    size={"md"}
                     variant="outline"
                     onClick={() => {
                       setEditMode(false);
@@ -153,13 +154,17 @@ export default function Settings() {
                   >
                     Cancel
                   </Button>
-                  <Button onClick={onSaveUser} disabled={!isDirty || loading}>
-                    <Save className="h-4 w-4 mr-2" /> Save
+                  <Button
+                    size={"md"}
+                    onClick={onSaveUser}
+                    disabled={!isDirty || loading}
+                  >
+                    <Save className="h-3 w-3 mr-1.5" /> Save
                   </Button>
                 </>
               ) : (
-                <Button onClick={() => setEditMode(true)}>
-                  <Pen className="h-4 w-4 mr-2" /> Edit
+                <Button size={"md"} onClick={() => setEditMode(true)}>
+                  <Pen className="h-3 w-3 mr-1.5" /> Edit
                 </Button>
               )}
             </div>

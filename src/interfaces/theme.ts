@@ -87,4 +87,18 @@ export interface MappedThemeProps {
   };
   likes: number;
   saves: number;
+  isAIGenerated: boolean;
+}
+
+export interface GeneratedThemeProps {
+  color_1: string;
+  color_1_reason: string;
+  color_2: string;
+  color_2_reason: string;
+  color_3: string;
+  color_3_reason: string;
+  color_4: string;
+  color_4_reason: string;
+  prompt: string;
+  isDark: boolean;
 }

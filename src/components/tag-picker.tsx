@@ -136,7 +136,7 @@ export default function TagPicker({
           selectedTags?.map((tag) => (
             <div
               key={tag.name}
-              className="mr-2 h-[28px] text-sm flex items-center border border-border px-3 rounded-[45px]"
+              className="mr-2 h-[28px] text-sm flex items-center border-[0.5px] border-border px-3 rounded-[45px]"
             >
               {tag.name}
               <Cross1Icon

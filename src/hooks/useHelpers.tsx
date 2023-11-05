@@ -7,6 +7,7 @@ import {
 } from "react";
 import { useSession } from "next-auth/react";
 import { VerificationDialogProps } from "@/components/verification-dialog";
+import { GeneratedThemeProps } from "@/interfaces/theme";
 
 type Context = {
   loginOpen: boolean;
@@ -30,6 +31,10 @@ type Context = {
       clearURL: boolean;
     }>
   >;
+  generatedTheme: GeneratedThemeProps | null;
+  setGeneratedTheme: Dispatch<SetStateAction<GeneratedThemeProps | null>>;
+  generateThemeDialog: boolean;
+  setGenerateThemeDialog: Dispatch<SetStateAction<boolean>>;
 };
 
 const HelpersContext = createContext({
@@ -48,6 +53,10 @@ const HelpersContext = createContext({
     clearURL: true,
   },
   setVerifyDialogState: () => {},
+  generatedTheme: null,
+  setGeneratedTheme: () => {},
+  generateThemeDialog: false,
+  setGenerateThemeDialog: () => {},
 } as Context);
 
 export const HelpersProvider = ({
@@ -68,6 +77,9 @@ export const HelpersProvider = ({
   const [themeSearchQuery, setThemeSearchQuery] = useState("");
   const [themeType, setThemeType] = useState<Context["themeType"]>("explore");
   const [filterTags, setFilterTags] = useState<string[]>([]);
+  const [generateThemeDialog, setGenerateThemeDialog] = useState(false);
+  const [generatedTheme, setGeneratedTheme] =
+    useState<GeneratedThemeProps | null>(null);
   const { data: session, status } = useSession();
 
   const runIfLoggedInElseOpenLoginDialog = (fn: () => void) => {
@@ -100,6 +112,10 @@ export const HelpersProvider = ({
         setFilterTags,
         verifyDialogState,
         setVerifyDialogState,
+        generatedTheme,
+        setGeneratedTheme,
+        generateThemeDialog,
+        setGenerateThemeDialog,
       }}
     >
       {children}

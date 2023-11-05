@@ -6,10 +6,12 @@ import FontPicker from "@/components/font-picker";
 import { SaveThemeDialog } from "@/components/save-theme-dialog";
 import { Button } from "@/components/ui/button";
 import { GOOGLE_FONTS } from "@/constants/fonts";
+import { useHelpers } from "@/hooks/useHelpers";
 import { ColorsProps, FontObjProps } from "@/interfaces/theme";
 import { generateAllShades } from "@/lib/utils";
 import { ArrowLeftIcon, DownloadIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const defaultColors = [
   {
@@ -41,12 +43,29 @@ const defaultFonts = [
 ];
 
 const CreateTheme = () => {
+  const router = useRouter();
+  const { generatedTheme } = useHelpers();
   const [openColorPicker, setOpenColorPicker] = useState<string | null>(null);
   const [openSaveThemeDialog, setOpenSaveThemeDialog] = useState(false);
   const [openExportThemeDialog, setOpenExportThemeDialog] = useState(false);
   const [openSure, setOpenSure] = useState(false);
-  const [fonts, setFonts] = useState<FontObjProps>(defaultFonts[1]);
-  const [colors, setColors] = useState<ColorsProps>(defaultColors[1]);
+  const [fonts, setFonts] = useState<FontObjProps>(defaultFonts[0]);
+  const [colors, setColors] = useState<ColorsProps>(defaultColors[0]);
+
+  useEffect(() => {
+    if (router.query.generated == "1") {
+      if (generatedTheme) {
+        setColors({
+          bg: generatedTheme.color_1,
+          primary: generatedTheme.color_2,
+          accent: generatedTheme.color_3,
+          extra: generatedTheme.color_4,
+        });
+      } else {
+        router.push("/themes/create", undefined, { shallow: true });
+      }
+    }
+  }, [router]);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -62,7 +81,7 @@ const CreateTheme = () => {
             const unsaved = Object.keys(colors).some(
               (key) =>
                 colors[key as keyof ColorsProps] !==
-                defaultColors[1][key as keyof ColorsProps]
+                defaultColors[0][key as keyof ColorsProps]
             );
             if (unsaved) {
               setOpenSure(true);
@@ -151,6 +170,18 @@ const CreateTheme = () => {
         fonts={fonts}
         colors={colors}
         setOpen={setOpenSaveThemeDialog}
+        defaultData={
+          generatedTheme && router.query.generated == "1"
+            ? {
+                color_1_reason: generatedTheme?.color_1_reason,
+                color_2_reason: generatedTheme?.color_2_reason,
+                color_3_reason: generatedTheme?.color_3_reason,
+                color_4_reason: generatedTheme?.color_4_reason,
+                isDark: generatedTheme?.isDark,
+                prompt: generatedTheme?.prompt,
+              }
+            : undefined
+        }
       />
       <ConfirmationDialog
         open={openSure}

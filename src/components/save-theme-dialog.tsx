@@ -23,12 +23,21 @@ import {
 } from "./ui/tooltip";
 import TagPicker from "./tag-picker";
 import { ConfirmationDialog } from "./confirmation-dialog";
+import { useRouter } from "next/router";
 
 interface RegisterDialogProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   colors: ColorsProps;
   fonts: FontObjProps;
+  defaultData?: {
+    color_1_reason: string;
+    color_2_reason: string;
+    color_3_reason: string;
+    color_4_reason: string;
+    isDark: boolean;
+    prompt: string;
+  };
 }
 
 interface FormDataProps {
@@ -52,18 +61,20 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
   setOpen,
   colors,
   fonts,
+  defaultData,
 }) => {
   const { addToast } = useToast();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [openSure, setOpenSure] = useState(false);
   const [selectedTags, setSelectedTags] = useState<TagProps[]>([]);
   const [isNameError, setIsNameError] = useState(false);
   const [data, setData] = useState<FormDataProps>({
     name: "",
-    color1Reason: "",
-    color2Reason: "",
-    color3Reason: "",
-    color4Reason: "",
+    color1Reason: defaultData?.color_1_reason || "",
+    color2Reason: defaultData?.color_2_reason || "",
+    color3Reason: defaultData?.color_3_reason || "",
+    color4Reason: defaultData?.color_4_reason || "",
     isPrivate: false,
   });
 
@@ -86,11 +97,14 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
         isPrivate: data.isPrivate,
         tags: selectedTags,
       })
-      .then(() => {
+      .then((res) => {
         addToast({ title: "New theme has been registered!", type: "success" });
         setLoading(false);
         setOpen(false);
         setOpenSure(false);
+        if (res.data?.theme) {
+          router.push(`/themes/${res.data?.theme?.id}`);
+        }
       })
       .catch((error) => {
         addToast({ title: error.response.data.error, type: "error" });
@@ -296,22 +310,6 @@ const ColorTooltip = ({ color }: { color: string }) => (
         />
       </TooltipTrigger>
       <TooltipContent>{color}</TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
-);
-
-const FontTooltip = ({ font }: { font: string }) => (
-  <TooltipProvider>
-    <Tooltip delayDuration={100}>
-      <TooltipTrigger asChild>
-        <div
-          className="absolute truncate border border-border top-0 right-0 flex h-9 w-[100px] text-md items-center bg-background cursor-default"
-          style={{ fontFamily: font }}
-        >
-          <p className="w-full truncate text-center">{font}</p>
-        </div>
-      </TooltipTrigger>
-      <TooltipContent>{font}</TooltipContent>
     </Tooltip>
   </TooltipProvider>
 );

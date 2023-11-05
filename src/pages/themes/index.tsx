@@ -168,7 +168,7 @@ export default function Themes() {
     <div className="flex bg-black/5 w-full">
       {isLoading ? null : themes?.pages[0]?.length ? (
         <div
-          className="flex flex-wrap p-5 overflow-y-auto px-10 gap-6"
+          className="flex flex-wrap p-5 overflow-y-auto px-10 gap-6 w-full"
           onScroll={handleScroll}
         >
           {themes?.pages?.map((page, index) =>
