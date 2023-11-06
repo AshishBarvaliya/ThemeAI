@@ -54,7 +54,11 @@ const ProfileFollowing: React.FC<ProfileFollowingProps> = ({ user }) => {
       ) : followings?.length === 0 ? (
         <EmptyState
           icon={<User2 className="w-6 h-6" />}
-          title="You don't follow anyone"
+          title={
+            user?.id === session?.user?.id
+              ? "You don't follow anyone"
+              : `${user?.name} doesn't follow anyone`
+          }
         />
       ) : (
         followings?.map((user) => (

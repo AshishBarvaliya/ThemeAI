@@ -5,6 +5,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
+import { Lock, Unlock } from "lucide-react";
+import { cn, getLuminance } from "@/lib/utils";
 
 interface RegisterDialogProps {
   id: string;
@@ -13,6 +15,8 @@ interface RegisterDialogProps {
   name: string;
   open: string | null;
   setOpen: React.Dispatch<React.SetStateAction<string | null>>;
+  isLocked: boolean;
+  setIsLocked: (isLocked: boolean) => void;
 }
 
 const ColorPicker: React.FC<RegisterDialogProps> = ({
@@ -22,19 +26,46 @@ const ColorPicker: React.FC<RegisterDialogProps> = ({
   setColor,
   open,
   setOpen,
+  isLocked = false,
+  setIsLocked,
 }) => {
+  const { color: lockColor, shade } = getLuminance(color);
+
   return (
     <div className="relative">
       <TooltipProvider>
         <Tooltip delayDuration={100}>
           <TooltipTrigger asChild>
             <div
-              className="w-12 h-12 relative border-[0.5px] border-border z-10 rounded-md cursor-pointer hover:shadow-xl"
+              className={cn(
+                "w-12 h-12 relative border-[0.5px] border-border z-10 rounded-md cursor-pointer hover:shadow-xl",
+                !isLocked && "parent_hover"
+              )}
               style={{
                 backgroundColor: color,
               }}
               onClick={() => setOpen(open === id ? null : id)}
-            ></div>
+            >
+              <div
+                className={cn(
+                  "m-0.5 flex items-center justify-center w-[15px] h-[15px]",
+                  !isLocked && "hidden_child"
+                )}
+                style={{
+                  backgroundColor: shade,
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsLocked(!isLocked);
+                }}
+              >
+                {isLocked ? (
+                  <Lock className="w-3 h-3" style={{ color: lockColor }} />
+                ) : (
+                  <Unlock className="w-3 h-3" style={{ color: lockColor }} />
+                )}
+              </div>
+            </div>
           </TooltipTrigger>
           <TooltipContent>{name}</TooltipContent>
         </Tooltip>

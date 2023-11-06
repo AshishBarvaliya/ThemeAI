@@ -10,10 +10,11 @@ import { useHelpers } from "@/hooks/useHelpers";
 import { ColorsProps, FontObjProps } from "@/interfaces/theme";
 import { generateAllShades } from "@/lib/utils";
 import { ArrowLeftIcon, DownloadIcon } from "@radix-ui/react-icons";
+import { RotateCcw } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const defaultColors = [
+const templatesDefaultColors = [
   {
     bg: "#FFFFFF",
     primary: "#1C1C1C",
@@ -49,13 +50,27 @@ const CreateTheme = () => {
   const [openSaveThemeDialog, setOpenSaveThemeDialog] = useState(false);
   const [openExportThemeDialog, setOpenExportThemeDialog] = useState(false);
   const [openSure, setOpenSure] = useState(false);
+  const [defaultColors, setDefaultColors] = useState<ColorsProps>(
+    templatesDefaultColors[0]
+  );
   const [fonts, setFonts] = useState<FontObjProps>(defaultFonts[0]);
-  const [colors, setColors] = useState<ColorsProps>(defaultColors[0]);
+  const [colors, setColors] = useState<ColorsProps>(defaultColors);
+  const [isLocked, setIsLocked] = useState({
+    bg: false,
+    primary: false,
+    accent: false,
+    extra: false,
+  });
+  const [isDirty, setIsDirty] = useState(false);
+
+  useEffect(() => {
+    setColors(defaultColors);
+  }, [defaultColors]);
 
   useEffect(() => {
     if (router.query.generated == "1") {
       if (generatedTheme) {
-        setColors({
+        setDefaultColors({
           bg: generatedTheme.color_1,
           primary: generatedTheme.color_2,
           accent: generatedTheme.color_3,
@@ -64,8 +79,28 @@ const CreateTheme = () => {
       } else {
         router.push("/themes/create", undefined, { shallow: true });
       }
+    } else {
+      setDefaultColors(templatesDefaultColors[0]);
     }
+    setIsLocked({
+      bg: false,
+      primary: false,
+      accent: false,
+      extra: false,
+    });
+    setIsDirty(false);
   }, [router]);
+
+  useEffect(() => {
+    setIsDirty(
+      (!isLocked.bg && colors.bg !== defaultColors.bg) ||
+        (!isLocked.primary && colors.primary !== defaultColors.primary) ||
+        (!isLocked.accent && colors.accent !== defaultColors.accent) ||
+        (!isLocked.extra && colors.extra !== defaultColors.extra)
+    );
+  }, [colors, isLocked, defaultColors]);
+
+  const isGenerated = generatedTheme && router.query.generated == "1";
 
   return (
     <div className="flex flex-1 flex-col">
@@ -76,25 +111,43 @@ const CreateTheme = () => {
           width: "calc(100vw - 250px)",
         }}
       >
-        <Button
-          onClick={() => {
-            const unsaved = Object.keys(colors).some(
-              (key) =>
-                colors[key as keyof ColorsProps] !==
-                defaultColors[0][key as keyof ColorsProps]
-            );
-            if (unsaved) {
-              setOpenSure(true);
-            } else {
-              history.back();
-            }
-          }}
-          variant="circle"
-          size={"circle"}
-        >
-          <ArrowLeftIcon className="h-4 w-4" />
-        </Button>
-        <div className="flex gap-3.5 pl-20">
+        <div className="flex gap-3.5 items-center w-[140px]">
+          <Button
+            onClick={() => {
+              if (isDirty) {
+                setOpenSure(true);
+              } else {
+                history.back();
+              }
+            }}
+            variant="circle"
+            size={"circle"}
+          >
+            <ArrowLeftIcon className="h-4 w-4" />
+          </Button>
+          {isDirty ? (
+            <Button
+              onClick={() => {
+                setColors({
+                  bg: isLocked.bg ? colors.bg : defaultColors.bg,
+                  primary: isLocked.primary
+                    ? colors.primary
+                    : defaultColors.primary,
+                  accent: isLocked.accent
+                    ? colors.accent
+                    : defaultColors.accent,
+                  extra: isLocked.extra ? colors.extra : defaultColors.extra,
+                });
+                setIsDirty(false);
+              }}
+              size={"md"}
+            >
+              <RotateCcw className="h-3 w-3 mr-1.5" />
+              Reset
+            </Button>
+          ) : null}
+        </div>
+        <div className="flex gap-3.5">
           <ColorPicker
             id="bgcolor"
             name="Background Color"
@@ -102,6 +155,8 @@ const CreateTheme = () => {
             setColor={(color) => setColors({ ...colors, bg: color })}
             open={openColorPicker}
             setOpen={setOpenColorPicker}
+            isLocked={isLocked.bg}
+            setIsLocked={(val) => setIsLocked({ ...isLocked, bg: val })}
           />
           <ColorPicker
             id="primarycolor"
@@ -110,6 +165,8 @@ const CreateTheme = () => {
             setColor={(color) => setColors({ ...colors, primary: color })}
             open={openColorPicker}
             setOpen={setOpenColorPicker}
+            isLocked={isLocked.primary}
+            setIsLocked={(val) => setIsLocked({ ...isLocked, primary: val })}
           />
           <ColorPicker
             id="accentcolor"
@@ -118,6 +175,8 @@ const CreateTheme = () => {
             setColor={(color) => setColors({ ...colors, accent: color })}
             open={openColorPicker}
             setOpen={setOpenColorPicker}
+            isLocked={isLocked.accent}
+            setIsLocked={(val) => setIsLocked({ ...isLocked, accent: val })}
           />
           <ColorPicker
             id="complementarycolor"
@@ -126,6 +185,8 @@ const CreateTheme = () => {
             setColor={(color) => setColors({ ...colors, extra: color })}
             open={openColorPicker}
             setOpen={setOpenColorPicker}
+            isLocked={isLocked.extra}
+            setIsLocked={(val) => setIsLocked({ ...isLocked, extra: val })}
           />
         </div>
         <div className="flex flex-1 gap-3.5 ml-5">
@@ -170,8 +231,9 @@ const CreateTheme = () => {
         fonts={fonts}
         colors={colors}
         setOpen={setOpenSaveThemeDialog}
+        isDirty={isDirty}
         defaultData={
-          generatedTheme && router.query.generated == "1"
+          isGenerated
             ? {
                 color_1_reason: generatedTheme?.color_1_reason,
                 color_2_reason: generatedTheme?.color_2_reason,

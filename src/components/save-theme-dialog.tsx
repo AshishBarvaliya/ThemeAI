@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useToast } from "@/hooks/useToast";
 import { Input } from "./ui/input";
@@ -38,6 +38,7 @@ interface RegisterDialogProps {
     isDark: boolean;
     prompt: string;
   };
+  isDirty: boolean;
 }
 
 interface FormDataProps {
@@ -62,6 +63,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
   colors,
   fonts,
   defaultData,
+  isDirty,
 }) => {
   const { addToast } = useToast();
   const router = useRouter();
@@ -96,6 +98,18 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
         color_4_reason: data.color4Reason,
         isPrivate: data.isPrivate,
         tags: selectedTags,
+        ...(defaultData
+          ? {
+              prompt: defaultData.prompt,
+              isAIGenerated: !(
+                isDirty ||
+                data.color1Reason !== defaultData.color_1_reason ||
+                data.color2Reason !== defaultData.color_2_reason ||
+                data.color3Reason !== defaultData.color_3_reason ||
+                data.color4Reason !== defaultData.color_4_reason
+              ),
+            }
+          : {}),
       })
       .then((res) => {
         addToast({ title: "New theme has been registered!", type: "success" });
@@ -115,6 +129,17 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
   };
 
   const isAnyFieldEmpty = Object.values(data).some((value) => value === "");
+
+  useEffect(() => {
+    setData({
+      name: "",
+      color1Reason: defaultData?.color_1_reason || "",
+      color2Reason: defaultData?.color_2_reason || "",
+      color3Reason: defaultData?.color_3_reason || "",
+      color4Reason: defaultData?.color_4_reason || "",
+      isPrivate: false,
+    });
+  }, [defaultData]);
 
   return (
     <>
