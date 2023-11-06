@@ -8,8 +8,8 @@ export const getPrompt = ({
 
 - Follow the 60-30-10 rule for color distribution.
 - Ensure color combinations comply with WCAG 2 Level AAA standards for contrast.
-- Design for ${isDark ? "Dark" : "Light"} mode.
-- Represent colors in HEX format.
+- Design for ${isDark ? "Dark" : "Light"} theme mode.
+- Represent colors in HEX code format (ex. #FFFFFF).
 - Reason should at least 10 words and not have more than 20 words.
 
 Description: ${description}

@@ -21,12 +21,14 @@ export default async function handler(
       input: details,
     });
     if (moderation.results[0].flagged) {
-      return res.status(400).json({ error: "Flagged content" });
+      return res
+        .status(400)
+        .json({ error: "Flagged content as violating OpenAI terms." });
     }
 
     try {
       const gptResponse = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4-1106-preview",
         messages: [
           {
             role: "user",
@@ -41,7 +43,7 @@ export default async function handler(
           {
             name: "get_colors_with_reasons",
             description:
-              "Get colors and reasons of color for the theme of the design of website from the given description fo the website",
+              "Get colors(hex codes) and reasons of color for the theme of the design of website from the given description fo the website",
             parameters: {
               type: "object",
               properties: {

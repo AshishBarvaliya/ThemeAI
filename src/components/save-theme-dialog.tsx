@@ -38,6 +38,7 @@ interface RegisterDialogProps {
     isDark: boolean;
     prompt: string;
   };
+  isDirty: boolean;
 }
 
 interface FormDataProps {
@@ -62,6 +63,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
   colors,
   fonts,
   defaultData,
+  isDirty,
 }) => {
   const { addToast } = useToast();
   const router = useRouter();
@@ -96,6 +98,18 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
         color_4_reason: data.color4Reason,
         isPrivate: data.isPrivate,
         tags: selectedTags,
+        ...(defaultData
+          ? {
+              prompt: defaultData.prompt,
+              isAIGenerated: !(
+                isDirty ||
+                data.color1Reason !== defaultData.color_1_reason ||
+                data.color2Reason !== defaultData.color_2_reason ||
+                data.color3Reason !== defaultData.color_3_reason ||
+                data.color4Reason !== defaultData.color_4_reason
+              ),
+            }
+          : {}),
       })
       .then((res) => {
         addToast({ title: "New theme has been registered!", type: "success" });

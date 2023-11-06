@@ -63,6 +63,7 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
         });
         setLoading(false);
         setOpen(false);
+        setData({ prompt: "", isDark: false });
         router.push("/themes/generated");
       })
       .catch((error) => {
@@ -97,7 +98,7 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
                     )}
                   >
                     {`${data.prompt.trim().length}/${PROMPT_LIMIT}`}
-                    <InfoIcon info={`Max ${PROMPT_LIMIT} alphabets allowed`} />
+                    <InfoIcon info={`Max ${PROMPT_LIMIT} characters allowed`} />
                   </div>
                 </div>
                 <Textarea

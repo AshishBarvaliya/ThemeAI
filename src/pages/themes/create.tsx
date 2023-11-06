@@ -89,8 +89,6 @@ const CreateTheme = () => {
       extra: false,
     });
     setIsDirty(false);
-
-    console.log("hi");
   }, [router]);
 
   useEffect(() => {
@@ -233,6 +231,7 @@ const CreateTheme = () => {
         fonts={fonts}
         colors={colors}
         setOpen={setOpenSaveThemeDialog}
+        isDirty={isDirty}
         defaultData={
           isGenerated
             ? {

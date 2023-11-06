@@ -17,6 +17,7 @@ import { TagProps } from "@/interfaces/theme";
 import { InfoIcon } from "./info-icon";
 import TagPicker from "./tag-picker";
 import { useRouter } from "next/router";
+import { useHelpers } from "@/hooks/useHelpers";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -49,6 +50,7 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
 }) => {
   const { addToast } = useToast();
   const router = useRouter();
+  const { setGeneratedTheme } = useHelpers();
   const [loading, setLoading] = useState(false);
   const [selectedTags, setSelectedTags] = useState<TagProps[]>([]);
   const [isNameError, setIsNameError] = useState(false);
@@ -82,6 +84,7 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
         addToast({ title: "New theme has been registered!", type: "success" });
         setLoading(false);
         setOpen(false);
+        setGeneratedTheme(null);
         if (res.data?.theme) {
           router.push(`/themes/${res.data?.theme?.id}`);
         }
