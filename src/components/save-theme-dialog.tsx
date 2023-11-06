@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useToast } from "@/hooks/useToast";
 import { Input } from "./ui/input";
@@ -115,6 +115,17 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
   };
 
   const isAnyFieldEmpty = Object.values(data).some((value) => value === "");
+
+  useEffect(() => {
+    setData({
+      name: "",
+      color1Reason: defaultData?.color_1_reason || "",
+      color2Reason: defaultData?.color_2_reason || "",
+      color3Reason: defaultData?.color_3_reason || "",
+      color4Reason: defaultData?.color_4_reason || "",
+      isPrivate: false,
+    });
+  }, [defaultData]);
 
   return (
     <>
