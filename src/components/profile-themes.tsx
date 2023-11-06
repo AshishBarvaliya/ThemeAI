@@ -316,9 +316,17 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
   ) : createdThemes?.length === 0 ? (
     <EmptyState
       icon={<PenTool className="w-6 h-6" />}
-      title="You havn't created any themes yet!"
+      title={
+        router.query.id === session?.user.id
+          ? "You havn't created any themes yet!"
+          : "This user hasn't created any themes yet!"
+      }
       buttonText="Create a theme"
-      onClick={() => router.push("/themes/create")}
+      onClick={
+        router.query.id === session?.user.id
+          ? () => router.push("/themes/create")
+          : undefined
+      }
     />
   ) : (
     privateFiltered
@@ -355,6 +363,7 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { data: session } = useSession();
   const [likeLoading, setLikeLoading] = useState<string | null>(null);
   const { data: likedThemes, isLoading: isLoadingLikedThemes } = useQuery(
     ["user", router.query.id, "liked"],
@@ -460,9 +469,17 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
   ) : likedThemes?.length === 0 ? (
     <EmptyState
       icon={<Heart className="w-6 h-6" />}
-      title="You havn't liked any themes yet!"
+      title={
+        router.query.id === session?.user.id
+          ? "You havn't liked any themes yet!"
+          : "This user hasn't liked any themes yet!"
+      }
       buttonText="Browse themes"
-      onClick={() => router.push("/themes")}
+      onClick={
+        router.query.id === session?.user.id
+          ? () => router.push("/themes")
+          : undefined
+      }
     />
   ) : (
     sortedThemes
