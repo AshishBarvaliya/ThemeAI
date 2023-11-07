@@ -368,7 +368,7 @@ export default async function handler(
 
             if (
               level < 5 &&
-              USER_LEVELS[level].requiredExperience <= experience
+              USER_LEVELS[level + 1].requiredExperience <= experience
             ) {
               await db
                 .update(usersSchema)

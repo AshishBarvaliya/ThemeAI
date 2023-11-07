@@ -38,7 +38,8 @@ const Sidebar = ({ width }: { width: string }) => {
             }
             className={cn(
               "flex gap-2.5 items-center py-2 px-8 mx-3 text-lg cursor-pointer hover:bg-primary/20",
-              themeType === tab.id && "bg-primary/50"
+              themeType === tab.id &&
+                "bg-primary/60 shadow-md hover:bg-primary/60"
             )}
           >
             {tab.icon}

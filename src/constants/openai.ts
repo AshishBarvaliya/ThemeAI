@@ -20,4 +20,5 @@ Colors:
 2. Primary/Font color (30%)
 3. Accent color (for buttons & actions, 10%)
 4. Complementary color
-`;
+
+output format: JSON with keys: bg, primary, accent, complementary and their reasons bg_reason, primary_reason, accent_reason, complementary_reason`;

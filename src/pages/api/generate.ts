@@ -3,6 +3,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 import { getPrompt } from "@/constants/openai";
+import { eq } from "drizzle-orm";
+import { users as usersSchema } from "@/db/schema";
+import db from "@/db";
+import { USER_LEVELS } from "@/constants/user";
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,6 +21,31 @@ export default async function handler(
     if (!details) {
       return res.status(400).json({ error: "Details are required" });
     }
+
+    const user = await db.query.users.findFirst({
+      where: eq(usersSchema.id, session.user.id),
+      columns: {
+        id: true,
+        experience: true,
+        level: true,
+        pupa: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const experience = Number(user.experience || 0) + 10;
+    const level = Number(user.level || 0);
+    const pupa = Number(user.pupa || 0);
+
+    if (pupa < 1) {
+      return res.status(400).json({
+        error:
+          "you don't have enough prompt to generate colors. please purchase prompts!",
+      });
+    }
+
     const moderation = await openai.moderations.create({
       input: details,
     });
@@ -28,7 +57,8 @@ export default async function handler(
 
     try {
       const gptResponse = await openai.chat.completions.create({
-        model: "gpt-4-1106-preview",
+        model: "gpt-3.5-turbo-1106",
+        // model: "gpt-4-1106-preview",
         messages: [
           {
             role: "user",
@@ -39,61 +69,49 @@ export default async function handler(
           },
         ],
         temperature: 1,
-        functions: [
-          {
-            name: "get_colors_with_reasons",
-            description:
-              "Get colors(hex codes) and reasons of color for the theme of the design of website from the given description fo the website",
-            parameters: {
-              type: "object",
-              properties: {
-                color_1: {
-                  type: "string",
-                },
-                color_1_reason: {
-                  type: "string",
-                },
-                color_2: {
-                  type: "string",
-                },
-                color_2_reason: {
-                  type: "string",
-                },
-                color_3: {
-                  type: "string",
-                },
-                color_3_reason: {
-                  type: "string",
-                },
-                color_4: {
-                  type: "string",
-                },
-                color_4_reason: {
-                  type: "string",
-                },
-              },
-              required: [
-                "color_1",
-                "color_1_reason",
-                "color_2",
-                "color_2_reason",
-                "color_3",
-                "color_3_reason",
-                "color_4",
-                "color_4_reason",
-              ],
-            },
-          },
-        ],
-        function_call: { name: "get_colors_with_reasons" },
+        response_format: { type: "json_object" },
       });
+      if (!gptResponse.choices[0].message.content) {
+        return res.status(500).json({ error: "Error generating colors" });
+      }
 
-      const function_call = gptResponse.choices[0].message.function_call;
+      try {
+        const colors = JSON.parse(gptResponse.choices[0].message.content);
+        res.status(200).json({
+          color_1: colors.bg,
+          color_2: colors.primary,
+          color_3: colors.accent,
+          color_4: colors.complementary,
+          color_1_reason: colors.bg_reason,
+          color_2_reason: colors.primary_reason,
+          color_3_reason: colors.accent_reason,
+          color_4_reason: colors.complementary_reason,
+        });
 
-      if (function_call) {
-        const colors = JSON.parse(function_call.arguments);
-        return res.status(200).json({ ...colors });
-      } else {
+        setTimeout(async () => {
+          if (
+            level < 5 &&
+            USER_LEVELS[level + 1].requiredExperience <= experience
+          ) {
+            await db
+              .update(usersSchema)
+              .set({
+                level: level + 1,
+                experience,
+                pupa: pupa + USER_LEVELS[level + 1].prompts - 1,
+              })
+              .where(eq(usersSchema.id, user.id));
+          } else {
+            await db
+              .update(usersSchema)
+              .set({
+                experience,
+                pupa: pupa - 1,
+              })
+              .where(eq(usersSchema.id, user.id));
+          }
+        }, 0);
+      } catch {
         return res.status(500).json({ error: "Error generating colors" });
       }
     } catch (error) {
