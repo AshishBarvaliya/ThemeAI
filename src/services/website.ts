@@ -1,3 +1,4 @@
+import { GeneratedThemeProps } from "@/interfaces/theme";
 import axios from "axios";
 
 export const createSupportTicket = async (
@@ -11,6 +12,17 @@ export const createSupportTicket = async (
     email,
     topic,
     description,
+  });
+  return response.data;
+};
+
+export const sendFeedback = async (
+  generatedTheme: GeneratedThemeProps,
+  feedback: "POSITIVE" | "NEGATIVE"
+) => {
+  const response = await axios.post("/api/feedback", {
+    ...generatedTheme,
+    feedback,
   });
   return response.data;
 };

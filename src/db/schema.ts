@@ -364,3 +364,27 @@ export const supportTickets = pgTable("support_ticket", {
   description: text("description").notNull(),
   topic: text("topic").notNull(),
 });
+
+export const feedbackThemeEnum = pgEnum("feedback_theme_type", [
+  "POSITIVE",
+  "NEGATIVE",
+]);
+
+export const feedbackTheme = pgTable("feedback_theme", {
+  id: text("id").notNull().primaryKey(),
+  color_1: text("color_1").notNull(),
+  color_1_reason: text("color_1_reason").notNull(),
+  color_2: text("color_2").notNull(),
+  color_2_reason: text("color_2_reason").notNull(),
+  color_3: text("color_3").notNull(),
+  color_3_reason: text("color_3_reason").notNull(),
+  color_4: text("color_4").notNull(),
+  color_4_reason: text("color_4_reason").notNull(),
+  isDark: boolean("isDark").default(false),
+  prompt: text("prompt").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+  feedbackType: feedbackThemeEnum("feedbackType").notNull(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id),
+});

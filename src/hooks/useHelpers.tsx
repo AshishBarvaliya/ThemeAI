@@ -35,6 +35,8 @@ type Context = {
   setGeneratedTheme: Dispatch<SetStateAction<GeneratedThemeProps | null>>;
   generateThemeDialog: boolean;
   setGenerateThemeDialog: Dispatch<SetStateAction<boolean>>;
+  feedbackSent: boolean;
+  setFeedbackSent: Dispatch<SetStateAction<boolean>>;
 };
 
 const HelpersContext = createContext({
@@ -57,6 +59,8 @@ const HelpersContext = createContext({
   setGeneratedTheme: () => {},
   generateThemeDialog: false,
   setGenerateThemeDialog: () => {},
+  feedbackSent: false,
+  setFeedbackSent: () => {},
 } as Context);
 
 export const HelpersProvider = ({
@@ -78,6 +82,7 @@ export const HelpersProvider = ({
   const [themeType, setThemeType] = useState<Context["themeType"]>("explore");
   const [filterTags, setFilterTags] = useState<string[]>([]);
   const [generateThemeDialog, setGenerateThemeDialog] = useState(false);
+  const [feedbackSent, setFeedbackSent] = useState(false);
   const [generatedTheme, setGeneratedTheme] =
     useState<GeneratedThemeProps | null>(null);
   const { data: session, status } = useSession();
@@ -116,6 +121,8 @@ export const HelpersProvider = ({
         setGeneratedTheme,
         generateThemeDialog,
         setGenerateThemeDialog,
+        feedbackSent,
+        setFeedbackSent,
       }}
     >
       {children}

@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { DotFilledIcon } from "@radix-ui/react-icons";
 import { useHelpers } from "@/hooks/useHelpers";
 import { SaveGeneratedThemeDialog } from "./save-generated-theme-dialog";
+import { Feedback } from "./feedback";
 
 interface ThemeVeiwProps {
   theme: {
@@ -151,7 +152,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
           </div>
         )}
       </div>
-      <div className="flex gap-4 py-4">
+      <div className="flex gap-4 py-4 flex-1">
         <div className="w-1/2 flex flex-col gap-4">
           {theme.template === "marketing" ? (
             <MarketingTemplate colors={colors} shades={shades} fonts={fonts} />
@@ -232,6 +233,11 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
           ))}
         </div>
       </div>
+      {type === "generated" ? (
+        <div className="flex justify-end">
+          <Feedback />
+        </div>
+      ) : null}
       {type === "view" && (
         <ExportThemeDialog
           open={openExportThemeDialog}

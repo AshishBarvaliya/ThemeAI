@@ -1,0 +1,1 @@
+ALTER TABLE "feedback_theme" ALTER COLUMN "prompt" SET NOT NULL;
