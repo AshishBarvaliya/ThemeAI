@@ -11,6 +11,7 @@ import { ColorsProps, FontObjProps } from "@/interfaces/theme";
 import { generateAllShades } from "@/lib/utils";
 import { ArrowLeftIcon, DownloadIcon } from "@radix-ui/react-icons";
 import { RotateCcw } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -45,7 +46,8 @@ const defaultFonts = [
 
 const CreateTheme = () => {
   const router = useRouter();
-  const { generatedTheme } = useHelpers();
+  const { status } = useSession();
+  const { generatedTheme, runIfLoggedInElseOpenLoginDialog } = useHelpers();
   const [openColorPicker, setOpenColorPicker] = useState<string | null>(null);
   const [openSaveThemeDialog, setOpenSaveThemeDialog] = useState(false);
   const [openExportThemeDialog, setOpenExportThemeDialog] = useState(false);
@@ -69,7 +71,7 @@ const CreateTheme = () => {
 
   useEffect(() => {
     if (router.query.generated == "1") {
-      if (generatedTheme) {
+      if (generatedTheme && status === "authenticated") {
         setDefaultColors({
           bg: generatedTheme.color_1,
           primary: generatedTheme.color_2,
@@ -105,7 +107,7 @@ const CreateTheme = () => {
   return (
     <div className="flex flex-1 flex-col">
       <div
-        className="flex fixed justify-between border-b-[0.5px] border-border bg-background gap-4 p-3 px-5 items-center"
+        className="flex fixed justify-between border-b-[0.5px] border-border bg-background gap-4 p-3 px-5 items-center z-40 shadow-md"
         style={{
           maxWidth: "calc(1536px - 250px)",
           width: "calc(100vw - 250px)",
@@ -212,7 +214,9 @@ const CreateTheme = () => {
           </Button>
           <Button
             onClick={() => {
-              setOpenSaveThemeDialog(true);
+              runIfLoggedInElseOpenLoginDialog(() =>
+                setOpenSaveThemeDialog(true)
+              );
             }}
           >
             Save

@@ -1,3 +1,4 @@
+import { RestrictedPage } from "@/components/restricted-page";
 import { ThemeView } from "@/components/theme-view";
 import { useHelpers } from "@/hooks/useHelpers";
 
@@ -23,12 +24,13 @@ export default function GeneratedTheme() {
           color_4_reason: generatedTheme.color_4_reason,
         },
         ...defaultFonts,
+        ...{ likedBy: [], savedBy: [] },
       }}
       prompt={generatedTheme.prompt}
       isDark={generatedTheme.isDark}
       type="generated"
     />
   ) : (
-    <div>No generated theme available</div>
+    <RestrictedPage title={"Generated theme not found"} errorCode={404} />
   );
 }

@@ -37,6 +37,15 @@ type Context = {
   setGenerateThemeDialog: Dispatch<SetStateAction<boolean>>;
   feedbackSent: boolean;
   setFeedbackSent: Dispatch<SetStateAction<boolean>>;
+  isAIOnly: boolean;
+  setIsAIOnly: Dispatch<SetStateAction<boolean>>;
+  generateDialogDefaultValues?: {
+    prompt: string;
+    isDark: boolean;
+  };
+  setGenerateDialogDefaultValues: Dispatch<
+    SetStateAction<{ prompt: string; isDark: boolean } | undefined>
+  >;
 };
 
 const HelpersContext = createContext({
@@ -61,6 +70,13 @@ const HelpersContext = createContext({
   setGenerateThemeDialog: () => {},
   feedbackSent: false,
   setFeedbackSent: () => {},
+  isAIOnly: false,
+  setIsAIOnly: () => {},
+  generateDialogDefaultValues: {
+    prompt: "",
+    isDark: false,
+  },
+  setGenerateDialogDefaultValues: () => {},
 } as Context);
 
 export const HelpersProvider = ({
@@ -83,6 +99,9 @@ export const HelpersProvider = ({
   const [filterTags, setFilterTags] = useState<string[]>([]);
   const [generateThemeDialog, setGenerateThemeDialog] = useState(false);
   const [feedbackSent, setFeedbackSent] = useState(false);
+  const [isAIOnly, setIsAIOnly] = useState(false);
+  const [generateDialogDefaultValues, setGenerateDialogDefaultValues] =
+    useState<Context["generateDialogDefaultValues"]>();
   const [generatedTheme, setGeneratedTheme] =
     useState<GeneratedThemeProps | null>(null);
   const { data: session, status } = useSession();
@@ -123,6 +142,10 @@ export const HelpersProvider = ({
         setGenerateThemeDialog,
         feedbackSent,
         setFeedbackSent,
+        isAIOnly,
+        setIsAIOnly,
+        generateDialogDefaultValues,
+        setGenerateDialogDefaultValues,
       }}
     >
       {children}

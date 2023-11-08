@@ -1,10 +1,12 @@
 import { ChooseAvatarDialog } from "@/components/choose-avatar-dialog";
 import { NewPasswordDialog } from "@/components/new-password";
+import { RestrictedPage } from "@/components/restricted-page";
 import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Typography from "@/components/ui/typography";
+import { useHelpers } from "@/hooks/useHelpers";
 import { useToast } from "@/hooks/useToast";
 import { Pen, Save } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -14,6 +16,7 @@ import NiceAvatar from "react-nice-avatar";
 export default function Settings() {
   const { status, data: session, update } = useSession();
   const { addToast } = useToast();
+  const { runIfLoggedInElseOpenLoginDialog } = useHelpers();
   const [loading, setLoading] = useState(false);
   const [openAvatar, setOpenAvatar] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -86,7 +89,7 @@ export default function Settings() {
     }
   }, [status]);
 
-  return (
+  return status === "authenticated" && session ? (
     <div className="flex flex-col w-full my-6 border-[0.5px] border-border bg-white mx-36 p-[30px] px-[40px]">
       <Typography element="h1" as="h1" className="text-center">
         Profile Settings
@@ -201,11 +204,22 @@ export default function Settings() {
           Password
         </Typography>
       </div>
-      <div className="flex mx-10 mt-5" onClick={() => setNewPasswordOpen(true)}>
+      <div
+        className="flex mx-10 mt-5"
+        onClick={() =>
+          runIfLoggedInElseOpenLoginDialog(() => setNewPasswordOpen(true))
+        }
+      >
         <Button variant={"destructive"}>Reset Password</Button>
       </div>
       <ChooseAvatarDialog open={openAvatar} setOpen={setOpenAvatar} />
       <NewPasswordDialog open={newPasswordOpen} setOpen={setNewPasswordOpen} />
     </div>
-  );
+  ) : status === "unauthenticated" ? (
+    <RestrictedPage
+      title="Sign in to access this page"
+      loginRequired
+      errorCode={403}
+    />
+  ) : null;
 }

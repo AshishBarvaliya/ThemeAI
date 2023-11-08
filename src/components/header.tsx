@@ -20,6 +20,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getTags } from "@/services/theme";
 import { HeaderMenu } from "./header-menu";
 import MagicWand from "@/assets/svgs/magic-wand";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
 
 const Header = () => {
   const router = useRouter();
@@ -34,6 +36,9 @@ const Header = () => {
     setVerifyDialogState,
     generateThemeDialog,
     setGenerateThemeDialog,
+    isAIOnly,
+    setIsAIOnly,
+    runIfLoggedInElseOpenLoginDialog,
   } = useHelpers();
   const { status, data: session } = useSession();
   const [singupOpen, setSingupOpen] = useState(false);
@@ -129,7 +134,7 @@ const Header = () => {
   }, [filterTags]);
 
   return (
-    <div className="fixed bg-background max-w-screen-2xl flex border-b-[0.5px] border-border w-full justify-between py-2 px-6 h-[60px]">
+    <div className="fixed bg-background max-w-screen-2xl flex border-b-[0.5px] border-border w-full justify-between py-2 px-6 h-[60px] z-40">
       <div className="flex items-center flex-1 pr-6">
         <div className="w-[176px]">
           <Link href="/themes" className="flex">
@@ -167,6 +172,23 @@ const Header = () => {
               setSelected={setFilterTags}
               isHeader
             />
+            <div className="flex items-center">
+              <Switch
+                id="isAIOnly"
+                name="isAIOnly"
+                className="border border-border cursor-pointer h-5 w-8"
+                // @ts-ignore
+                thumbClassName="h-[18px] w-[18px] data-[state=checked]:translate-x-3"
+                checked={isAIOnly}
+                onCheckedChange={() => setIsAIOnly((isAIOnly) => !isAIOnly)}
+              />
+              <Label
+                htmlFor="isAIOnly"
+                className="cursor-pointer flex items-center ml-2"
+              >
+                AI only
+              </Label>
+            </div>
           </div>
         ) : null}
       </div>
@@ -189,27 +211,22 @@ const Header = () => {
             </Button>
           </>
         )}
-        {!isAuthenticated && router.pathname !== "/" ? (
+        {status !== "loading" && router.pathname !== "/" ? (
           <div className="flex items-center gap-4">
             <Button onClick={() => setGenerateThemeDialog(true)}>
               <MagicWand className="mr-1.5 h-4 w-4" />
               Generate Theme
             </Button>
-            <Button type="button" onClick={() => setLoginOpen(true)}>
-              Sign In
-            </Button>
-          </div>
-        ) : (
-          router.pathname !== "/" && (
-            <div className="flex items-center gap-4">
-              <Button onClick={() => setGenerateThemeDialog(true)}>
-                <MagicWand className="mr-1.5 h-4 w-4" />
-                Generate Theme
-              </Button>
+
+            {isAuthenticated ? (
               <HeaderMenu />
-            </div>
-          )
-        )}
+            ) : (
+              <Button type="button" onClick={() => setLoginOpen(true)}>
+                Sign In
+              </Button>
+            )}
+          </div>
+        ) : null}
       </ul>
       <LoginDialog
         open={loginOpen}
