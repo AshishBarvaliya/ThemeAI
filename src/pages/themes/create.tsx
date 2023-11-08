@@ -105,7 +105,7 @@ const CreateTheme = () => {
   return (
     <div className="flex flex-1 flex-col">
       <div
-        className="flex fixed justify-between border-b-[0.5px] border-border bg-background gap-4 p-3 px-5 items-center"
+        className="flex fixed justify-between border-b-[0.5px] border-border bg-background gap-4 p-3 px-5 items-center z-40 shadow-md"
         style={{
           maxWidth: "calc(1536px - 250px)",
           width: "calc(100vw - 250px)",

@@ -67,8 +67,11 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
 }) => {
   const router = useRouter();
   const { addToast } = useToast();
-  const { setGenerateThemeDialog, runIfLoggedInElseOpenLoginDialog } =
-    useHelpers();
+  const {
+    setGenerateThemeDialog,
+    runIfLoggedInElseOpenLoginDialog,
+    setGenerateDialogDefaultValues,
+  } = useHelpers();
   const [openExportThemeDialog, setOpenExportThemeDialog] = useState(false);
   const [openSaveThemeDialog, setOpenSaveThemeDialog] = useState(false);
 
@@ -159,9 +162,15 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
             <Button
               variant={"outline"}
               size={"md"}
-              onClick={() => setGenerateThemeDialog(true)}
+              onClick={() => {
+                setGenerateDialogDefaultValues({
+                  prompt,
+                  isDark,
+                });
+                setGenerateThemeDialog(true);
+              }}
             >
-              <RefreshCcw className="h-3 w-3 mr-1.5" /> Regenerate new
+              <RefreshCcw className="h-3 w-3 mr-1.5" /> Regenerate
             </Button>
             <Button
               size={"md"}

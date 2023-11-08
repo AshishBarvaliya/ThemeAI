@@ -24,7 +24,7 @@ export default function Themes() {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { addToast } = useToast();
-  const { themeType, filterTags } = useHelpers();
+  const { themeType, filterTags, isAIOnly } = useHelpers();
   const { themeSearchQuery, setThemeSearchQuery, setFilterTags } = useHelpers();
   const [likeLoading, setLikeLoading] = useState<string | null>(null);
   const { data: tags } = useQuery(["tags"], getTags);
@@ -34,9 +34,16 @@ export default function Themes() {
     fetchNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ["home", "themes", themeSearchQuery, themeType, filterTags],
+    queryKey: [
+      "home",
+      "themes",
+      themeSearchQuery,
+      themeType,
+      filterTags,
+      isAIOnly,
+    ],
     queryFn: ({ pageParam = 1 }) =>
-      getThemes(pageParam, themeSearchQuery, themeType, filterTags),
+      getThemes(pageParam, themeSearchQuery, themeType, filterTags, isAIOnly),
     getNextPageParam: (_lastPage, pages) => pages.length + 1,
   });
   const { mutate: mutateMarkAsInappropriateTheme } = useMutation({

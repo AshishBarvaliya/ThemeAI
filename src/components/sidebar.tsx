@@ -27,7 +27,7 @@ const Sidebar = ({ width }: { width: string }) => {
   return (
     <div
       style={{ width: width }}
-      className={`flex fixed flex-col bg-background justify-between h-screen pb-[74px] border-r-[0.5px] border-border`}
+      className={`flex fixed flex-col bg-background justify-between h-screen pb-[74px] border-r-[0.5px] border-border shadow-lg`}
     >
       <div className="flex flex-col flex-1 gap-2 py-4">
         {tabs.map((tab) => (

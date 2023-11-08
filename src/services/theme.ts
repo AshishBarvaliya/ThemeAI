@@ -5,9 +5,10 @@ export const getThemes = async (
   page: number,
   themeSearchQuery: string,
   type: "explore" | "foryou" | "popular",
-  tags: string[]
+  tags: string[],
+  isAIOnly: boolean
 ): Promise<GetThemeTileProps[]> => {
-  const apiUrl = `/api/themes?page=${page}&search=${themeSearchQuery}&type=${type}${
+  const apiUrl = `/api/themes?page=${page}&search=${themeSearchQuery}&type=${type}&aiOnly=${isAIOnly}${
     tags ? `&tags=${tags.join(",")}` : ""
   }`;
   const response = await axios.get(apiUrl);

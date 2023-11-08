@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { Label } from "./ui/label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Switch } from "./ui/switch";
 import axios from "axios";
 import { Cross2Icon, ReloadIcon } from "@radix-ui/react-icons";
@@ -40,7 +40,11 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
 }) => {
   const { addToast } = useToast();
   const router = useRouter();
-  const { setGeneratedTheme } = useHelpers();
+  const {
+    setGeneratedTheme,
+    setGenerateDialogDefaultValues,
+    generateDialogDefaultValues,
+  } = useHelpers();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<FormDataProps>({
     prompt: "",
@@ -64,17 +68,33 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
         setLoading(false);
         setOpen(false);
         setData({ prompt: "", isDark: false });
+        setGenerateDialogDefaultValues(undefined);
         router.push("/themes/generated");
       })
       .catch((error) => {
         addToast({ title: error.response.data.error, type: "error" });
+        setGenerateDialogDefaultValues(undefined);
         setLoading(false);
         setOpen(false);
       });
   };
 
+  useEffect(() => {
+    if (generateDialogDefaultValues) {
+      setData(generateDialogDefaultValues);
+    } else {
+      setData({ prompt: "", isDark: false });
+    }
+  }, [generateDialogDefaultValues]);
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        setOpen(val);
+        setGenerateDialogDefaultValues(undefined);
+      }}
+    >
       <DialogContent className="p-[1px] max-w-fit bg-white border-none rounded-none">
         <div className="z-10 p-8 bg-white">
           <DialogHeader>

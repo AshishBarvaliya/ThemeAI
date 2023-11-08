@@ -207,6 +207,7 @@ export default async function handler(
         const page = Number((req.query.page as string) || 1);
         const type = req.query.type as string;
         const tags = req.query.tags as string;
+        const aiOnly = req.query.aiOnly as string;
         if (tags) {
           const tagsArray = tags.split(",");
           const themes = await db.query.themesToTags.findMany({
@@ -233,8 +234,11 @@ export default async function handler(
                   : // @ts-ignore
                     new Date(b.theme.createdAt) - new Date(a.theme.createdAt);
               })
-              .filter((theme) => {
-                return theme.theme.isPrivate === false;
+              .filter((theme: any) => {
+                return (
+                  theme.theme.isPrivate === false &&
+                  (aiOnly === "true" ? theme.theme.isAIGenerated : true)
+                );
               })
               .map((theme) => {
                 const { popularity, ...rest } = theme.theme;
@@ -255,7 +259,8 @@ export default async function handler(
               ilike(themesSchema.font_1, `%${query}%`),
               ilike(themesSchema.font_2, `%${query}%`),
               ilike(themesSchema.prompt, `%${query}%`)
-            )
+            ),
+            ...(aiOnly === "true" ? [eq(themesSchema.isAIGenerated, true)] : [])
           ),
           columns: tileThemeProps.columns,
           with: tileThemeProps.with,
