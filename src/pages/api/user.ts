@@ -216,7 +216,9 @@ export default async function handler(
                 },
               },
             });
-
+            if (!user) {
+              return res.status(404).json({ error: "User not found" });
+            }
             return res.status(200).json(user);
           } catch (error) {
             return res
@@ -264,7 +266,9 @@ export default async function handler(
                 },
               },
             });
-
+            if (!user) {
+              return res.status(404).json({ error: "User not found" });
+            }
             return res.status(200).json(user);
           } catch (error) {
             return res
@@ -313,7 +317,9 @@ export default async function handler(
               },
             },
           });
-
+          if (!user) {
+            return res.status(404).json({ error: "User not found" });
+          }
           return res.status(200).json(user);
         } catch (error) {
           return res
@@ -351,7 +357,9 @@ export default async function handler(
           isActived: false,
         })
         .returning({ id: usersSchema.id });
-
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
       return res.status(201).json(user);
     } catch (error) {
       return res.status(500).json({ error: "Failed to create user" });

@@ -11,6 +11,7 @@ import { ColorsProps, FontObjProps } from "@/interfaces/theme";
 import { generateAllShades } from "@/lib/utils";
 import { ArrowLeftIcon, DownloadIcon } from "@radix-ui/react-icons";
 import { RotateCcw } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -45,7 +46,8 @@ const defaultFonts = [
 
 const CreateTheme = () => {
   const router = useRouter();
-  const { generatedTheme } = useHelpers();
+  const { status } = useSession();
+  const { generatedTheme, runIfLoggedInElseOpenLoginDialog } = useHelpers();
   const [openColorPicker, setOpenColorPicker] = useState<string | null>(null);
   const [openSaveThemeDialog, setOpenSaveThemeDialog] = useState(false);
   const [openExportThemeDialog, setOpenExportThemeDialog] = useState(false);
@@ -69,7 +71,7 @@ const CreateTheme = () => {
 
   useEffect(() => {
     if (router.query.generated == "1") {
-      if (generatedTheme) {
+      if (generatedTheme && status === "authenticated") {
         setDefaultColors({
           bg: generatedTheme.color_1,
           primary: generatedTheme.color_2,
@@ -212,7 +214,9 @@ const CreateTheme = () => {
           </Button>
           <Button
             onClick={() => {
-              setOpenSaveThemeDialog(true);
+              runIfLoggedInElseOpenLoginDialog(() =>
+                setOpenSaveThemeDialog(true)
+              );
             }}
           >
             Save

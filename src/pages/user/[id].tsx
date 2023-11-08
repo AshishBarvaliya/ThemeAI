@@ -32,6 +32,7 @@ import ProfileNotifications from "@/components/profile-notifications";
 import ProfilePurchases from "@/components/profile-purchases";
 import { LevelProgress } from "@/components/level-progress";
 import { RewardDialog } from "@/components/reward-dialog";
+import { RestrictedPage } from "@/components/restricted-page";
 
 export default function User() {
   const queryClient = useQueryClient();
@@ -40,8 +41,9 @@ export default function User() {
   const { data: session } = useSession();
   const [openRewardDialog, setOpenRewardDialog] = useState(false);
 
-  const { data: user } = useQuery(["user", router.query.id], () =>
-    getUser(router.query.id as string)
+  const { data: user, isLoading: isLoadingUser } = useQuery(
+    ["user", router.query.id],
+    () => getUser(router.query.id as string)
   );
   const { data: statsData } = useQuery(["user", router.query.id, "stats"], () =>
     getUserStats(router.query.id as string)
@@ -383,5 +385,14 @@ export default function User() {
         userLevel={user?.level || 0}
       />
     </div>
-  ) : null;
+  ) : isLoadingUser ? (
+    <div className="flex justify-center items-center flex-1 h-full">
+      Loading...
+    </div>
+  ) : (
+    <RestrictedPage
+      title={`There is no user found with id '${router.query.id}'`}
+      errorCode={404}
+    />
+  );
 }

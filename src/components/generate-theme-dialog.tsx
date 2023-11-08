@@ -19,6 +19,13 @@ import MagicWand from "@/assets/svgs/magic-wand";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/router";
 import { useHelpers } from "@/hooks/useHelpers";
+import { useSession } from "next-auth/react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 interface GenerateThemeDialogProps {
   open: boolean;
@@ -40,16 +47,21 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
 }) => {
   const { addToast } = useToast();
   const router = useRouter();
+  const { data: session, status } = useSession();
   const {
     setGeneratedTheme,
     setGenerateDialogDefaultValues,
     generateDialogDefaultValues,
+    runIfLoggedInElseOpenLoginDialog,
   } = useHelpers();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<FormDataProps>({
     prompt: "",
     isDark: false,
   });
+
+  const isAuthenticatedIsActived =
+    status === "authenticated" && session?.user.isActived;
 
   const generateTheme = async (e: React.MouseEvent<HTMLButtonElement>) => {
     setLoading(true);
@@ -168,27 +180,46 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
                 >
                   Create manually
                 </Button>
-                <Button
-                  type="button"
-                  disabled={loading}
-                  onClick={(e) => {
-                    if (data.prompt.trim().length === 0) {
-                      addToast({
-                        title: "Prompt is required",
-                        type: "error",
-                      });
-                      return;
-                    }
-                    generateTheme(e);
-                  }}
-                >
-                  {loading ? (
-                    <ReloadIcon className="mr-1.5 h-4 w-4 animate-spin" />
-                  ) : (
-                    <MagicWand className="mr-1.5 h-4 w-4" />
-                  )}
-                  {loading ? "Generating..." : "Generate"}
-                </Button>
+                <TooltipProvider>
+                  <Tooltip delayDuration={100}>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <Button
+                          type="button"
+                          disabled={loading || !isAuthenticatedIsActived}
+                          onClick={(e) => {
+                            runIfLoggedInElseOpenLoginDialog(() => {
+                              if (data.prompt.trim().length === 0) {
+                                addToast({
+                                  title: "Prompt is required",
+                                  type: "error",
+                                });
+                                return;
+                              }
+                              generateTheme(e);
+                            });
+                          }}
+                        >
+                          {loading ? (
+                            <ReloadIcon className="mr-1.5 h-4 w-4 animate-spin" />
+                          ) : (
+                            <MagicWand className="mr-1.5 h-4 w-4" />
+                          )}
+                          {loading ? "Generating..." : "Generate"}
+                        </Button>
+                      </div>
+                    </TooltipTrigger>
+                    {!isAuthenticatedIsActived ? (
+                      <TooltipContent>
+                        {status === "unauthenticated"
+                          ? "User must be logged in to generate themes"
+                          : !session?.user?.isActived
+                          ? "User must be verified"
+                          : "Generate"}
+                      </TooltipContent>
+                    ) : null}
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </form>
           </div>

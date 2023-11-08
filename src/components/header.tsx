@@ -213,13 +213,7 @@ const Header = () => {
         )}
         {status !== "loading" && router.pathname !== "/" ? (
           <div className="flex items-center gap-4">
-            <Button
-              onClick={() => {
-                runIfLoggedInElseOpenLoginDialog(() => {
-                  setGenerateThemeDialog(true);
-                });
-              }}
-            >
+            <Button onClick={() => setGenerateThemeDialog(true)}>
               <MagicWand className="mr-1.5 h-4 w-4" />
               Generate Theme
             </Button>
