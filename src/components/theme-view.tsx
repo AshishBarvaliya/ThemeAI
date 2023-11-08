@@ -1,25 +1,33 @@
 import LearningTemplate from "@/assets/templates/learning/learning-mini";
 import MarketingTemplate from "@/assets/templates/marketing/marketing-mini";
-import { AwardIcon } from "@/components/award-icon";
 import { ExportThemeDialog } from "@/components/export-theme-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/typography";
 import { FontProps, GOOGLE_FONTS } from "@/constants/fonts";
-import { USER_LEVELS } from "@/constants/user";
 import { ColorsProps, FontObjProps, ShadesProps } from "@/interfaces/theme";
 import { generateAllShades } from "@/lib/utils";
-import NiceAvatar from "react-nice-avatar";
-import { DownloadIcon, Pen, RefreshCcw } from "lucide-react";
+import { DownloadIcon, Flag, Pen, RefreshCcw } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { DotFilledIcon } from "@radix-ui/react-icons";
 import { useHelpers } from "@/hooks/useHelpers";
 import { SaveGeneratedThemeDialog } from "./save-generated-theme-dialog";
 import { Feedback } from "./feedback";
 
-interface ThemeVeiwProps {
+import moment from "moment";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+import { setMarkAsInappropriate } from "@/services/toggle";
+import { useMutation } from "@tanstack/react-query";
+import { useToast } from "@/hooks/useToast";
+import { ThemeViewUser } from "./theme-view-user";
+
+export interface ThemeVeiwProps {
   theme: {
+    id?: string;
     name?: string;
     color_1: string;
     color_1_reason: string;
@@ -32,6 +40,10 @@ interface ThemeVeiwProps {
     font_1: string;
     font_2: string;
     template?: string;
+    prompt?: string;
+    createdAt?: Date;
+    likedBy: { userId: string }[];
+    savedBy: { userId: string }[];
     user?: {
       id: string;
       name: string;
@@ -54,9 +66,21 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
   isDark = false,
 }) => {
   const router = useRouter();
-  const { setGenerateThemeDialog } = useHelpers();
+  const { addToast } = useToast();
+  const { setGenerateThemeDialog, runIfLoggedInElseOpenLoginDialog } =
+    useHelpers();
   const [openExportThemeDialog, setOpenExportThemeDialog] = useState(false);
   const [openSaveThemeDialog, setOpenSaveThemeDialog] = useState(false);
+
+  const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
+    mutationFn: (themeId: string) => setMarkAsInappropriate(themeId),
+    onSuccess: () => {
+      addToast({
+        title: "Mark as inappropriated successfully",
+        type: "success",
+      });
+    },
+  });
 
   const colorsList = [
     {
@@ -110,7 +134,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
   }, []);
 
   return theme ? (
-    <div className="flex flex-col w-full my-6 border-[0.5px] border-border bg-white mx-36 p-[30px] px-[40px]">
+    <div className="flex flex-col w-full my-6 border-[0.5px] border-border bg-white mx-6 p-[20px] px-[30px]">
       <div className="flex justify-between items-center">
         <Typography element="h2" as="h2">
           {type === "view" ? theme.name : "Untitled"}
@@ -152,71 +176,21 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
           </div>
         )}
       </div>
-      <div className="flex gap-4 py-4 flex-1">
-        <div className="w-1/2 flex flex-col gap-4">
+      <div className="flex gap-5 py-4 flex-1">
+        <div className="w-1/2 flex flex-col gap-4 pr-10">
+          {theme?.prompt ? (
+            <Typography element="p" as="p" className="text-lg">
+              <span className="font-bold pr-1">Prompt:</span>
+              {theme.prompt}
+            </Typography>
+          ) : null}
           {theme.template === "marketing" ? (
             <MarketingTemplate colors={colors} shades={shades} fonts={fonts} />
           ) : (
             <LearningTemplate colors={colors} shades={shades} fonts={fonts} />
           )}
           {type === "view" && theme.user ? (
-            <div className="flex gap-3 border-[0.5px] border-border p-2">
-              <Avatar
-                className="flex rounded-[6px] h-12 w-12 border-[0.5px] bg-primary border-border"
-                onClick={() => router.push(`/user/${theme.user?.id}`)}
-              >
-                {theme.user.avatar ? (
-                  <NiceAvatar
-                    className="h-12 w-12 rounded-md"
-                    shape="square"
-                    {...JSON.parse(theme.user.avatar)}
-                  />
-                ) : (
-                  <>
-                    <AvatarImage src={theme.user.image} alt="profile image" />
-                    <AvatarFallback className="flex bg-primary text-primary-foreground text-xl">
-                      {theme.user.name.split(" ")[0][0]}
-                    </AvatarFallback>
-                  </>
-                )}
-              </Avatar>
-              <div className="flex flex-col justify-between flex-1">
-                <div className="flex items-center gap-2">
-                  <p className="text-lg">{theme.user.name}</p>
-                  <AwardIcon
-                    level={theme.user.level}
-                    className="h-5 w-5"
-                    info={USER_LEVELS[theme.user.level].name}
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-2">
-                    <Typography element={"p"} as="p" className="text-xs">
-                      {theme.user.createdThemes?.length}
-                      <span className="text-primary-foreground/70 ml-1">
-                        Themes
-                      </span>
-                    </Typography>
-                    <DotFilledIcon className="h-3 w-3" />
-                    <Typography element={"p"} as="p" className="text-xs">
-                      {theme.user.experience}
-                      <span className="text-primary-foreground/70 ml-1">
-                        Experiences
-                      </span>
-                    </Typography>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <Button
-                  size="md"
-                  onClick={() => router.push("/user/" + theme.user?.id)}
-                  variant={"outline"}
-                >
-                  View
-                </Button>
-              </div>
-            </div>
+            <ThemeViewUser theme={theme} />
           ) : null}
         </div>
         <div className="flex w-1/2 flex-col gap-4">
@@ -233,11 +207,37 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
           ))}
         </div>
       </div>
-      {type === "generated" ? (
-        <div className="flex justify-end">
+      <div className="flex justify-between">
+        {type === "view" && theme.createdAt ? (
+          <Typography element="p" as="p" className="text-xs">
+            <span className="font-bold pr-1">Created at:</span>
+            {moment(theme.createdAt).format("LLL")}
+          </Typography>
+        ) : null}
+        {type === "generated" ? (
           <Feedback />
-        </div>
-      ) : null}
+        ) : (
+          <TooltipProvider>
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger asChild>
+                <div
+                  className="cursor-pointer p-1"
+                  onClick={() => {
+                    if (theme.id) {
+                      runIfLoggedInElseOpenLoginDialog(() => {
+                        if (theme.id) mutateMarkAsInappropriateTheme(theme.id);
+                      });
+                    }
+                  }}
+                >
+                  <Flag className="h-3 w-3 hover:text-destructive" />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>Mark this theme as inappropriate</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+      </div>
       {type === "view" && (
         <ExportThemeDialog
           open={openExportThemeDialog}

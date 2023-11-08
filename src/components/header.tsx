@@ -129,7 +129,7 @@ const Header = () => {
   }, [filterTags]);
 
   return (
-    <div className="fixed bg-background max-w-screen-2xl flex border-b-[0.5px] border-border w-full justify-between py-2 px-6 h-[60px]">
+    <div className="fixed bg-background max-w-screen-2xl flex border-b-[0.5px] border-border w-full justify-between py-2 px-6 h-[60px] z-40">
       <div className="flex items-center flex-1 pr-6">
         <div className="w-[176px]">
           <Link href="/themes" className="flex">
