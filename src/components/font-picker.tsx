@@ -17,6 +17,7 @@ import {
 } from "./ui/tooltip";
 import { SeachBar } from "./ui/input";
 import Typography from "./ui/typography";
+import { INPUT_LIMIT } from "@/constants/website";
 
 interface FontPickerProps {
   id: string;
@@ -81,7 +82,8 @@ const FontPicker: React.FC<FontPickerProps> = ({
                 name="font-search"
                 usecase="font"
                 placeholder="Search by font"
-                autoComplete="off"
+                maxLength={INPUT_LIMIT.NAME_MAX}
+                autoComplete="font-search"
                 onRemoveCallback={() => setFilteredFonts(GOOGLE_FONTS)}
                 onSearch={(string: string) =>
                   setFilteredFonts(

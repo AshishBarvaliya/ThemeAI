@@ -18,6 +18,7 @@ import { InfoIcon } from "./info-icon";
 import TagPicker from "./tag-picker";
 import { useRouter } from "next/router";
 import { useHelpers } from "@/hooks/useHelpers";
+import { INPUT_LIMIT } from "@/constants/website";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -107,16 +108,13 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
           <div>
             <form>
               <div className="flex flex-col">
-                <Label htmlFor="name" className="mb-1">
-                  Name*{" "}
-                  {isNameError && (
-                    <span className="ml-1 text-destructive">(Required)</span>
-                  )}
-                </Label>
                 <Input
                   id="name"
                   name="name"
                   value={data.name}
+                  type="text"
+                  label="Name"
+                  maxLength={INPUT_LIMIT.NAME_MAX}
                   autoComplete="off"
                   isError={isNameError}
                   required
@@ -131,6 +129,7 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
                   <TagPicker
                     selectedTags={selectedTags}
                     setSelectedTags={setSelectedTags}
+                    defaultTag={generatedTheme?.isDark ? "dark" : "light"}
                   />
                 </div>
                 <div className="flex items-center space-x-2 mt-3">

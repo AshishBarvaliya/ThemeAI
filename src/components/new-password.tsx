@@ -6,6 +6,8 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import { updatePassword } from "@/services/user";
 import { useRouter } from "next/router";
+import { PasswordEye } from "./password-eye";
+import { INPUT_LIMIT } from "@/constants/website";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -19,6 +21,11 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
   const router = useRouter();
   const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [hidePassword, setHidePassword] = useState({
+    currentpassword: true,
+    password: true,
+    confirmPassword: true,
+  });
   const [data, setData] = useState({
     currentpassword: "",
     password: "",
@@ -34,6 +41,11 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
       currentpassword: "",
       password: "",
       confirmPassword: "",
+    });
+    setHidePassword({
+      currentpassword: true,
+      password: true,
+      confirmPassword: true,
     });
   };
 
@@ -77,11 +89,25 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
               <Input
                 id="currentpassword"
                 name="currentpassword"
-                type="password"
-                className="mt-4"
+                label="Current Password"
+                className="mt-1"
+                autoComplete="off"
                 required
                 value={data.currentpassword}
                 placeholder="Current Password"
+                maxLength={INPUT_LIMIT.PASSWORD_MAX}
+                type={hidePassword.currentpassword ? "password" : "text"}
+                postElement={
+                  <PasswordEye
+                    value={hidePassword.currentpassword}
+                    setValue={(value) =>
+                      setHidePassword((prev) => ({
+                        ...prev,
+                        currentpassword: value,
+                      }))
+                    }
+                  />
+                }
                 onChange={(e) =>
                   setData((prev) => ({
                     ...prev,
@@ -93,11 +119,25 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
             <Input
               id="password"
               name="password"
-              type="password"
               className="mt-4"
+              label="New Password"
+              autoComplete="off"
               required
               value={data.password}
               placeholder="Password"
+              type={hidePassword.password ? "password" : "text"}
+              maxLength={INPUT_LIMIT.PASSWORD_MAX}
+              postElement={
+                <PasswordEye
+                  value={hidePassword.password}
+                  setValue={(value) =>
+                    setHidePassword((prev) => ({
+                      ...prev,
+                      password: value,
+                    }))
+                  }
+                />
+              }
               onChange={(e) =>
                 setData((prev) => ({ ...prev, password: e.target.value }))
               }
@@ -105,11 +145,25 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
             <Input
               id="confirmPassword"
               name="confirmPassword"
-              type="password"
+              label="Confirm Password"
               className="mt-4"
+              autoComplete="off"
               required
               value={data.confirmPassword}
               placeholder="Confirm Password"
+              maxLength={INPUT_LIMIT.PASSWORD_MAX}
+              type={hidePassword.confirmPassword ? "password" : "text"}
+              postElement={
+                <PasswordEye
+                  value={hidePassword.confirmPassword}
+                  setValue={(value) =>
+                    setHidePassword((prev) => ({
+                      ...prev,
+                      confirmPassword: value,
+                    }))
+                  }
+                />
+              }
               onChange={(e) =>
                 setData((prev) => ({
                   ...prev,

@@ -1,11 +1,11 @@
 import { useState } from "react";
-import axios from "axios";
 import { useToast } from "@/hooks/useToast";
 import { Input } from "./ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import { useSession } from "next-auth/react";
+import { INPUT_LIMIT } from "@/constants/website";
 
 interface UserProfileDialogProps {
   open: boolean;
@@ -17,7 +17,7 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
   setOpen,
 }) => {
   const { addToast } = useToast();
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     title: session?.user?.title || "",
@@ -26,22 +26,25 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
   });
 
   const updateUser = async (e: React.FormEvent<HTMLFormElement>) => {
-    setLoading(true);
     e.preventDefault();
-    axios
-      .put("/api/user", data)
-      .then(() => {
+    setLoading(true);
+    update({
+      avatar: session?.user?.avatar,
+      title: data.title,
+      organization: data.organization,
+      location: data.location,
+    })
+      .then(() =>
         addToast({
           title: "The user details has been updated!",
           type: "success",
-        });
-      })
-      .catch((error) => {
-        addToast({ title: error.response.data.error, type: "error" });
+        })
+      )
+      .catch(() => {
+        addToast({ title: "Failed to update user", type: "error" });
       })
       .finally(() => {
         setLoading(false);
-        setOpen(false);
       });
   };
 
@@ -57,8 +60,10 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
               <Input
                 id="title"
                 name="title"
+                label="Title"
                 value={data.title}
-                placeholder="Title (UX Designer)"
+                maxLength={INPUT_LIMIT.NAME_MAX}
+                placeholder="UX Designer"
                 onChange={(e) =>
                   setData((prev) => ({ ...prev, title: e.target.value }))
                 }
@@ -66,8 +71,10 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
               <Input
                 id="organization"
                 name="organization"
+                label="Organization"
                 value={data.organization}
-                placeholder="Organization (Netflix)"
+                maxLength={INPUT_LIMIT.NAME_MAX}
+                placeholder="Netflix, Inc."
                 className="mt-4"
                 onChange={(e) =>
                   setData((prev) => ({ ...prev, organization: e.target.value }))
@@ -76,10 +83,12 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
               <Input
                 id="location"
                 name="location"
+                label="Location"
                 className="mt-4"
                 required
                 value={data.location}
-                placeholder="Location (Seattle, WA)"
+                placeholder="Seattle, WA"
+                maxLength={INPUT_LIMIT.NAME_MAX}
                 onChange={(e) =>
                   setData((prev) => ({ ...prev, location: e.target.value }))
                 }

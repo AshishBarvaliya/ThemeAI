@@ -20,6 +20,7 @@ import {
 } from "./ui/select";
 import { Textarea } from "./ui/textarea";
 import { createSupportTicket } from "@/services/website";
+import { INPUT_LIMIT } from "@/constants/website";
 
 interface ContactUsDialogProps {
   open: boolean;
@@ -106,14 +107,13 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
         <div>
           <form onSubmit={submit}>
             <div className="flex flex-col">
-              <Label htmlFor="name" className="mb-1">
-                Name
-              </Label>
               <Input
                 id="name"
                 name="name"
+                label="Name"
                 autoComplete="off"
                 className="w-[650px]"
+                maxLength={INPUT_LIMIT.NAME_MAX}
                 value={data.name}
                 placeholder="Name"
                 onChange={(e) =>
@@ -121,15 +121,14 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
                 }
                 required
               />
-              <Label htmlFor="email" className="mt-4 mb-1">
-                Email
-              </Label>
               <Input
                 id="email"
                 name="email"
                 autoComplete="email"
+                label="Email"
+                maxLength={INPUT_LIMIT.EMAIL_MAX}
                 type="email"
-                className="w-[650px]"
+                className="w-[650px] mt-4"
                 value={data.email}
                 placeholder="Email"
                 onChange={(e) =>
@@ -137,7 +136,7 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
                 }
                 required
               />
-              <Label htmlFor="topic" className="mt-4 mb-1">
+              <Label htmlFor="topic" className="mt-4 mb-2">
                 Topic
               </Label>
               <Select
@@ -161,16 +160,15 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
                   ))}
                 </SelectContent>
               </Select>
-              <Label htmlFor="description" className="mt-4 mb-1">
-                Description
-              </Label>
               <Textarea
                 id="description"
                 name="description"
-                className="w-[650px]"
+                label="Description"
+                className="w-[650px] mt-4"
                 autoComplete="off"
                 value={data.description}
                 placeholder="Description"
+                maxLength={INPUT_LIMIT.DESCRIPTION_MAX}
                 rows={8}
                 onChange={(e) =>
                   setData((prev) => ({ ...prev, description: e.target.value }))

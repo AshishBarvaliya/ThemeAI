@@ -12,6 +12,8 @@ import {
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import { signIn } from "next-auth/react";
+import { PasswordEye } from "./password-eye";
+import { INPUT_LIMIT } from "@/constants/website";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -24,6 +26,7 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({
 }) => {
   const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -70,11 +73,13 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({
         </DialogHeader>
         <div>
           <form onSubmit={registerUser}>
-            <div className="mt-2">
+            <div className="mt-1">
               <Input
-                id="name"
-                name="name"
+                id="register-name"
+                name="register-name"
                 autoComplete="name"
+                label="Name"
+                maxLength={INPUT_LIMIT.NAME_MAX}
                 value={data.name}
                 placeholder="Name"
                 onChange={(e) =>
@@ -83,10 +88,12 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({
                 required
               />
               <Input
-                id="email"
-                name="email"
+                id="register-email"
+                name="register-email"
+                label="Email"
                 autoComplete="email"
                 type="email"
+                maxLength={INPUT_LIMIT.EMAIL_MAX}
                 value={data.email}
                 placeholder="Email"
                 className="mt-4"
@@ -96,14 +103,22 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({
                 required
               />
               <Input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
+                id="register-password"
+                name="register-password"
+                label="Password"
+                autoComplete="off"
                 className="mt-4"
                 required
                 value={data.password}
                 placeholder="Password"
+                maxLength={INPUT_LIMIT.PASSWORD_MAX}
+                type={hidePassword ? "password" : "text"}
+                postElement={
+                  <PasswordEye
+                    value={hidePassword}
+                    setValue={setHidePassword}
+                  />
+                }
                 onChange={(e) =>
                   setData((prev) => ({ ...prev, password: e.target.value }))
                 }

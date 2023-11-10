@@ -24,6 +24,8 @@ import {
 import TagPicker from "./tag-picker";
 import { ConfirmationDialog } from "./confirmation-dialog";
 import { useRouter } from "next/router";
+import { INPUT_LIMIT } from "@/constants/website";
+import { Textarea } from "./ui/textarea";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -154,35 +156,31 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
           <div>
             <form>
               <div className="flex flex-col">
-                <Label htmlFor="name" className="mb-1">
-                  Name*{" "}
-                  {isNameError && (
-                    <span className="ml-1 text-destructive">(Required)</span>
-                  )}
-                </Label>
                 <Input
                   id="name"
                   name="name"
                   value={data.name}
+                  type="text"
+                  label="Name"
                   autoComplete="off"
                   isError={isNameError}
+                  maxLength={INPUT_LIMIT.NAME_MAX}
                   required
                   placeholder="Docter's apointment app theme"
-                  className="w-[750px]"
                   onChange={(e) => {
                     setData((prev) => ({ ...prev, name: e.target.value }));
                     setIsNameError(e.target.value.trim().length === 0);
                   }}
                 />
-                <Label htmlFor="color1Reason" className="mt-4 mb-1">
-                  Background color
-                </Label>
-                <Input
+                <Textarea
                   id="color1Reason"
                   name="color1Reason"
                   value={data.color1Reason}
+                  maxLength={INPUT_LIMIT.REASON_MAX}
+                  label="Background Color"
+                  rows={2}
                   autoComplete="off"
-                  className="w-[750px] pr-14"
+                  className="w-[750px] mt-4"
                   postElement={<ColorTooltip color={colors.bg} />}
                   placeholder="Creates a sleek and professional background for the website"
                   onChange={(e) =>
@@ -192,16 +190,16 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                     }))
                   }
                 />
-                <Label htmlFor="color1Reason" className="mt-4 mb-1">
-                  Primary color
-                </Label>
-                <Input
+                <Textarea
                   id="color2Reason"
                   name="color2Reason"
+                  label="Primary Color"
                   value={data.color2Reason}
+                  maxLength={INPUT_LIMIT.REASON_MAX}
+                  rows={2}
                   autoComplete="off"
-                  className="w-[750px] pr-14"
                   postElement={<ColorTooltip color={colors.primary} />}
+                  className="w-[750px] mt-4"
                   placeholder="High contrast against the background, enhancing readability."
                   onChange={(e) =>
                     setData((prev) => ({
@@ -210,17 +208,17 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                     }))
                   }
                 />
-                <Label htmlFor="color1Reason" className="mt-4 mb-1">
-                  Accent color
-                </Label>
-                <Input
+                <Textarea
                   id="color3Reason"
                   name="color3Reason"
+                  label="Accent Color"
                   value={data.color3Reason}
-                  autoComplete="off"
-                  className="w-[750px] pr-14"
-                  placeholder="Adds vibrancy and draws attention to interactive elements."
+                  maxLength={INPUT_LIMIT.REASON_MAX}
                   postElement={<ColorTooltip color={colors.accent} />}
+                  rows={2}
+                  autoComplete="off"
+                  className="w-[750px] mt-4"
+                  placeholder="Adds vibrancy and draws attention to interactive elements."
                   onChange={(e) =>
                     setData((prev) => ({
                       ...prev,
@@ -228,15 +226,15 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                     }))
                   }
                 />
-                <Label htmlFor="color1Reason" className="mt-4 mb-1">
-                  Complementry color
-                </Label>
-                <Input
+                <Textarea
                   id="color4Reason"
                   name="color4Reason"
+                  label="Complementary Color"
                   value={data.color4Reason}
                   autoComplete="off"
-                  className="w-[750px] pr-14"
+                  rows={2}
+                  className="w-[750px] mt-4"
+                  maxLength={INPUT_LIMIT.REASON_MAX}
                   postElement={<ColorTooltip color={colors.extra} />}
                   placeholder="Complementary color creates visual interest and balance."
                   onChange={(e) =>
@@ -330,7 +328,7 @@ const ColorTooltip = ({ color }: { color: string }) => (
     <Tooltip delayDuration={100}>
       <TooltipTrigger asChild>
         <div
-          className="absolute border border-border top-0 right-0 flex h-9 w-9"
+          className="absolute border-[0.5px] border-border top-0 right-0 flex h-[65px] w-14"
           style={{ background: color }}
         />
       </TooltipTrigger>

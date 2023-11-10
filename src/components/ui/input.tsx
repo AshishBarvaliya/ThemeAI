@@ -1,30 +1,55 @@
 import { cn } from "@/lib/utils";
 import { Cross1Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import * as React from "react";
+import { Label } from "./label";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 const Input = React.forwardRef<
   HTMLInputElement,
-  InputProps & { postElement?: React.ReactNode; isError?: boolean }
->(({ className, type, postElement, isError, ...props }, ref) => {
-  return (
-    <div className="relative">
-      <input
-        type={type}
-        className={cn(
-          "flex h-9 w-full rounded-md shadow-inset border-[0.5px] border-border bg-white px-3 py-2 text-md ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none focus:border-secondary focus:border-5 disabled:cursor-not-allowed disabled:opacity-50",
-          className,
-          isError && "border-destructive ring-1 ring-destructive"
-        )}
-        ref={ref}
-        {...props}
-      />
-      {postElement}
-    </div>
-  );
-});
+  InputProps & {
+    postElement?: React.ReactNode;
+    isError?: boolean;
+    label?: string;
+    errorText?: string;
+  }
+>(
+  (
+    { className, type, postElement, isError, label, errorText, ...props },
+    ref
+  ) => {
+    return (
+      <div className={cn("relative flex flex-col", className)}>
+        {label ? (
+          <Label htmlFor={props.id} className="pb-2">
+            {label}
+            {isError && (
+              <span className="ml-1 text-destructive">
+                {errorText ? errorText : `(required)`}
+              </span>
+            )}
+          </Label>
+        ) : null}
+        <input
+          type={type}
+          className={cn(
+            "flex h-9 w-full rounded-md shadow-inset border-[0.5px] border-border bg-white px-3 py-2 text-md ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none focus:border-secondary focus:border-5 disabled:cursor-not-allowed disabled:opacity-50",
+            isError && "border-destructive ring-1 ring-destructive",
+            postElement && "pr-9"
+          )}
+          ref={ref}
+          {...props}
+        />
+        {postElement ? (
+          <div className="absolute right-0 top-[22px] flex items-center justify-center">
+            {postElement}
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+);
 Input.displayName = "Input";
 
 const SeachBar = React.forwardRef<

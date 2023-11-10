@@ -22,6 +22,7 @@ import { HeaderMenu } from "./header-menu";
 import MagicWand from "@/assets/svgs/magic-wand";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
+import { INPUT_LIMIT } from "@/constants/website";
 
 const Header = () => {
   const router = useRouter();
@@ -38,7 +39,6 @@ const Header = () => {
     setGenerateThemeDialog,
     isAIOnly,
     setIsAIOnly,
-    runIfLoggedInElseOpenLoginDialog,
   } = useHelpers();
   const { status, data: session } = useSession();
   const [singupOpen, setSingupOpen] = useState(false);
@@ -157,6 +157,7 @@ const Header = () => {
               name="font-search"
               placeholder="Search by font, name, or description"
               autoComplete="off"
+              maxLength={INPUT_LIMIT.NAME_MAX}
               onRemoveCallback={() => {
                 setThemeSearchQuery("");
                 setFilterTags([]);
