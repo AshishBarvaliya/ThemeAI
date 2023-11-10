@@ -36,7 +36,7 @@ const Layout = ({
         )}
       </main>
       {session.status === "loading" ? (
-        <div className="fixed top-0 left-0 right-0 bottom-0 backdrop-blur-sm bg-black/20 z-100 flex items-center justify-center">
+        <div className="fixed top-0 left-0 right-0 bottom-0 backdrop-blur-sm bg-black/20 z-[100] flex items-center justify-center">
           <div className="loader" />
         </div>
       ) : null}

@@ -281,3 +281,13 @@ export const TermsOfUse = [
     ),
   },
 ];
+
+export const INPUT_LIMIT = {
+  NAME_MAX: 50,
+  EMAIL_MAX: 100,
+  PASSWORD_MAX: 100,
+  PROMPT_MAX: 200,
+  PROMPT_MIN: 30,
+  DESCRIPTION_MAX: 1000,
+  REASON_MAX: 200,
+};

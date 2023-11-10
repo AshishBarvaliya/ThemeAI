@@ -4,7 +4,6 @@ import { RestrictedPage } from "@/components/restricted-page";
 import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import Typography from "@/components/ui/typography";
 import { useHelpers } from "@/hooks/useHelpers";
 import { useToast } from "@/hooks/useToast";
@@ -100,12 +99,11 @@ export default function Settings() {
         </Typography>
         <div className="flex">
           <div className="flex flex-col w-2/3 px-10 py-2">
-            <Label htmlFor="title" className="mt-4 mb-2">
-              Title
-            </Label>
             <Input
               id="title"
               name="title"
+              label="Title"
+              className="mt-4"
               disabled={!editMode || loading}
               value={data.title}
               placeholder="e.g. UX Designer"
@@ -113,25 +111,23 @@ export default function Settings() {
                 setData((prev) => ({ ...prev, title: e.target.value }))
               }
             />
-            <Label htmlFor="organization" className="mt-4 mb-2">
-              Organization
-            </Label>
             <Input
               id="organization"
               name="organization"
+              label="Organization"
+              className="mt-4"
               disabled={!editMode || loading}
               value={data.organization}
-              placeholder="e.g. Netflix"
+              placeholder="e.g. Netflix, Inc."
               onChange={(e) =>
                 setData((prev) => ({ ...prev, organization: e.target.value }))
               }
             />
-            <Label htmlFor="location" className="mt-4 mb-2">
-              Location
-            </Label>
             <Input
               id="location"
               name="location"
+              label="Location"
+              className="mt-4"
               disabled={!editMode || loading}
               value={data.location}
               placeholder="e.g. Seattle, WA"

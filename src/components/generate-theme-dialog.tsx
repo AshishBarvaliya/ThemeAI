@@ -26,15 +26,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
+import { INPUT_LIMIT } from "@/constants/website";
 
 interface GenerateThemeDialogProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-const PROMPT_LIMIT = parseInt(
-  process.env.NEXT_PUBLIC_PROMPT_CHAR_LIMIT || "200"
-);
 
 interface FormDataProps {
   prompt: string;
@@ -55,6 +52,7 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
     runIfLoggedInElseOpenLoginDialog,
   } = useHelpers();
   const [loading, setLoading] = useState(false);
+  const [isPromptError, setIsPromptError] = useState(false);
   const [data, setData] = useState<FormDataProps>({
     prompt: "",
     isDark: false,
@@ -81,12 +79,14 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
         setOpen(false);
         setData({ prompt: "", isDark: false });
         setGenerateDialogDefaultValues(undefined);
+        setIsPromptError(false);
         router.push("/themes/generated");
       })
       .catch((error) => {
         addToast({ title: error.response.data.error, type: "error" });
         setGenerateDialogDefaultValues(undefined);
         setLoading(false);
+        setIsPromptError(false);
         setOpen(false);
       });
   };
@@ -96,6 +96,7 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
       setData(generateDialogDefaultValues);
     } else {
       setData({ prompt: "", isDark: false });
+      setIsPromptError(false);
     }
   }, [generateDialogDefaultValues]);
 
@@ -105,6 +106,7 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
       onOpenChange={(val) => {
         setOpen(val);
         setGenerateDialogDefaultValues(undefined);
+        setIsPromptError(false);
       }}
     >
       <DialogContent className="p-[1px] max-w-fit bg-white border-none rounded-none">
@@ -118,19 +120,24 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
           <div className="mt-6">
             <form>
               <div className="flex flex-col">
-                <div className="flex justify-between">
-                  <Label htmlFor="prompt" className="mb-2">
-                    Describe your project
-                  </Label>
-                  <div
-                    className={cn(
-                      "flex items-center text-sm",
-                      data.prompt.trim().length > PROMPT_LIMIT &&
-                        "text-destructive font-semibold"
-                    )}
-                  >
-                    {`${data.prompt.trim().length}/${PROMPT_LIMIT}`}
-                    <InfoIcon info={`Max ${PROMPT_LIMIT} characters allowed`} />
+                <div className="flex justify-between h-6">
+                  <div className="flex">
+                    <Label htmlFor="prompt" className="mb-2">
+                      Describe your project
+                    </Label>
+                    {isPromptError ? (
+                      <span className="text-destructive ml-3 text-xs p-0">
+                        {data.prompt.trim().length > INPUT_LIMIT.PROMPT_MAX
+                          ? "(maximum 200 characters allowed)"
+                          : "(minimum 30 characters required)"}
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className={cn("flex items-center text-sm")}>
+                    {`${data.prompt.trim().length}/${INPUT_LIMIT.PROMPT_MAX}`}
+                    <InfoIcon
+                      info={`Max ${INPUT_LIMIT.PROMPT_MAX} characters allowed`}
+                    />
                   </div>
                 </div>
                 <Textarea
@@ -138,6 +145,8 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
                   name="prompt"
                   value={data.prompt}
                   autoComplete="off"
+                  maxLength={INPUT_LIMIT.PROMPT_MAX}
+                  isError={isPromptError}
                   required
                   placeholder="Docter's apointment app theme"
                   className="w-[750px] min-h-[100px] resize-none"
@@ -146,6 +155,12 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
                       ...prev,
                       prompt: e.target.value,
                     }));
+                    if (
+                      e.target.value.length >= INPUT_LIMIT.PROMPT_MIN &&
+                      isPromptError
+                    ) {
+                      setIsPromptError(false);
+                    }
                   }}
                 />
                 <div className="flex items-center space-x-2 mt-5">
@@ -189,11 +204,13 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
                           disabled={loading || !isAuthenticatedIsActived}
                           onClick={(e) => {
                             runIfLoggedInElseOpenLoginDialog(() => {
-                              if (data.prompt.trim().length === 0) {
-                                addToast({
-                                  title: "Prompt is required",
-                                  type: "error",
-                                });
+                              if (
+                                data.prompt.trim().length <
+                                  INPUT_LIMIT.PROMPT_MIN ||
+                                data.prompt.trim().length >
+                                  INPUT_LIMIT.PROMPT_MAX
+                              ) {
+                                setIsPromptError(true);
                                 return;
                               }
                               generateTheme(e);

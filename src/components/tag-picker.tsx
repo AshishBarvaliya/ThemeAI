@@ -13,11 +13,13 @@ import { TagProps } from "@/interfaces/theme";
 interface TagPickerProps {
   selectedTags: TagProps[];
   setSelectedTags: React.Dispatch<React.SetStateAction<TagProps[]>>;
+  defaultTag?: "dark" | "light";
 }
 
 export default function TagPicker({
   selectedTags,
   setSelectedTags,
+  defaultTag,
 }: TagPickerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [showNewTagDialog, setShowNewTagDialog] = useState(false);
@@ -65,10 +67,19 @@ export default function TagPicker({
       });
   }, []);
 
+  useEffect(() => {
+    if (defaultTag) {
+      const tag = tags.find((t) => t.name === defaultTag) || {
+        name: defaultTag,
+      };
+      setSelectedTags([tag]);
+    }
+  }, []);
+
   return (
     <div className="flex relative flex-col" ref={containerRef}>
       <div className="flex flex-col">
-        <Label className="mb-1">Tags</Label>
+        <Label className="mb-2">Tags</Label>
         <Input
           className="w-full"
           placeholder="New tag"

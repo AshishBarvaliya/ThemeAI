@@ -12,6 +12,7 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import { sendPasswordResetEmail } from "@/services/user";
 import { useRouter } from "next/router";
+import { INPUT_LIMIT } from "@/constants/website";
 
 interface ResetPasswordDialogProps {
   open: boolean;
@@ -69,11 +70,13 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
         <div>
           <form onSubmit={resetPassword}>
             <Input
-              id="email"
-              name="email"
+              id="reset-email"
+              name="reset-email"
               autoComplete="email"
+              label="Email"
               type="email"
               value={data.email}
+              maxLength={INPUT_LIMIT.EMAIL_MAX}
               placeholder="Email"
               className="mt-4"
               onChange={(e) =>

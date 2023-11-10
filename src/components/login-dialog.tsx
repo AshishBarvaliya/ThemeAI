@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/useToast";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { PasswordEye } from "./password-eye";
+import { INPUT_LIMIT } from "@/constants/website";
 
 interface LoginDialogProps {
   open: boolean;
@@ -30,6 +32,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
   const { addToast } = useToast();
   const session = useSession();
   const [loading, setLoading] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -79,27 +82,37 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
           </DialogHeader>
           <div>
             <form onSubmit={loginUser}>
-              <div className="mt-1">
+              <div>
                 <Input
-                  id="email"
-                  name="email"
+                  id="login-email"
+                  name="login-email"
                   autoComplete="email"
+                  label="Email"
                   value={data.email}
                   placeholder="Email"
+                  maxLength={INPUT_LIMIT.EMAIL_MAX}
                   onChange={(e) =>
                     setData((prev) => ({ ...prev, email: e.target.value }))
                   }
                   required
                 />
                 <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
+                  id="login-password"
+                  name="login-password"
+                  label="Password"
+                  autoComplete="off"
                   className="mt-4"
                   required
                   value={data.password}
                   placeholder="Password"
+                  maxLength={INPUT_LIMIT.PASSWORD_MAX}
+                  type={hidePassword ? "password" : "text"}
+                  postElement={
+                    <PasswordEye
+                      value={hidePassword}
+                      setValue={setHidePassword}
+                    />
+                  }
                   onChange={(e) =>
                     setData((prev) => ({ ...prev, password: e.target.value }))
                   }
