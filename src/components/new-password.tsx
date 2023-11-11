@@ -8,6 +8,7 @@ import { updatePassword } from "@/services/user";
 import { useRouter } from "next/router";
 import { PasswordEye } from "./password-eye";
 import { INPUT_LIMIT } from "@/constants/website";
+import { validateInput } from "@/lib/error";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -25,6 +26,10 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
     currentpassword: true,
     password: true,
     confirmPassword: true,
+  });
+  const [errorMessage, setErrorMessage] = useState({
+    password: "",
+    confirmPassword: "",
   });
   const [data, setData] = useState({
     currentpassword: "",
@@ -51,10 +56,28 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
 
   const createPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (data.password !== data.confirmPassword) {
-      addToast({ title: "Passwords do not match", type: "error" });
-      setData((prev) => ({ ...prev, confirmPassword: "" }));
-    } else {
+    const passwordValid = validateInput(
+      data.password,
+      { password: true },
+      (error) => {
+        setErrorMessage((prev) => ({
+          ...prev,
+          password: error,
+        }));
+      }
+    );
+    const confirmPasswordValid = validateInput(
+      data.confirmPassword,
+      { password: true, confirmPassword: true },
+      (error) => {
+        setErrorMessage((prev) => ({
+          ...prev,
+          confirmPassword: error,
+        }));
+      },
+      { password: data.password }
+    );
+    if (passwordValid && confirmPasswordValid) {
       setLoading(true);
       updatePassword(
         data.currentpassword,
@@ -122,8 +145,8 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
               className="mt-4"
               label="New Password"
               autoComplete="off"
-              required
               value={data.password}
+              errorMessage={errorMessage.password}
               placeholder="Password"
               type={hidePassword.password ? "password" : "text"}
               maxLength={INPUT_LIMIT.PASSWORD_MAX}
@@ -138,9 +161,15 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
                   }
                 />
               }
-              onChange={(e) =>
-                setData((prev) => ({ ...prev, password: e.target.value }))
-              }
+              onChange={(e) => {
+                setData((prev) => ({ ...prev, password: e.target.value }));
+                if (errorMessage.password) {
+                  setErrorMessage((prev) => ({
+                    ...prev,
+                    password: "",
+                  }));
+                }
+              }}
             />
             <Input
               id="confirmPassword"
@@ -148,10 +177,10 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
               label="Confirm Password"
               className="mt-4"
               autoComplete="off"
-              required
               value={data.confirmPassword}
               placeholder="Confirm Password"
               maxLength={INPUT_LIMIT.PASSWORD_MAX}
+              errorMessage={errorMessage.confirmPassword}
               type={hidePassword.confirmPassword ? "password" : "text"}
               postElement={
                 <PasswordEye
@@ -164,12 +193,18 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
                   }
                 />
               }
-              onChange={(e) =>
+              onChange={(e) => {
                 setData((prev) => ({
                   ...prev,
                   confirmPassword: e.target.value,
-                }))
-              }
+                }));
+                if (errorMessage.confirmPassword) {
+                  setErrorMessage((prev) => ({
+                    ...prev,
+                    confirmPassword: "",
+                  }));
+                }
+              }}
             />
             <div className="mt-8">
               <Button type="submit" className="w-full" disabled={loading}>

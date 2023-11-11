@@ -146,10 +146,12 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
                   value={data.prompt}
                   autoComplete="off"
                   maxLength={INPUT_LIMIT.PROMPT_MAX}
-                  isError={isPromptError}
-                  required
+                  rows={4}
                   placeholder="Docter's apointment app theme"
-                  className="w-[750px] min-h-[100px] resize-none"
+                  className={cn(
+                    "w-[750px] min-h-[100px] resize-none",
+                    isPromptError ? "border border-destructive" : ""
+                  )}
                   onChange={(e) => {
                     setData((prev) => ({
                       ...prev,

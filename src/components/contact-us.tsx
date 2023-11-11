@@ -21,6 +21,7 @@ import {
 import { Textarea } from "./ui/textarea";
 import { createSupportTicket } from "@/services/website";
 import { INPUT_LIMIT } from "@/constants/website";
+import { validateInput } from "@/lib/error";
 
 interface ContactUsDialogProps {
   open: boolean;
@@ -33,6 +34,11 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
 }) => {
   const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState({
+    name: "",
+    email: "",
+    description: "",
+  });
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -41,43 +47,48 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
   });
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setLoading(true);
     e.preventDefault();
-    if (data.name.trim().length === 0) {
-      addToast({ title: "Name is required", type: "error" });
-      setLoading(false);
-      return;
-    }
-    if (data.email.trim().length === 0) {
-      addToast({ title: "Email is required", type: "error" });
-      setLoading(false);
-      return;
-    }
-    if (data.description.trim().length === 0) {
-      addToast({ title: "Description is required", type: "error" });
-      setLoading(false);
-      return;
-    }
-    createSupportTicket(data.name, data.email, data.topic, data.description)
-      .then(() => {
-        addToast({
-          title: "The support ticket has been created!",
-          type: "success",
+    const nameValid = validateInput(data.name, { name: true }, (error) => {
+      setErrorMessage((prev) => ({
+        ...prev,
+        name: error,
+      }));
+    });
+    const emailValid = validateInput(data.email, { email: true }, (error) => {
+      setErrorMessage((prev) => ({
+        ...prev,
+        email: error,
+      }));
+    });
+    const descriptionValid = validateInput(data.description, {}, (error) => {
+      setErrorMessage((prev) => ({
+        ...prev,
+        description: error,
+      }));
+    });
+    if (nameValid && emailValid && descriptionValid) {
+      setLoading(true);
+      createSupportTicket(data.name, data.email, data.topic, data.description)
+        .then(() => {
+          addToast({
+            title: "The support ticket has been created!",
+            type: "success",
+          });
+          setData({
+            name: "",
+            email: "",
+            description: "",
+            topic: "General",
+          });
+          setLoading(false);
+          setOpen(false);
+        })
+        .catch((error) => {
+          addToast({ title: error.response.data.error, type: "error" });
+          setLoading(false);
+          setOpen(false);
         });
-        setData({
-          name: "",
-          email: "",
-          description: "",
-          topic: "General",
-        });
-        setLoading(false);
-        setOpen(false);
-      })
-      .catch((error) => {
-        addToast({ title: error.response.data.error, type: "error" });
-        setLoading(false);
-        setOpen(false);
-      });
+    }
   };
 
   const list = [
@@ -114,12 +125,17 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
                 autoComplete="off"
                 className="w-[650px]"
                 maxLength={INPUT_LIMIT.NAME_MAX}
+                errorMessage={errorMessage.name}
                 value={data.name}
                 placeholder="Name"
-                onChange={(e) =>
-                  setData((prev) => ({ ...prev, name: e.target.value }))
-                }
-                required
+                onChange={(e) => {
+                  setData((prev) => ({ ...prev, name: e.target.value }));
+                  if (errorMessage.name)
+                    setErrorMessage((prev) => ({
+                      ...prev,
+                      name: "",
+                    }));
+                }}
               />
               <Input
                 id="email"
@@ -127,14 +143,18 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
                 autoComplete="email"
                 label="Email"
                 maxLength={INPUT_LIMIT.EMAIL_MAX}
-                type="email"
                 className="w-[650px] mt-4"
                 value={data.email}
                 placeholder="Email"
-                onChange={(e) =>
-                  setData((prev) => ({ ...prev, email: e.target.value }))
-                }
-                required
+                errorMessage={errorMessage.email}
+                onChange={(e) => {
+                  setData((prev) => ({ ...prev, email: e.target.value }));
+                  if (errorMessage.email)
+                    setErrorMessage((prev) => ({
+                      ...prev,
+                      email: "",
+                    }));
+                }}
               />
               <Label htmlFor="topic" className="mt-4 mb-2">
                 Topic
@@ -168,12 +188,17 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
                 autoComplete="off"
                 value={data.description}
                 placeholder="Description"
+                errorMessage={errorMessage.description}
                 maxLength={INPUT_LIMIT.DESCRIPTION_MAX}
                 rows={8}
-                onChange={(e) =>
-                  setData((prev) => ({ ...prev, description: e.target.value }))
-                }
-                required
+                onChange={(e) => {
+                  setData((prev) => ({ ...prev, description: e.target.value }));
+                  if (errorMessage.description)
+                    setErrorMessage((prev) => ({
+                      ...prev,
+                      description: "",
+                    }));
+                }}
               />
             </div>
             <div className="mt-8 flex justify-end">

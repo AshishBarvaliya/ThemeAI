@@ -8,28 +8,25 @@ export interface TextareaProps
 const Textarea = React.forwardRef<
   HTMLTextAreaElement,
   TextareaProps & {
-    isError?: boolean;
+    errorMessage?: string;
     label?: string;
-    errorText?: string;
     postElement?: React.ReactNode;
   }
->(({ className, isError, label, errorText, postElement, ...props }, ref) => {
+>(({ className, errorMessage, label, postElement, ...props }, ref) => {
   return (
     <div className={cn("relative flex flex-col", className)}>
       {label ? (
         <Label htmlFor={props.id} className="pb-2">
           {label}
-          {isError && (
-            <span className="ml-1 text-destructive">
-              {errorText ? errorText : `(required)`}
-            </span>
+          {errorMessage && (
+            <span className="ml-1 text-destructive">{errorMessage}</span>
           )}
         </Label>
       ) : null}
       <textarea
         className={cn(
           "flex min-h-9 w-full shadow-inset border-[0.5px] border-border bg-white px-3 py-2 text-md ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:border-secondary disabled:cursor-not-allowed disabled:opacity-50",
-          isError && "border-destructive ring-1 ring-destructive",
+          errorMessage && "border-destructive ring-1 ring-destructive",
           postElement && "pr-14"
         )}
         ref={ref}

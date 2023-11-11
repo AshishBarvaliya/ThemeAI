@@ -13,6 +13,7 @@ import { Button } from "./ui/button";
 import { sendPasswordResetEmail } from "@/services/user";
 import { useRouter } from "next/router";
 import { INPUT_LIMIT } from "@/constants/website";
+import { validateInput } from "@/lib/error";
 
 interface ResetPasswordDialogProps {
   open: boolean;
@@ -26,28 +27,34 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
   const router = useRouter();
   const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [data, setData] = useState({
     email: "",
   });
 
   const resetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
-    setLoading(true);
     e.preventDefault();
-    sendPasswordResetEmail(data.email)
-      .then(() => {
-        addToast({
-          title: "Password reset email has been sent",
-          type: "success",
+    const emailValid = validateInput(data.email, { email: true }, (error) => {
+      setErrorMessage(error);
+    });
+    if (emailValid) {
+      setLoading(true);
+      sendPasswordResetEmail(data.email)
+        .then(() => {
+          addToast({
+            title: "Password reset email has been sent",
+            type: "success",
+          });
+          router.push("/themes", undefined, { shallow: true });
+          setOpen(false);
+        })
+        .catch((error) => {
+          addToast({ title: error.response.data.error, type: "error" });
+        })
+        .finally(() => {
+          setLoading(false);
         });
-        router.push("/themes", undefined, { shallow: true });
-        setOpen(false);
-      })
-      .catch((error) => {
-        addToast({ title: error.response.data.error, type: "error" });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    }
   };
 
   return (
@@ -74,15 +81,17 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
               name="reset-email"
               autoComplete="email"
               label="Email"
-              type="email"
               value={data.email}
+              errorMessage={errorMessage}
               maxLength={INPUT_LIMIT.EMAIL_MAX}
               placeholder="Email"
               className="mt-4"
-              onChange={(e) =>
-                setData((prev) => ({ ...prev, email: e.target.value }))
-              }
-              required
+              onChange={(e) => {
+                setData({ email: e.target.value });
+                if (errorMessage) {
+                  setErrorMessage("");
+                }
+              }}
             />
             <div className="mt-8">
               <Button type="submit" className="w-full" disabled={loading}>

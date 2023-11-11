@@ -26,6 +26,7 @@ import { ConfirmationDialog } from "./confirmation-dialog";
 import { useRouter } from "next/router";
 import { INPUT_LIMIT } from "@/constants/website";
 import { Textarea } from "./ui/textarea";
+import { validateInput } from "@/lib/error";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -72,7 +73,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
   const [loading, setLoading] = useState(false);
   const [openSure, setOpenSure] = useState(false);
   const [selectedTags, setSelectedTags] = useState<TagProps[]>([]);
-  const [isNameError, setIsNameError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [data, setData] = useState<FormDataProps>({
     name: "",
     color1Reason: defaultData?.color_1_reason || "",
@@ -163,13 +164,15 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                   type="text"
                   label="Name"
                   autoComplete="off"
-                  isError={isNameError}
+                  errorMessage={errorMessage}
                   maxLength={INPUT_LIMIT.NAME_MAX}
                   required
                   placeholder="Docter's apointment app theme"
                   onChange={(e) => {
                     setData((prev) => ({ ...prev, name: e.target.value }));
-                    setIsNameError(e.target.value.trim().length === 0);
+                    if (errorMessage) {
+                      setErrorMessage("");
+                    }
                   }}
                 />
                 <Textarea
@@ -277,14 +280,17 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                   type="button"
                   disabled={loading}
                   onClick={(e) => {
-                    if (data.name.trim().length === 0) {
-                      setIsNameError(true);
-                      return;
-                    }
-                    if (isAnyFieldEmpty) {
-                      setOpenSure(true);
-                    } else {
-                      createTheme(e);
+                    const nameValid = validateInput(
+                      data.name,
+                      { name: true },
+                      (error) => setErrorMessage(error)
+                    );
+                    if (nameValid) {
+                      if (isAnyFieldEmpty) {
+                        setOpenSure(true);
+                      } else {
+                        createTheme(e);
+                      }
                     }
                   }}
                 >
