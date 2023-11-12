@@ -15,6 +15,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { PasswordEye } from "./password-eye";
 import { INPUT_LIMIT } from "@/constants/website";
+import Typography from "./ui/typography";
 
 interface LoginDialogProps {
   open: boolean;
@@ -87,6 +88,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                   id="login-email"
                   name="login-email"
                   autoComplete="email"
+                  type="email"
                   label="Email"
                   value={data.email}
                   placeholder="Email"
@@ -118,11 +120,15 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                   }
                 />
               </div>
-              <div
-                onClick={forgetPassword}
-                className="underline text-xs my-3 block text-primary-foreground cursor-pointer"
-              >
-                Forgot Password?
+              <div className="flex text-xs my-3">
+                <Typography
+                  element="p"
+                  as="p"
+                  onClick={forgetPassword}
+                  className="underline text-xs text-primary-foreground cursor-pointer"
+                >
+                  Forgot Password?
+                </Typography>
               </div>
               <div className="mt-8">
                 <Button type="submit" className="w-full" disabled={loading}>
@@ -144,8 +150,8 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
               variant="outline"
               disabled={loading}
             >
-              <Google className="flex flex-0 flex-grow-0 flex-shrink-0 flex-auto" />{" "}
-              <span className="flex-1 text-center">Continue with Google</span>
+              <Google className="flex flex-0 flex-grow-0 flex-shrink-0 flex-auto" />
+              <span className="text-center pl-2">Continue with Google</span>
             </Button>
           </div>
         </DialogContent>

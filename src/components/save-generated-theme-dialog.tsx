@@ -19,6 +19,7 @@ import TagPicker from "./tag-picker";
 import { useRouter } from "next/router";
 import { useHelpers } from "@/hooks/useHelpers";
 import { INPUT_LIMIT } from "@/constants/website";
+import { validateInput } from "@/lib/error";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -54,7 +55,7 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
   const { setGeneratedTheme } = useHelpers();
   const [loading, setLoading] = useState(false);
   const [selectedTags, setSelectedTags] = useState<TagProps[]>([]);
-  const [isNameError, setIsNameError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [data, setData] = useState<FormDataProps>({
     name: "",
     isPrivate: false,
@@ -116,13 +117,15 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
                   label="Name"
                   maxLength={INPUT_LIMIT.NAME_MAX}
                   autoComplete="off"
-                  isError={isNameError}
+                  errorMessage={errorMessage}
                   required
                   placeholder="Docter's apointment app theme"
                   className="w-[750px]"
                   onChange={(e) => {
                     setData((prev) => ({ ...prev, name: e.target.value }));
-                    setIsNameError(e.target.value.trim().length === 0);
+                    if (errorMessage) {
+                      setErrorMessage("");
+                    }
                   }}
                 />
                 <div className="mt-4">
@@ -159,10 +162,12 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
                   type="button"
                   disabled={loading}
                   onClick={(e) => {
-                    if (data.name.trim().length === 0) {
-                      setIsNameError(true);
-                      return;
-                    } else {
+                    const nameValid = validateInput(
+                      data.name,
+                      { name: true },
+                      (error) => setErrorMessage(error)
+                    );
+                    if (nameValid) {
                       createTheme(e);
                     }
                   }}

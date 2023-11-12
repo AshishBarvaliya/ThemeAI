@@ -14,6 +14,7 @@ import { Button } from "./ui/button";
 import { signIn } from "next-auth/react";
 import { PasswordEye } from "./password-eye";
 import { INPUT_LIMIT } from "@/constants/website";
+import { validateInput } from "@/lib/error";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -27,6 +28,11 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({
   const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
+  const [errorMessage, setErrorMessage] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -34,26 +40,50 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({
   });
 
   const registerUser = async (e: React.FormEvent<HTMLFormElement>) => {
-    setLoading(true);
     e.preventDefault();
-    axios
-      .post("/api/user", data)
-      .then(() => {
-        addToast({ title: "New user has been registered!", type: "success" });
-        signIn("credentials", {
-          email: data.email,
-          password: data.password,
-          redirect: false,
-        }).then(() => {
+    const nameValid = validateInput(data.name, { name: true }, (error) => {
+      setErrorMessage((prev) => ({
+        ...prev,
+        name: error,
+      }));
+    });
+    const emailValid = validateInput(data.email, { email: true }, (error) => {
+      setErrorMessage((prev) => ({
+        ...prev,
+        email: error,
+      }));
+    });
+    const passwordValid = validateInput(
+      data.password,
+      { password: true },
+      (error) => {
+        setErrorMessage((prev) => ({
+          ...prev,
+          password: error,
+        }));
+      }
+    );
+    if (nameValid && emailValid && passwordValid) {
+      setLoading(true);
+      axios
+        .post("/api/user", data)
+        .then(() => {
+          addToast({ title: "New user has been registered!", type: "success" });
+          signIn("credentials", {
+            email: data.email,
+            password: data.password,
+            redirect: false,
+          }).then(() => {
+            setLoading(false);
+            setOpen(false);
+          });
+        })
+        .catch((error) => {
+          addToast({ title: error.response.data.error, type: "error" });
           setLoading(false);
           setOpen(false);
         });
-      })
-      .catch((error) => {
-        addToast({ title: error.response.data.error, type: "error" });
-        setLoading(false);
-        setOpen(false);
-      });
+    }
   };
 
   return (
@@ -80,27 +110,36 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({
                 autoComplete="name"
                 label="Name"
                 maxLength={INPUT_LIMIT.NAME_MAX}
+                errorMessage={errorMessage.name}
                 value={data.name}
                 placeholder="Name"
-                onChange={(e) =>
-                  setData((prev) => ({ ...prev, name: e.target.value }))
-                }
-                required
+                onChange={(e) => {
+                  setData((prev) => ({ ...prev, name: e.target.value }));
+                  if (errorMessage.name)
+                    setErrorMessage((prev) => ({
+                      ...prev,
+                      name: "",
+                    }));
+                }}
               />
               <Input
                 id="register-email"
                 name="register-email"
                 label="Email"
                 autoComplete="email"
-                type="email"
                 maxLength={INPUT_LIMIT.EMAIL_MAX}
+                errorMessage={errorMessage.email}
                 value={data.email}
                 placeholder="Email"
                 className="mt-4"
-                onChange={(e) =>
-                  setData((prev) => ({ ...prev, email: e.target.value }))
-                }
-                required
+                onChange={(e) => {
+                  setData((prev) => ({ ...prev, email: e.target.value }));
+                  if (errorMessage.email)
+                    setErrorMessage((prev) => ({
+                      ...prev,
+                      email: "",
+                    }));
+                }}
               />
               <Input
                 id="register-password"
@@ -108,10 +147,10 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({
                 label="Password"
                 autoComplete="off"
                 className="mt-4"
-                required
                 value={data.password}
                 placeholder="Password"
                 maxLength={INPUT_LIMIT.PASSWORD_MAX}
+                errorMessage={errorMessage.password}
                 type={hidePassword ? "password" : "text"}
                 postElement={
                   <PasswordEye
@@ -119,9 +158,14 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({
                     setValue={setHidePassword}
                   />
                 }
-                onChange={(e) =>
-                  setData((prev) => ({ ...prev, password: e.target.value }))
-                }
+                onChange={(e) => {
+                  setData((prev) => ({ ...prev, password: e.target.value }));
+                  if (errorMessage.password)
+                    setErrorMessage((prev) => ({
+                      ...prev,
+                      password: "",
+                    }));
+                }}
               />
             </div>
             <div className="mt-8">
