@@ -25,7 +25,10 @@ const ProfileFollowing: React.FC<ProfileFollowingProps> = ({ user }) => {
   const [loadingUser, setLoadingUser] = useState<string | null>(null);
   const { data: followings, isLoading: isLoadingFollwings } = useQuery(
     ["following", router.query.id],
-    () => getAllFollowings(router.query.id as string)
+    () => getAllFollowings(router.query.id as string),
+    {
+      enabled: !!router.query.id,
+    }
   );
 
   const { mutate: mutateUserUnfollow, isLoading: isLoadingFollow } =

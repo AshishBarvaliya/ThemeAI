@@ -37,8 +37,12 @@ export default function ProfileThemes() {
   const { runIfLoggedInElseOpenLoginDialog } = useHelpers();
   const [privateOnly, setPrivateOnly] = useState(false);
   const { data: tags } = useQuery(["tags"], getTags);
-  const { data: user } = useQuery(["user", router.query.id], () =>
-    getUser(router.query.id as string)
+  const { data: user } = useQuery(
+    ["user", router.query.id],
+    () => getUser(router.query.id as string),
+    {
+      enabled: !!router.query.id,
+    }
   );
 
   const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
@@ -209,7 +213,10 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
   const [likeLoading, setLikeLoading] = useState<string | null>(null);
   const { data: createdThemes, isLoading: isLoadingCreatedThemes } = useQuery(
     ["user", router.query.id, "created"],
-    () => getThemesByUserAndType(router.query.id as string, "created")
+    () => getThemesByUserAndType(router.query.id as string, "created"),
+    {
+      enabled: !!router.query.id,
+    }
   );
   const { mutate: mutateLikeTheme, isLoading: isLoadingLikeTheme } =
     useMutation({
@@ -367,7 +374,10 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
   const [likeLoading, setLikeLoading] = useState<string | null>(null);
   const { data: likedThemes, isLoading: isLoadingLikedThemes } = useQuery(
     ["user", router.query.id, "liked"],
-    () => getThemesByUserAndType(router.query.id as string, "liked")
+    () => getThemesByUserAndType(router.query.id as string, "liked"),
+    {
+      enabled: !!router.query.id,
+    }
   );
   const { mutate: mutateLikeTheme, isLoading: isLoadingLikeTheme } =
     useMutation({
@@ -519,7 +529,10 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
   const [likeLoading, setLikeLoading] = useState<string | null>(null);
   const { data: savedThemes, isLoading: isLoadingSavedThemes } = useQuery(
     ["user", router.query.id, "saved"],
-    () => getThemesByUserAndType(router.query.id as string, "saved")
+    () => getThemesByUserAndType(router.query.id as string, "saved"),
+    {
+      enabled: !!router.query.id,
+    }
   );
   const { mutate: mutateLikeTheme, isLoading: isLoadingLikeTheme } =
     useMutation({

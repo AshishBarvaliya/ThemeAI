@@ -70,6 +70,7 @@ export default async function handler(
             template: true,
             isAIGenerated: true,
             prompt: true,
+            isPrivate: true,
           },
           with: {
             user: {
@@ -111,27 +112,35 @@ export default async function handler(
         });
 
         if (theme) {
-          res.status(200).json(theme);
+          if (!theme.isPrivate) {
+            res.status(200).json(theme);
 
-          setTimeout(async () => {
-            const view = await db.query.views.findFirst({
-              where: and(
-                eq(viewsSchema.themeId, themeId),
-                eq(viewsSchema.userIp, ip)
-              ),
-              columns: {
-                id: true,
-              },
-            });
-            if (!view) {
-              await db.insert(viewsSchema).values({
-                id: createId(),
-                themeId,
-                userIp: ip,
+            setTimeout(async () => {
+              const view = await db.query.views.findFirst({
+                where: and(
+                  eq(viewsSchema.themeId, themeId),
+                  eq(viewsSchema.userIp, ip)
+                ),
+                columns: {
+                  id: true,
+                },
               });
+              if (!view) {
+                await db.insert(viewsSchema).values({
+                  id: createId(),
+                  themeId,
+                  userIp: ip,
+                });
+              }
+            }, 0);
+            return;
+          } else {
+            if (session?.user.id === theme.user.id) {
+              return res.status(200).json(theme);
+            } else {
+              return res.status(403).json({ error: "Not authorized" });
             }
-          }, 0);
-          return;
+          }
         }
         return res.status(404).json({ error: "Theme not found" });
       } catch (error) {
