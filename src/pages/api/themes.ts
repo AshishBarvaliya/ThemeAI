@@ -12,6 +12,7 @@ import {
   users as usersSchema,
   usersToLikedThemes,
   usersToSavedThemes,
+  views as viewsSchema,
 } from "@/db/schema";
 import db from "@/db";
 import { USER_LEVELS } from "@/constants/user";
@@ -47,6 +48,8 @@ export default async function handler(
   if (req.method === "GET") {
     const themeId = req.query.id as string;
     if (themeId) {
+      const ip = (req.headers["x-forwarded-for"] ||
+        req.connection.remoteAddress) as string;
       try {
         const theme = await db.query.themes.findFirst({
           where: eq(themesSchema.id, themeId),
@@ -107,10 +110,30 @@ export default async function handler(
           },
         });
 
-        if (!theme) {
-          return res.status(404).json({ error: "Theme not found" });
+        if (theme) {
+          res.status(200).json(theme);
+
+          setTimeout(async () => {
+            const view = await db.query.views.findFirst({
+              where: and(
+                eq(viewsSchema.themeId, themeId),
+                eq(viewsSchema.userIp, ip)
+              ),
+              columns: {
+                id: true,
+              },
+            });
+            if (!view) {
+              await db.insert(viewsSchema).values({
+                id: createId(),
+                themeId,
+                userIp: ip,
+              });
+            }
+          }, 0);
+          return;
         }
-        return res.status(200).json(theme);
+        return res.status(404).json({ error: "Theme not found" });
       } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Failed to fetch theme" });
