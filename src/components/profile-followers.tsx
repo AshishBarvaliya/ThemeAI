@@ -20,10 +20,17 @@ const ProfileFollowers: React.FC<ProfileFollowersProps> = ({ user }) => {
   const [loadingUser, setLoadingUser] = useState<string | null>(null);
   const { data: followers, isLoading: isLoadingFollowers } = useQuery(
     ["followers", router.query.id],
-    () => getAllFollowers(router.query.id as string)
+    () => getAllFollowers(router.query.id as string),
+    {
+      enabled: !!router.query.id,
+    }
   );
-  const { data: followings } = useQuery(["following", router.query.id], () =>
-    getAllFollowings(router.query.id as string)
+  const { data: followings } = useQuery(
+    ["following", router.query.id],
+    () => getAllFollowings(router.query.id as string),
+    {
+      enabled: !!router.query.id,
+    }
   );
 
   const { mutate: mutateUserFollow, isLoading: isLoadingUnfollow } =

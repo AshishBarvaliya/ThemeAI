@@ -43,14 +43,24 @@ export default function User() {
 
   const { data: user, isLoading: isLoadingUser } = useQuery(
     ["user", router.query.id],
-    () => getUser(router.query.id as string)
+    () => getUser(router.query.id as string),
+    {
+      enabled: !!router.query.id,
+    }
   );
-  const { data: statsData } = useQuery(["user", router.query.id, "stats"], () =>
-    getUserStats(router.query.id as string)
+  const { data: statsData } = useQuery(
+    ["user", router.query.id, "stats"],
+    () => getUserStats(router.query.id as string),
+    {
+      enabled: !!router.query.id,
+    }
   );
   const { data: notificationStatus } = useQuery(
     ["user", "notification", "new"],
-    () => getHasNewNotifications(session?.user?.id)
+    () => getHasNewNotifications(session?.user?.id),
+    {
+      enabled: !!router.query.id,
+    }
   );
   const { mutate: mutateUserFollow, isLoading: isLoadingFollow } = useMutation({
     mutationFn: (userId: string) => followUser(userId),

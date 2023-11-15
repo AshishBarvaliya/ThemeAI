@@ -132,6 +132,7 @@ export const themesRelations = relations(themes, ({ one, many }) => ({
   inappropriateBy: many(usersToInappropriateThemes),
   tags: many(themesToTags),
   activities: many(usersTonotifications),
+  views: many(views),
 }));
 
 export const statusEnum = pgEnum("like_save_status", ["F", "P", "N"]);
@@ -388,3 +389,19 @@ export const feedbackTheme = pgTable("feedback_theme", {
     .notNull()
     .references(() => users.id),
 });
+
+export const views = pgTable("views", {
+  id: text("id").notNull().primaryKey(),
+  themeId: text("themeId")
+    .notNull()
+    .references(() => themes.id),
+  userIp: text("userIp").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+});
+
+export const viewsRelations = relations(views, ({ one }) => ({
+  theme: one(themes, {
+    fields: [views.themeId],
+    references: [themes.id],
+  }),
+}));

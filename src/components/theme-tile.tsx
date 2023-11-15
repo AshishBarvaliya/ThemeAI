@@ -206,9 +206,20 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
         className="flex flex-col border-t-[0.5px] p-1.5 gap-2 bg-white"
         style={{ borderColor: mappedTheme.colors.primary }}
       >
-        <Typography element={"p"} as="p" className="text-lg truncate">
-          {mappedTheme.name}
-        </Typography>
+        <TooltipProvider>
+          <Tooltip delayDuration={100}>
+            <TooltipTrigger asChild>
+              <div>
+                <Typography element={"p"} as="p" className="text-lg truncate">
+                  {mappedTheme.name}
+                </Typography>
+              </div>
+            </TooltipTrigger>
+            {mappedTheme.name.length > 15 ? (
+              <TooltipContent>{mappedTheme.name}</TooltipContent>
+            ) : null}
+          </Tooltip>
+        </TooltipProvider>
         <div className="flex gap-2">
           {Object.keys(mappedTheme.colors).map((key) => {
             const clr = mappedTheme.colors[key as keyof ColorsProps];
