@@ -62,7 +62,14 @@ export default function Themes() {
       onSuccess: (data) => {
         if (themes?.pages?.length) {
           queryClient.setQueryData(
-            ["home", "themes", themeSearchQuery, themeType, filterTags],
+            [
+              "home",
+              "themes",
+              themeSearchQuery,
+              themeType,
+              filterTags,
+              isAIOnly,
+            ],
             {
               ...themes,
               pages: themes.pages.map((page) =>
@@ -87,7 +94,14 @@ export default function Themes() {
       onSuccess: (data) => {
         if (themes?.pages?.length) {
           queryClient.setQueryData(
-            ["home", "themes", themeSearchQuery, themeType, filterTags],
+            [
+              "home",
+              "themes",
+              themeSearchQuery,
+              themeType,
+              filterTags,
+              isAIOnly,
+            ],
             {
               ...themes,
               pages: themes.pages.map((page) =>
@@ -114,7 +128,7 @@ export default function Themes() {
     onSuccess: (data) => {
       if (themes?.pages?.length) {
         queryClient.setQueryData(
-          ["home", "themes", themeSearchQuery, themeType, filterTags],
+          ["home", "themes", themeSearchQuery, themeType, filterTags, isAIOnly],
           {
             ...themes,
             pages: themes.pages.map((page) =>
@@ -137,22 +151,25 @@ export default function Themes() {
     mutationFn: (themeId: string) => themeUnsave(themeId),
     onSuccess: (data) => {
       if (themes?.pages?.length) {
-        queryClient.setQueryData(["home", "themes", themeSearchQuery], {
-          ...themes,
-          pages: themes.pages.map((page) =>
-            page.map((theme) => {
-              if (theme.id === data.themeId) {
-                return {
-                  ...theme,
-                  savedBy: theme.savedBy.filter(
-                    (user) => user.userId !== data.userId
-                  ),
-                };
-              }
-              return theme;
-            })
-          ),
-        });
+        queryClient.setQueryData(
+          ["home", "themes", themeSearchQuery, themeType, filterTags, isAIOnly],
+          {
+            ...themes,
+            pages: themes.pages.map((page) =>
+              page.map((theme) => {
+                if (theme.id === data.themeId) {
+                  return {
+                    ...theme,
+                    savedBy: theme.savedBy.filter(
+                      (user) => user.userId !== data.userId
+                    ),
+                  };
+                }
+                return theme;
+              })
+            ),
+          }
+        );
       }
     },
   });

@@ -605,7 +605,7 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
       queryClient.invalidateQueries(["user", router.query.id]);
       if (savedThemes?.length) {
         queryClient.setQueryData(
-          ["home", "themes"],
+          ["user", router.query.id, "saved"],
           savedThemes.map((theme) => {
             if (theme.id === data.themeId) {
               return {

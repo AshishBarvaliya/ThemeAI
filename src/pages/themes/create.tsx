@@ -1,3 +1,4 @@
+import DashboardTemplate from "@/assets/templates/dashboard/dashboard";
 import MarketingTemplate from "@/assets/templates/marketing/marketing";
 import ColorPicker from "@/components/color-picker";
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
@@ -107,7 +108,7 @@ const CreateTheme = () => {
   return (
     <div className="flex flex-1 flex-col">
       <div
-        className="flex fixed justify-between border-b-[0.5px] border-border bg-background gap-4 p-3 px-5 items-center z-40 shadow-md"
+        className="flex fixed justify-between border-b-[0.5px] border-border bg-background gap-4 p-3 px-5 items-center z-40 shadow-sm"
         style={{
           maxWidth: "calc(1536px - 250px)",
           width: "calc(100vw - 250px)",
@@ -224,7 +225,7 @@ const CreateTheme = () => {
         </div>
       </div>
       <div className="flex mt-[72px]">
-        <MarketingTemplate
+        <DashboardTemplate
           colors={colors}
           shades={generateAllShades(colors)}
           fonts={fonts}

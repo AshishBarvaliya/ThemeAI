@@ -95,8 +95,8 @@ export function hexToRGB(hex: string): { r: number; g: number; b: number } {
 const generateShades = (hexColor: string): { light: string; dark: string } => {
   let [h, s, l] = hexToHSL(hexColor);
   return {
-    light: hslToHex(h, s, Math.min(100, l + 5)),
-    dark: hslToHex(h, s, Math.max(0, l - 5)),
+    light: hslToHex(h, s, Math.min(100, l + 5 > 100 ? l - 10 : l + 5)),
+    dark: hslToHex(h, s, Math.max(0, l - 5 < 0 ? l + 10 : l - 5)),
   };
 };
 
