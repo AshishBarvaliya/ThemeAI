@@ -151,13 +151,13 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
       </div>
     </foreignObject>
 
-    <foreignObject x="100" y="25" width="140" height="80">
+    <foreignObject x="100" y="25" width="110" height="80">
       <div className="h-full items-center flex justify-center">
         <p
           className="text-2xl font-bold"
           style={{
             color: colors.primary,
-            fontFamily: fonts.primary.fontFamily,
+            fontFamily: "Roboto",
           }}
         >
           Concured
