@@ -7,6 +7,7 @@ import { users as usersSchema } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 const priceId = process.env.STRIPE_PRICE_ID;
+const url = process.env.NEXTAUTH_URL;
 
 export default async function handler(
   req: NextApiRequest,
@@ -48,7 +49,7 @@ export default async function handler(
 
         stripeCustomerId = customer.id;
       } catch (error) {
-        res.status(500).json({ error: "Failed to create customer" });
+        return res.status(500).json({ error: "Failed to create customer" });
       }
     }
 
@@ -65,17 +66,15 @@ export default async function handler(
         },
         customer: stripeCustomerId,
         mode: "payment",
-        success_url:
-          "http://localhost:3000/themes?session_id={CHECKOUT_SESSION_ID}",
-        cancel_url: "http://localhost:3000/themes",
+        success_url: `${url}/api/manage-purchases?session={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${url}/themes`,
       });
 
       res.status(200).json({ url: stripeSession.url });
     } catch (error) {
-      console.error(error);
       res.status(500).json({ error: "Failed to create checkout session" });
     }
   } else {
-    res.status(401).json({ error: "Not authenticated" });
+    res.status(401).json({ error: "Unauthorized" });
   }
 }

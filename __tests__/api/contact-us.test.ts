@@ -1,8 +1,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import handler from "@/pages/api/contact-us";
 
-jest.mock("@/db");
-jest.mock("@paralleldrive/cuid2");
+jest.mock("@/db", () => {
+  return {
+    insert: jest.fn().mockReturnThis(),
+    values: jest.fn().mockReturnThis(),
+    returning: jest.fn(() => Promise.resolve({ id: "mock-id" })),
+  };
+});
+jest.mock("@paralleldrive/cuid2", () => ({
+  createId: jest.fn(() => "mock-id"),
+}));
 
 describe("Support Ticket API Endpoint", () => {
   let req: NextApiRequest, res: NextApiResponse;
@@ -33,7 +41,7 @@ describe("Support Ticket API Endpoint", () => {
     req.body = { name: "Test", email: "test@example.com" };
     await handler(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "All fields are required" });
+    expect(res.json).toHaveBeenCalledWith({ error: "Missing required fields" });
   });
 
   it("should create a new support ticket", async () => {

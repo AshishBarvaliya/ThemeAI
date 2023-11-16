@@ -12,7 +12,6 @@ import { ResetPasswordDialog } from "./reset-password";
 import { NewPasswordDialog } from "./new-password";
 import { GenerateThemeDialog } from "./generate-theme-dialog";
 import { useHelpers } from "@/hooks/useHelpers";
-import { managePurchase } from "@/services/stripe";
 import { useToast } from "@/hooks/useToast";
 import { SeachBar } from "./ui/input";
 import { FiterTags } from "./filter-tags";
@@ -104,12 +103,6 @@ const Header = () => {
       router.query.token
     ) {
       setNewPasswordDialog(true);
-    } else if (router.pathname === "/themes" && router.query.session_id) {
-      managePurchase(router.query.session_id as string)
-        .then(() => addToast({ title: "Purchase success", type: "success" }))
-        .finally(() => {
-          router.push(router.pathname, undefined, { shallow: true });
-        });
     }
   }, [router, status]);
 

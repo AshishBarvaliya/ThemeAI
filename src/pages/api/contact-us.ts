@@ -10,7 +10,7 @@ export default async function handler(
   if (req.method === "POST") {
     const { name, email, topic, description } = req.body;
     if (!name || !email || !topic || !description) {
-      return res.status(400).json({ error: "All fields are required" });
+      return res.status(400).json({ error: "Missing required fields" });
     }
     try {
       const entry = await db
@@ -24,13 +24,13 @@ export default async function handler(
         })
         .returning({ id: supportTickets.id });
 
-      res.status(201).json({
+      return res.status(201).json({
         ...entry,
       });
     } catch (error) {
-      res.status(500).json({ error: "Failed to create support ticket" });
+      return res.status(500).json({ error: "Failed to create support ticket" });
     }
   } else {
-    res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 }
