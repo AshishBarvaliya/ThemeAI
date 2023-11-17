@@ -19,7 +19,7 @@ export default async function handler(
     }
     const { details, isDark } = req.body;
     if (!details) {
-      return res.status(400).json({ error: "Details are required" });
+      return res.status(400).json({ error: "Missing required fields" });
     }
 
     const user = await db.query.users.findFirst({
@@ -42,7 +42,7 @@ export default async function handler(
     if (pupa < 1) {
       return res.status(400).json({
         error:
-          "you don't have enough prompt to generate colors. please purchase prompts!",
+          "You don't have enough prompt to generate colors. please purchase prompts!",
       });
     }
 
@@ -52,7 +52,7 @@ export default async function handler(
     if (moderation.results[0].flagged) {
       return res
         .status(400)
-        .json({ error: "Flagged content as violating OpenAI terms." });
+        .json({ error: "Flagged content as violating OpenAI terms" });
     }
 
     try {
