@@ -1,7 +1,7 @@
-import handler from "@/pages/api/feedback";
-import { getServerSession } from "next-auth";
-import { NextApiRequest, NextApiResponse } from "next";
 import db from "@/db";
+import handler from "@/pages/api/theme/like";
+import { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth";
 
 jest.mock("@auth/drizzle-adapter", () => {
   return {
@@ -17,15 +17,14 @@ jest.mock("next-auth", () => ({
   getServerSession: jest.fn(),
 }));
 
-jest.mock("@/db", () => {
-  return {
-    insert: jest.fn().mockReturnThis(),
-    values: jest.fn().mockReturnThis(),
-    returning: jest.fn(() => Promise.resolve({ id: "mock-id" })),
-  };
-});
+jest.mock("@/db", () => ({
+  insert: jest.fn().mockReturnThis(),
+  values: jest.fn().mockReturnThis(),
+  onConflictDoUpdate: jest.fn().mockReturnThis(),
+  returning: jest.fn(() => Promise.resolve({ id: "mock-id" })),
+}));
 
-describe("Feedback API Endpoint", () => {
+describe("Theme Like API Endpoint", () => {
   let req: NextApiRequest, res: NextApiResponse;
 
   beforeEach(() => {
@@ -60,13 +59,8 @@ describe("Feedback API Endpoint", () => {
     expect(res.json).toHaveBeenCalledWith({ error: "Unauthorized" });
   });
 
-  it("should return 400 if required fields are missing", async () => {
-    req.body = {
-      color_1: "red",
-      color_2: "blue",
-      color_3: "green",
-      color_4: "yellow",
-    };
+  it("should return 400 if there is missing required fields", async () => {
+    req.body = { themeId: null };
 
     await handler(req, res);
 
@@ -74,47 +68,33 @@ describe("Feedback API Endpoint", () => {
     expect(res.json).toHaveBeenCalledWith({ error: "Missing required fields" });
   });
 
-  it("should return 201 if feedback is created successfully", async () => {
-    req.body = {
-      color_1: "red",
-      color_2: "blue",
-      color_3: "green",
-      color_4: "yellow",
-      color_1_reason: "Reason 1",
-      color_2_reason: "Reason 2",
-      color_3_reason: "Reason 3",
-      color_4_reason: "Reason 4",
-      prompt: "Prompt",
-      isDark: false,
-      feedback: "Feedback",
-    };
+  it("should return 201 if theme is liked", async () => {
+    req.body = { themeId: "theme-id" };
+
+    (
+      ((db.insert as jest.Mock)().values as jest.Mock)()
+        .onConflictDoUpdate as jest.Mock
+    )().returning as jest.Mock;
 
     await handler(req, res);
 
     expect(db.insert).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
-      id: "mock-id",
+      liked: true,
+      themeId: "theme-id",
+      userId: "user-id",
     });
   });
 
   it("should return 500 if there is an error", async () => {
-    req.body = {
-      color_1: "red",
-      color_2: "blue",
-      color_3: "green",
-      color_4: "yellow",
-      color_1_reason: "Reason 1",
-      color_2_reason: "Reason 2",
-      color_3_reason: "Reason 3",
-      color_4_reason: "Reason 4",
-      prompt: "Prompt",
-      isDark: false,
-      feedback: "Feedback",
-    };
+    req.body = { themeId: "theme-id" };
 
     (
-      ((db.insert as jest.Mock)().values as jest.Mock)().returning as jest.Mock
+      (
+        ((db.insert as jest.Mock)().values as jest.Mock)()
+          .onConflictDoUpdate as jest.Mock
+      )().returning as jest.Mock
     ).mockRejectedValue(new Error("An error occurred"));
 
     await handler(req, res);
@@ -122,7 +102,7 @@ describe("Feedback API Endpoint", () => {
     expect(db.insert).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
-      error: "Failed to submit feedback",
+      error: "Failed to like theme",
     });
   });
 });

@@ -63,4 +63,26 @@ describe("Support Ticket API Endpoint", () => {
       id: expect.any(String),
     });
   });
+
+  it("should return 500 if there is an error", async () => {
+    req.method = "POST";
+    req.body = {
+      name: "Test",
+      email: "test@example.com",
+      topic: "Test Topic",
+      description: "Test Description",
+    };
+
+    (
+      ((db.insert as jest.Mock)().values as jest.Mock)().returning as jest.Mock
+    ).mockRejectedValue(new Error("An error occurred"));
+
+    await handler(req, res);
+
+    expect(db.insert).toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Failed to create support ticket",
+    });
+  });
 });
