@@ -188,6 +188,7 @@ describe("Generate API Endpoint", () => {
         },
       ],
     });
+
     await handler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
