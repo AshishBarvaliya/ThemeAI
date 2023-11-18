@@ -7,7 +7,6 @@ const config: Config.InitialOptions = {
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@auth/drizzle-adapter$": "<rootDir>/node_modules/@auth/drizzle-adapter",
   },
-  setupFiles: ["<rootDir>/jest.setup.ts"],
 };
 
 export default config;
