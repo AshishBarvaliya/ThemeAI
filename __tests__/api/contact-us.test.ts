@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import handler from "@/pages/api/contact-us";
+import db from "@/db";
 
 jest.mock("@/db", () => {
   return {
@@ -8,9 +9,6 @@ jest.mock("@/db", () => {
     returning: jest.fn(() => Promise.resolve({ id: "mock-id" })),
   };
 });
-jest.mock("@paralleldrive/cuid2", () => ({
-  createId: jest.fn(() => "mock-id"),
-}));
 
 describe("Support Ticket API Endpoint", () => {
   let req: NextApiRequest, res: NextApiResponse;
@@ -31,7 +29,9 @@ describe("Support Ticket API Endpoint", () => {
 
   it("should return 405 for non-POST methods", async () => {
     req.method = "GET";
+
     await handler(req, res);
+
     expect(res.status).toHaveBeenCalledWith(405);
     expect(res.json).toHaveBeenCalledWith({ error: "Method not allowed" });
   });
@@ -39,12 +39,14 @@ describe("Support Ticket API Endpoint", () => {
   it("should return 400 if required fields are missing", async () => {
     req.method = "POST";
     req.body = { name: "Test", email: "test@example.com" };
+
     await handler(req, res);
+
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ error: "Missing required fields" });
   });
 
-  it("should create a new support ticket", async () => {
+  it("should return 201 and create a new support ticket", async () => {
     req.method = "POST";
     req.body = {
       name: "Test",
@@ -52,10 +54,35 @@ describe("Support Ticket API Endpoint", () => {
       topic: "Test Topic",
       description: "Test Description",
     };
+
     await handler(req, res);
+
+    expect(db.insert).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
       id: expect.any(String),
+    });
+  });
+
+  it("should return 500 if there is an error", async () => {
+    req.method = "POST";
+    req.body = {
+      name: "Test",
+      email: "test@example.com",
+      topic: "Test Topic",
+      description: "Test Description",
+    };
+
+    (
+      ((db.insert as jest.Mock)().values as jest.Mock)().returning as jest.Mock
+    ).mockRejectedValue(new Error("An error occurred"));
+
+    await handler(req, res);
+
+    expect(db.insert).toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Failed to create support ticket",
     });
   });
 });

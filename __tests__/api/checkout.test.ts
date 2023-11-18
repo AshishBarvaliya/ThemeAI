@@ -55,19 +55,24 @@ describe("Stripe Integration API Endpoint", () => {
 
   it("should return 405 for non-POST methods", async () => {
     req.method = "GET";
+
     await handler(req, res);
+
     expect(res.status).toHaveBeenCalledWith(405);
     expect(res.json).toHaveBeenCalledWith({ error: "Method not allowed" });
   });
 
   it("should return 401 if there is no session", async () => {
     (getServerSession as jest.Mock).mockResolvedValue(null);
+
     await handler(req, res);
+
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({ error: "Unauthorized" });
   });
 
-  it("should handle existing Stripe customer", async () => {
+  it("should return 200 if there is existing Stripe customer", async () => {
+    req.method = "POST";
     (getServerSession as jest.Mock).mockResolvedValue({
       user: { id: "user-id", email: "user@example.com" },
     });
@@ -78,7 +83,6 @@ describe("Stripe Integration API Endpoint", () => {
       url: "http://mocked-url.com",
     });
 
-    req.method = "POST";
     await handler(req, res);
 
     expect(stripe.customers.create).not.toHaveBeenCalled();
@@ -87,7 +91,8 @@ describe("Stripe Integration API Endpoint", () => {
     expect(res.json).toHaveBeenCalledWith({ url: "http://mocked-url.com" });
   });
 
-  it("should create a new Stripe customer and handle checkout session", async () => {
+  it("should return 200 and create a new Stripe customer and handle checkout session", async () => {
+    req.method = "POST";
     (getServerSession as jest.Mock).mockResolvedValue({
       user: { id: "user-id", email: "user@example.com" },
     });
@@ -99,7 +104,6 @@ describe("Stripe Integration API Endpoint", () => {
       url: "http://mocked-url.com",
     });
 
-    req.method = "POST";
     await handler(req, res);
 
     expect(stripe.customers.create).toHaveBeenCalled();
@@ -109,7 +113,8 @@ describe("Stripe Integration API Endpoint", () => {
     expect(res.json).toHaveBeenCalledWith({ url: "http://mocked-url.com" });
   });
 
-  it("should handle failure in creating Stripe customer", async () => {
+  it("should return 500 if there is failure in creating Stripe customer", async () => {
+    req.method = "POST";
     (getServerSession as jest.Mock).mockResolvedValue({
       user: { id: "user-id", email: "user@example.com" },
     });
@@ -118,7 +123,6 @@ describe("Stripe Integration API Endpoint", () => {
       new Error("Stripe error")
     );
 
-    req.method = "POST";
     await handler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
@@ -127,7 +131,8 @@ describe("Stripe Integration API Endpoint", () => {
     });
   });
 
-  it("should handle failure in creating Stripe checkout session", async () => {
+  it("should return 500 if there is failure in creating Stripe checkout session", async () => {
+    req.method = "POST";
     (getServerSession as jest.Mock).mockResolvedValue({
       user: { id: "user-id", email: "user@example.com" },
     });
@@ -138,7 +143,6 @@ describe("Stripe Integration API Endpoint", () => {
       new Error("Stripe error")
     );
 
-    req.method = "POST";
     await handler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);

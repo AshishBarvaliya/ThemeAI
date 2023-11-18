@@ -39,9 +39,5 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Create .env.test file
-        run: |
-          echo "DRIZZLE_DATABASE_URL=${{ secrets.DRIZZLE_TEST_DATABASE_URL }}" > .env.test
-
       - name: Run Unit Tests
         run: npm test

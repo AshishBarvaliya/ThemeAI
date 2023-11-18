@@ -14,14 +14,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== "POST") {
+  if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { sessionId } = req.body;
+  const sessionId = req.query.session as string;
 
   if (!sessionId) {
-    return res.status(400).json({ error: "Session not found" });
+    return res.redirect("/themes?payment=0&error=invalid_session");
   }
 
   const existingSession = await db.query.purchases.findFirst({
@@ -29,19 +29,17 @@ export default async function handler(
   });
 
   if (existingSession) {
-    return res.status(400).json({ error: "Session already exists" });
+    return res.redirect("/themes?payment=0&error=session_exists");
   }
 
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (!session) {
-      res.status(400).json({ error: "Session not found" });
-      return;
+      return res.redirect("/themes?payment=0&error=invalid_session");
     }
     if (!session.metadata?.userId) {
-      res.status(400).json({ error: "Customer not found" });
-      return;
+      return res.redirect("/themes?payment=0&error=invalid_customer");
     }
 
     await db.insert(purchasesSchema).values({
@@ -66,10 +64,11 @@ export default async function handler(
           pupa: Number(currentUser.pupa) + Number(N_PUPA),
         })
         .where(eq(usersSchema.id, session.metadata?.userId));
+      return res.redirect("/themes?payment=1");
+    } else {
+      return res.redirect("/themes?payment=0&error=server");
     }
-
-    res.status(200).send("Purchase saved successfully");
   } catch (error) {
-    return res.status(500).json({ error: "Failed to save purchase" });
+    return res.redirect("/themes?payment=0&error=server");
   }
 }
