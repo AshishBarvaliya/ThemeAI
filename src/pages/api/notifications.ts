@@ -10,12 +10,11 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const session = await getServerSession(req, res, authOptions);
-
+  if (!session) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
   if (req.method === "GET") {
-    if (!session) {
-      return res.status(401).json({ error: "Not authenticated" });
-    }
-    if (req.query.new === "1") {
+    if (req.query?.new === "1") {
       try {
         const notifications = await db.query.usersTonotifications.findMany({
           where: eq(usersTonotifications.recipientId, session.user.id),
@@ -71,9 +70,6 @@ export default async function handler(
       return res.status(500).json({ error: "Failed to fetch notifications" });
     }
   } else if (req.method === "POST") {
-    if (!session) {
-      return res.status(401).json({ error: "Not authenticated" });
-    }
     try {
       const notifications = await db.query.usersTonotifications.findMany({
         where: eq(usersTonotifications.recipientId, session.user.id),
@@ -97,7 +93,7 @@ export default async function handler(
     } catch (error) {
       return res
         .status(500)
-        .json({ error: "Failed to mark notification as read" });
+        .json({ error: "Failed to mark notifications as read" });
     }
   } else {
     return res.status(405).json({ error: "Method not allowed" });

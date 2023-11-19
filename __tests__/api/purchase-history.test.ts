@@ -1,5 +1,5 @@
 import db from "@/db";
-import handler from "@/pages/api/theme/unsave";
+import handler from "@/pages/api/purchase-history";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 
@@ -18,16 +18,18 @@ jest.mock("next-auth", () => ({
 }));
 
 jest.mock("@/db", () => ({
-  update: jest.fn().mockReturnThis(),
-  set: jest.fn().mockReturnThis(),
-  where: jest.fn().mockReturnThis(),
+  query: {
+    purchases: {
+      findMany: jest.fn(),
+    },
+  },
 }));
 
-describe("Theme Unsave API Endpoint", () => {
+describe("Purchase History API Endpoint", () => {
   let req: NextApiRequest, res: NextApiResponse;
 
   beforeEach(() => {
-    req = { method: "POST" } as NextApiRequest;
+    req = { method: "GET" } as NextApiRequest;
     res = {
       status: jest.fn(() => res),
       json: jest.fn(),
@@ -40,8 +42,8 @@ describe("Theme Unsave API Endpoint", () => {
     jest.clearAllMocks();
   });
 
-  it("should return 405 for non-POST methods", async () => {
-    req.method = "GET";
+  it("should return 405 for non-GET methods", async () => {
+    req.method = "POST";
 
     await handler(req, res);
 
@@ -58,44 +60,27 @@ describe("Theme Unsave API Endpoint", () => {
     expect(res.json).toHaveBeenCalledWith({ error: "Unauthorized" });
   });
 
-  it("should return 400 if there is missing required fields", async () => {
-    req.body = { themeId: null };
+  it("should return 200 if purchase history is fetched successfully ", async () => {
+    req.method = "GET";
+    (db.query.purchases.findMany as jest.Mock).mockResolvedValue([{ id: 1 }]);
 
     await handler(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "Missing required fields" });
-  });
-
-  it("should return 202 if theme is unsaved", async () => {
-    req.body = { themeId: "theme-id" };
-
-    await handler(req, res);
-
-    expect(db.update).toHaveBeenCalled();
-    expect((db.update as jest.Mock)().set).toHaveBeenCalledWith(
-      expect.anything()
-    );
-    expect(res.status).toHaveBeenCalledWith(202);
-    expect(res.json).toHaveBeenCalledWith({
-      unsaved: true,
-      themeId: "theme-id",
-      userId: "user-id",
-    });
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith([{ id: 1 }]);
   });
 
   it("should return 500 if there is an error", async () => {
-    req.body = { themeId: "theme-id" };
-    (
-      ((db.update as jest.Mock)().set as jest.Mock)().where as jest.Mock
-    ).mockRejectedValue(new Error("An error occurred"));
+    req.method = "GET";
+    (db.query.purchases.findMany as jest.Mock).mockRejectedValue(
+      new Error("An error occurred")
+    );
 
     await handler(req, res);
 
-    expect(db.update).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
-      error: "Failed to unsave theme",
+      error: "Failed to fetch purchase history",
     });
   });
 });

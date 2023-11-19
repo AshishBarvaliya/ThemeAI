@@ -34,7 +34,7 @@ export default async function handler(
           .status(202)
           .json({ unsaved: true, themeId, userId: session.user.id });
       } catch (error) {
-        res.status(500).json({ error: "Failed to unsave the theme" });
+        res.status(500).json({ error: "Failed to unsave theme" });
       }
     } else {
       res.status(401).json({ error: "Unauthorized" });

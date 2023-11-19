@@ -34,7 +34,7 @@ export default async function handler(
           .status(202)
           .json({ disliked: true, themeId, userId: session.user.id });
       } catch (error) {
-        res.status(500).json({ error: "Failed to dislike the theme" });
+        res.status(500).json({ error: "Failed to dislike theme" });
       }
     } else {
       res.status(401).json({ error: "Unauthorized" });

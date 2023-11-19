@@ -15,10 +15,10 @@ export default async function handler(
     if (session) {
       const { userId } = req.body;
       if (!userId) {
-        return res.status(400).json({ error: "userId is required" });
+        return res.status(400).json({ error: "Missing required fields" });
       }
       if (userId === session.user.id) {
-        return res.status(400).json({ error: "Cannot follow yourself" });
+        return res.status(400).json({ error: "You cannot follow yourself" });
       }
       try {
         await db
@@ -30,18 +30,16 @@ export default async function handler(
             )
           );
 
-        res.status(201).json({
-          follow: true,
+        res.status(202).json({
+          unfollow: true,
           followerId: session.user.id,
           followingId: userId,
         });
       } catch (error) {
-        res
-          .status(500)
-          .json({ error: "An error occurred when unfollowing the user." });
+        res.status(500).json({ error: "Failed to unfollow user" });
       }
     } else {
-      res.status(401).json({ error: "Not authenticated" });
+      res.status(401).json({ error: "Unauthorized" });
     }
   } else {
     res.status(405).json({ error: "Method not allowed" });
