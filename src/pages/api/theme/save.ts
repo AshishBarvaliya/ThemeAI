@@ -15,7 +15,7 @@ export default async function handler(
     if (session) {
       const { themeId } = req.body;
       if (!themeId) {
-        return res.status(400).json({ error: "themeId is required" });
+        return res.status(400).json({ error: "Missing required fields" });
       }
       try {
         const upsertSave = await db
@@ -46,12 +46,10 @@ export default async function handler(
           });
         }, 0);
       } catch (error) {
-        res
-          .status(500)
-          .json({ error: "An error occurred when saving the theme." });
+        res.status(500).json({ error: "Failed to save theme" });
       }
     } else {
-      res.status(401).json({ error: "Not authenticated" });
+      res.status(401).json({ error: "Unauthorized" });
     }
   } else {
     res.status(405).json({ error: "Method not allowed" });
