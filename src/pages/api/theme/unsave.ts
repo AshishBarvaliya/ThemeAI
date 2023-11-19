@@ -15,7 +15,7 @@ export default async function handler(
     if (session) {
       const { themeId } = req.body;
       if (!themeId) {
-        return res.status(400).json({ error: "themeId is required" });
+        return res.status(400).json({ error: "Missing required fields" });
       }
       try {
         await db
@@ -34,12 +34,10 @@ export default async function handler(
           .status(202)
           .json({ unsaved: true, themeId, userId: session.user.id });
       } catch (error) {
-        res
-          .status(500)
-          .json({ error: "An error occurred when unsaving the theme." });
+        res.status(500).json({ error: "Failed to unsave the theme" });
       }
     } else {
-      res.status(401).json({ error: "Not authenticated" });
+      res.status(401).json({ error: "Unauthorized" });
     }
   } else {
     res.status(405).json({ error: "Method not allowed" });
