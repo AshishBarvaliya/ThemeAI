@@ -1,5 +1,5 @@
 import db from "@/db";
-import handler from "@/pages/api/theme/unsave";
+import handler from "@/pages/api/user/follow";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 
@@ -18,12 +18,11 @@ jest.mock("next-auth", () => ({
 }));
 
 jest.mock("@/db", () => ({
-  update: jest.fn().mockReturnThis(),
-  set: jest.fn().mockReturnThis(),
-  where: jest.fn().mockReturnThis(),
+  insert: jest.fn().mockReturnThis(),
+  values: jest.fn(() => Promise.resolve({ id: "mock-id" })),
 }));
 
-describe("Theme Unsave API Endpoint", () => {
+describe("User Follow API Endpoint", () => {
   let req: NextApiRequest, res: NextApiResponse;
 
   beforeEach(() => {
@@ -59,7 +58,7 @@ describe("Theme Unsave API Endpoint", () => {
   });
 
   it("should return 400 if there is missing required fields", async () => {
-    req.body = { themeId: null };
+    req.body = { userId: null };
 
     await handler(req, res);
 
@@ -67,35 +66,46 @@ describe("Theme Unsave API Endpoint", () => {
     expect(res.json).toHaveBeenCalledWith({ error: "Missing required fields" });
   });
 
-  it("should return 202 if theme is unsaved", async () => {
-    req.body = { themeId: "theme-id" };
+  it("should return 400 if user id and session id are same", async () => {
+    req.body = { userId: "user-id" };
 
     await handler(req, res);
 
-    expect(db.update).toHaveBeenCalled();
-    expect((db.update as jest.Mock)().set).toHaveBeenCalledWith(
-      expect.anything()
-    );
-    expect(res.status).toHaveBeenCalledWith(202);
+    expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      unsaved: true,
-      themeId: "theme-id",
-      userId: "user-id",
+      error: "You cannot follow yourself",
+    });
+  });
+
+  it("should return 201 if user is followed", async () => {
+    req.body = { userId: "other-user-id" };
+
+    (db.insert as jest.Mock)().values as jest.Mock;
+
+    await handler(req, res);
+
+    expect(db.insert).toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({
+      follow: true,
+      followerId: "user-id",
+      followingId: "other-user-id",
     });
   });
 
   it("should return 500 if there is an error", async () => {
-    req.body = { themeId: "theme-id" };
-    (
-      ((db.update as jest.Mock)().set as jest.Mock)().where as jest.Mock
-    ).mockRejectedValue(new Error("An error occurred"));
+    req.body = { userId: "other-user-id" };
+
+    ((db.insert as jest.Mock)().values as jest.Mock).mockRejectedValue(
+      new Error("An error occurred")
+    );
 
     await handler(req, res);
 
-    expect(db.update).toHaveBeenCalled();
+    expect(db.insert).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
-      error: "Failed to unsave theme",
+      error: "Failed to follow user",
     });
   });
 });

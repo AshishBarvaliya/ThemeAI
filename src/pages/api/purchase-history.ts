@@ -13,7 +13,7 @@ export default async function handler(
 
   if (req.method === "GET") {
     if (!session) {
-      return res.status(401).json({ error: "Not authenticated" });
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
     try {

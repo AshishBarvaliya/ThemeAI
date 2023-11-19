@@ -1,3 +1,4 @@
+import db from "@/db";
 import handler from "@/pages/api/theme/dislike";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
@@ -19,7 +20,7 @@ jest.mock("next-auth", () => ({
 jest.mock("@/db", () => ({
   update: jest.fn().mockReturnThis(),
   set: jest.fn().mockReturnThis(),
-  where: jest.fn(() => Promise.resolve({ id: "mock-id" })),
+  where: jest.fn().mockReturnThis(),
 }));
 
 describe("Theme Dislike API Endpoint", () => {
@@ -66,7 +67,35 @@ describe("Theme Dislike API Endpoint", () => {
     expect(res.json).toHaveBeenCalledWith({ error: "Missing required fields" });
   });
 
-  it.todo("should return 202 if theme is disliked");
+  it("should return 202 if theme is disliked", async () => {
+    req.body = { themeId: "theme-id" };
 
-  it.todo("should return 500 if there is an error");
+    await handler(req, res);
+
+    expect(db.update).toHaveBeenCalled();
+    expect((db.update as jest.Mock)().set).toHaveBeenCalledWith(
+      expect.anything()
+    );
+    expect(res.status).toHaveBeenCalledWith(202);
+    expect(res.json).toHaveBeenCalledWith({
+      disliked: true,
+      themeId: "theme-id",
+      userId: "user-id",
+    });
+  });
+
+  it("should return 500 if there is an error", async () => {
+    req.body = { themeId: "theme-id" };
+    (
+      ((db.update as jest.Mock)().set as jest.Mock)().where as jest.Mock
+    ).mockRejectedValue(new Error("An error occurred"));
+
+    await handler(req, res);
+
+    expect(db.update).toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Failed to dislike theme",
+    });
+  });
 });
