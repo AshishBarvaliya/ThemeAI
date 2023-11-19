@@ -53,7 +53,7 @@ export default async function handler(
           .status(201)
           .json({ messsage: "Verification mail has been sent" });
       } catch (error) {
-        res.status(500).json({ error: "Failed to send mail" });
+        res.status(500).json({ error: "Failed to send verification mail" });
       }
     } else {
       return res.status(401).json({ error: "Unauthorized" });

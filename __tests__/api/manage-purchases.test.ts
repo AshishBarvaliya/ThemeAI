@@ -129,7 +129,7 @@ describe("Manage Purchases API Endpoint", () => {
     expect(res.redirect).toHaveBeenCalledWith("/themes?payment=1");
   });
 
-  it("reruns if any server error occurs", async () => {
+  it("redirects if any server error occurs", async () => {
     req.method = "GET";
     req.query.session = "valid-session-id";
     (stripe.checkout.sessions.retrieve as jest.Mock).mockResolvedValue({
