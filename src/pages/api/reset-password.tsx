@@ -39,7 +39,7 @@ export default async function handler(
       }
 
       if (user?.resetPasswords.length === FORGOT_PASSWORD_MAIL_LIMIT) {
-        return res.status(404).json({ error: "Forgot password limit reached" });
+        return res.status(404).json({ error: "Reset password limit reached" });
       }
 
       try {
@@ -56,10 +56,10 @@ export default async function handler(
           .status(201)
           .json({ messsage: "Reset password mail has been sent" });
       } catch (error) {
-        res.status(500).json({ error: "Failed to send mail" });
+        res.status(500).json({ error: "Failed to send reset password mail" });
       }
     } else {
-      return res.status(401).json({ error: "Email is required" });
+      return res.status(400).json({ error: "Missing required fields" });
     }
   } else {
     return res.status(405).json({ error: "Method not allowed" });

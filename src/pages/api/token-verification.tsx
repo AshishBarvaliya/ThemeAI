@@ -11,10 +11,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "GET") {
-    const token = (await req.query.token) as string;
+    const token = req.query.token as string;
 
     if (!token) {
-      return res.status(400).json({ error: "token required" });
+      return res.status(400).json({ error: "Token required" });
     }
 
     const verificationToken = await db.query.verificationTokens.findFirst({
