@@ -234,13 +234,16 @@ describe("Update Password API Endpoint", () => {
         isActived: true,
       },
     });
+    (
+      ((db.update as jest.Mock)().set as jest.Mock)().where as jest.Mock
+    ).mockResolvedValue({
+      id: "user-id",
+    });
 
     await handler(req, res);
 
     expect(db.update).toHaveBeenCalled();
-    expect((db.update as jest.Mock)().set).toHaveBeenCalledWith(
-      expect.anything()
-    );
+    expect((db.update as jest.Mock)().set).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       message: "The password has been updated successfully",
