@@ -138,7 +138,7 @@ export default async function handler(
             if (session?.user.id === theme.user.id) {
               return res.status(200).json(theme);
             } else {
-              return res.status(403).json({ error: "Not authorized" });
+              return res.status(403).json({ error: "Unauthorized" });
             }
           }
         }
@@ -190,7 +190,7 @@ export default async function handler(
           }
           if (type === "saved") {
             if (session?.user?.id !== userId) {
-              return res.status(401).json({ error: "Not authenticated" });
+              return res.status(403).json({ error: "Unauthorized" });
             }
 
             const savedThemes = await db.query.usersToSavedThemes.findMany({
@@ -212,7 +212,7 @@ export default async function handler(
           }
           if (type === "liked") {
             if (!session) {
-              return res.status(401).json({ error: "Not authenticated" });
+              return res.status(401).json({ error: "Unauthorized" });
             }
             const likedThemes = await db.query.usersToLikedThemes.findMany({
               where: and(
@@ -272,7 +272,7 @@ export default async function handler(
                   (aiOnly === "true" ? theme.theme.isAIGenerated : true)
                 );
               })
-              .map((theme) => {
+              .map((theme: any) => {
                 const { popularity, ...rest } = theme.theme;
                 return { ...rest };
               })
@@ -312,9 +312,7 @@ export default async function handler(
         return res.status(500).json({ error: "Failed to fetch themes" });
       }
     }
-  }
-
-  if (req.method === "POST") {
+  } else if (req.method === "POST") {
     if (session) {
       const {
         name,
@@ -385,9 +383,7 @@ export default async function handler(
           );
         }
 
-        res
-          .status(201)
-          .json({ message: "Theme have been created", theme: createdTheme[0] });
+        res.status(201).json(createdTheme[0]);
 
         setTimeout(async () => {
           const user = await db.query.users.findFirst({
@@ -425,12 +421,14 @@ export default async function handler(
             }
           }
         }, 0);
+
+        return;
       } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Failed to create theme" });
       }
     } else {
-      return res.status(401).json({ error: "Not authenticated" });
+      return res.status(401).json({ error: "Unauthorized" });
     }
   } else {
     return res.status(405).json({ error: "Method not allowed" });

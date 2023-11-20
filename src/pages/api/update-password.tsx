@@ -21,7 +21,7 @@ export default async function handler(
       return res.status(400).json({ error: "Password is required" });
     }
 
-    const token = (await req.query.token) as string;
+    const token = req.query?.token as string;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     if (!token) {
@@ -56,9 +56,11 @@ export default async function handler(
           })
           .where(eq(usersSchema.id, session?.user?.id));
 
-        return res.status(200).json({ message: "Password updated" });
+        return res.status(200).json({
+          message: "The password has been updated successfully",
+        });
       } catch (error) {
-        res.status(500).json({ error: "Failed to update user" });
+        return res.status(500).json({ error: "Failed to update user" });
       }
     }
 
@@ -97,7 +99,9 @@ export default async function handler(
         })
         .where(eq(usersSchema.id, resetPasswordToken?.user?.id));
 
-      return res.status(200).json({ message: "Password updated" });
+      return res
+        .status(200)
+        .json({ message: "The password has been updated successfully" });
     } catch (error) {
       res.status(500).json({ error: "Failed to update user" });
     }
