@@ -18,15 +18,15 @@ export default async function handler(
 ) {
   const session = await getServerSession(req, res, authOptions);
   if (req.method === "GET") {
-    const userId = req.query.id as string;
-    const type = req.query.type as string;
+    const userId = req.query?.id as string;
+    const type = req.query?.type as string;
     if (!userId) {
-      return res.status(400).json({ error: "userId is required" });
+      return res.status(400).json({ error: "Missing required fields" });
     }
     if (type) {
       if (type === "following") {
         if (!session) {
-          return res.status(400).json({ error: "Not authenticated" });
+          return res.status(401).json({ error: "Unauthorized" });
         }
         try {
           const followings = await db.query.users.findFirst({
@@ -67,14 +67,12 @@ export default async function handler(
               })) || [],
           });
         } catch (error) {
-          return res
-            .status(500)
-            .json({ error: "An error occurred while fetching followings" });
+          return res.status(500).json({ error: "Failed to fetch followings" });
         }
       }
       if (type === "followers") {
         if (!session) {
-          return res.status(400).json({ error: "Not authenticated" });
+          return res.status(401).json({ error: "Unauthorized" });
         }
         try {
           const followers = await db.query.users.findFirst({
@@ -115,9 +113,7 @@ export default async function handler(
               })) || [],
           });
         } catch (error) {
-          return res
-            .status(500)
-            .json({ error: "An error occurred while fetching followers" });
+          return res.status(500).json({ error: "Failed to fetch followers" });
         }
       }
       if (type === "stats") {
@@ -160,13 +156,11 @@ export default async function handler(
             ),
           });
         } catch (error) {
-          return res
-            .status(500)
-            .json({ error: "An error occurred while fetching stats" });
+          return res.status(500).json({ error: "Failed to fetch user stats" });
         }
       }
 
-      return res.status(400).json({ error: "invalid type" });
+      return res.status(400).json({ error: "Invalid type" });
     } else {
       if (session) {
         if (session?.user?.id === userId) {
@@ -221,9 +215,7 @@ export default async function handler(
             }
             return res.status(200).json(user);
           } catch (error) {
-            return res
-              .status(500)
-              .json({ error: "An error occurred while fetching user data" });
+            return res.status(500).json({ error: "Failed to fetch user" });
           }
         } else {
           try {
@@ -271,9 +263,7 @@ export default async function handler(
             }
             return res.status(200).json(user);
           } catch (error) {
-            return res
-              .status(500)
-              .json({ error: "An error occurred while fetching user data" });
+            return res.status(500).json({ error: "Failed to fetch user" });
           }
         }
       } else {
@@ -322,9 +312,7 @@ export default async function handler(
           }
           return res.status(200).json(user);
         } catch (error) {
-          return res
-            .status(500)
-            .json({ error: "An error occurred while fetching user data" });
+          return res.status(500).json({ error: "Failed to fetch user" });
         }
       }
     }
@@ -334,7 +322,7 @@ export default async function handler(
     const { name, email, password } = body;
 
     if (!name || !email || !password) {
-      return res.status(400).json({ error: "Missing Fields" });
+      return res.status(400).json({ error: "Missing required fields" });
     }
 
     const exist = await db
@@ -357,10 +345,8 @@ export default async function handler(
           isActived: false,
         })
         .returning({ id: usersSchema.id });
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-      return res.status(201).json(user);
+
+      return res.status(201).json({ id: user[0].id });
     } catch (error) {
       return res.status(500).json({ error: "Failed to create user" });
     }
