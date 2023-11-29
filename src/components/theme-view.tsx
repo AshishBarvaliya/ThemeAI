@@ -32,6 +32,8 @@ import { useToast } from "@/hooks/useToast";
 import { ThemeViewUser } from "./theme-view-user";
 import { getTags } from "@/services/theme";
 import { ThemeViewStats } from "./theme-view-stats";
+import Carousel from "./ui/carousel";
+import DashboardTemplate from "@/assets/templates/dashboard/dashboard-mini";
 
 export interface ThemeVeiwProps {
   theme: {
@@ -149,7 +151,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
 
   return theme ? (
     <div
-      className="divWithGradientColors flex w-full"
+      className="divWithGradientColors flex w-full bg-white/50"
       style={{
         backgroundImage: `url('data:image/svg+xml;utf8,<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="rgb(73, 73, 73)" /></svg>')`,
       }}
@@ -230,19 +232,23 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                   {theme.prompt}
                 </Typography>
               ) : null}
-              {theme.template === "marketing" ? (
+              <Carousel autoSlide={true}>
                 <MarketingTemplate
                   colors={colors}
                   shades={shades}
                   fonts={fonts}
                 />
-              ) : (
                 <LearningTemplate
                   colors={colors}
                   shades={shades}
                   fonts={fonts}
                 />
-              )}
+                <DashboardTemplate
+                  colors={colors}
+                  shades={shades}
+                  fonts={fonts}
+                />
+              </Carousel>
               {type === "view" ? <ThemeViewStats theme={theme} /> : null}
             </div>
             <div className="flex flex-col gap-4">

@@ -378,7 +378,9 @@ export default function User() {
                     <div className="absolute -bottom-[7px] -ml-3 h-[3px] w-full bg-secondary" />
                   )}
                   {tab.title === "Notifications" && notificationStatus?.new ? (
-                    <div className="absolute top-2 rounded-full w-[7px] h-[7px] bg-red-600 right-1" />
+                    <div className="absolute top-2 rounded-full w-[7px] h-[7px] bg-red-600 right-1">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    </div>
                   ) : null}
                 </Label>
               ))}

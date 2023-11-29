@@ -58,7 +58,7 @@ export const ThemeViewStats: React.FC<{ theme: ThemeVeiwProps["theme"] }> = ({
 
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-between mt-2">
         <div className="flex flex-1 gap-2 items-center">
           <HeartIcon
             className={cn("h-5 w-5 cursor-pointer hover:text-[red]", {
