@@ -18,7 +18,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
         ghost:
           "hover:bg-accent hover:text-accent-foreground hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
-        link: "text-primary-foreground underline-offset-4 hover:underline",
+        link: "border-none text-primary-foreground underline-offset-4 underline hover:text-blue-600",
         circle:
           "rounded-full border-[0.5px] border-border bg-primary hover:shadow-normal hover:-translate-x-px hover:-translate-y-px",
         square:

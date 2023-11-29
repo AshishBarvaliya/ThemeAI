@@ -92,9 +92,11 @@ describe("Token Verification API Endpoint", () => {
 
   it("redirects if user is verified successfully", async () => {
     req.query = { token: "token" };
+    let date = new Date();
+    date.setDate(date.getDate() + 1);
     (db.query.verificationTokens.findFirst as jest.Mock).mockResolvedValue({
       token: "token",
-      expiresAt: new Date(),
+      expiresAt: date,
       user: {
         isActived: false,
       },

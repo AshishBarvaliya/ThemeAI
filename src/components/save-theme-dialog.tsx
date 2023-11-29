@@ -119,8 +119,8 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
         setLoading(false);
         setOpen(false);
         setOpenSure(false);
-        if (res.data?.theme) {
-          router.push(`/themes/${res.data?.theme?.id}`);
+        if (res.data) {
+          router.push(`/themes/${res.data?.id}`);
         }
       })
       .catch((error) => {

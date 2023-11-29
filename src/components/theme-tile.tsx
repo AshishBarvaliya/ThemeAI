@@ -250,14 +250,18 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
           })}
         </div>
         <div className="flex gap-1 overflow-x-auto">
-          {mappedTheme.tags.map((tagId) => (
-            <div
-              key={tagId}
-              className="flex items-center border-[0.5px] border-border px-2 py-0.5 rounded-[45px] text-xs whitespace-nowrap"
-            >
-              {allTags?.find((tag) => tag.id === tagId)?.name}
-            </div>
-          ))}
+          {mappedTheme.tags.length ? (
+            mappedTheme.tags.map((tagId) => (
+              <div
+                key={tagId}
+                className="flex items-center border-[0.5px] border-border px-2 py-0.5 rounded-[45px] text-xs whitespace-nowrap"
+              >
+                {allTags?.find((tag) => tag.id === tagId)?.name}
+              </div>
+            ))
+          ) : (
+            <p className="text-xs italic h-[21px] items-center flex">No tags</p>
+          )}
         </div>
         <div className="flex gap-1 items-center">
           <div className="flex flex-1 gap-2 items-center">

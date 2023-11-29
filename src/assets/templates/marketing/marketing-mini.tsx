@@ -11,10 +11,10 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     className="w-full h-auto"
+    style={{ backgroundColor: colors.bg }}
     viewBox="0 0 1440 880"
     {...props}
   >
-    <rect width="1440" height="2896" fill={colors.bg} />
     <g clipPath="url(#clip0_502_231)">
       <g clipPath="url(#clip1_502_231)">
         <path
