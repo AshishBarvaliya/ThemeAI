@@ -5,12 +5,14 @@ interface CarouselProps {
   children: React.ReactNode;
   autoSlide?: boolean;
   interval?: number;
+  bgColor?: string;
 }
 
 const Carousel: React.FC<CarouselProps> = ({
   children,
   autoSlide = true,
   interval = 4000,
+  bgColor,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<"left" | "right">("right");
@@ -36,7 +38,10 @@ const Carousel: React.FC<CarouselProps> = ({
   }, [currentIndex, autoSlide, interval]);
 
   return (
-    <div className="flex relative items-center justify-center overflow-hidden shadow-md">
+    <div
+      className="flex relative items-center justify-center overflow-hidden shadow-md"
+      style={{ backgroundColor: bgColor || "transparent" }}
+    >
       <div
         onClick={prevItem}
         className="px-3 flex items-center h-full absolute left-0 cursor-pointer bg-black/5 hover:bg-black/10 z-10"
@@ -48,7 +53,7 @@ const Carousel: React.FC<CarouselProps> = ({
         {childrenArray.map((child, index) => (
           <div
             key={index}
-            className={`w-full fade-in-40 animate-in duration-300 ${
+            className={`w-full fade-in-40 animate-in ${
               direction === "left"
                 ? "slide-in-from-left-20"
                 : "slide-in-from-right-20"

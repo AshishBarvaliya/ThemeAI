@@ -12,11 +12,14 @@ import { useSession } from "next-auth/react";
 import { ThemeVeiwProps } from "./theme-view";
 import { useHelpers } from "@/hooks/useHelpers";
 import { EyeIcon, StarIcon } from "lucide-react";
+import { Button } from "./ui/button";
+import { useRouter } from "next/router";
 
 export const ThemeViewStats: React.FC<{ theme: ThemeVeiwProps["theme"] }> = ({
   theme,
 }) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const { data: session } = useSession();
   const { runIfLoggedInElseOpenLoginDialog } = useHelpers();
 
@@ -111,10 +114,17 @@ export const ThemeViewStats: React.FC<{ theme: ThemeVeiwProps["theme"] }> = ({
             />
           )}
           {theme.savedBy?.length}
-        </div>
-        <div className="flex items-center gap-2">
           <EyeIcon className="h-5 w-5" />
           {theme.views?.length}
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            size={"md"}
+            variant={"link"}
+            onClick={() => router.push(`/themes/create?theme=${theme.id}`)}
+          >
+            Create a new theme using this
+          </Button>
         </div>
       </div>
     </>

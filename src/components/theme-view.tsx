@@ -36,6 +36,7 @@ import { getTags } from "@/services/theme";
 import { ThemeViewStats } from "./theme-view-stats";
 import Carousel from "./ui/carousel";
 import DashboardTemplate from "@/assets/templates/dashboard/dashboard-mini";
+import MagicWand from "@/assets/svgs/magic-wand";
 
 export interface ThemeVeiwProps {
   theme: {
@@ -51,6 +52,7 @@ export interface ThemeVeiwProps {
     color_4_reason: string;
     font_1: string;
     font_2: string;
+    isAIGenerated?: boolean;
     template?: string;
     prompt?: string;
     createdAt?: Date;
@@ -171,7 +173,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
           </Button>
         </div>
         <div
-          className="flex flex-col h-fit w-full mb-6 mx-auto p-[20px] bg-background px-[30px] max-w-[1000px] rounded-[8px]"
+          className="flex relative flex-col h-fit w-full mb-6 mx-auto p-[20px] bg-background px-[30px] max-w-[1000px] rounded-[8px]"
           style={{
             boxShadow:
               "6px 0 15px -3px rgb(0 0 0 / 0.1), -6px 0 15px -3px rgb(0 0 0 / 0.1), 0 6px 15px -3px rgb(0 0 0 / 0.1), 0 -6px 15px -3px rgb(0 0 0 / 0.1)",
@@ -188,6 +190,18 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
             </Typography>
             {type === "view" ? (
               <div className="flex gap-3 h-12 items-center">
+                {theme?.isAIGenerated ? (
+                  <TooltipProvider>
+                    <Tooltip delayDuration={100}>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <MagicWand className="h-4 w-4" />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>{"AI Generated"}</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : null}
                 <Button
                   variant={"outline"}
                   size={"md"}
@@ -198,6 +212,16 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
               </div>
             ) : (
               <div className="flex gap-3 h-12 items-center">
+                <TooltipProvider>
+                  <Tooltip delayDuration={100}>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <MagicWand className="h-4 w-4" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>{"AI Generated"}</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <Button
                   variant={"outline"}
                   size={"md"}
@@ -230,12 +254,12 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
           <div className="flex flex-col gap-5 py-4 flex-1">
             <div className="flex flex-col gap-2">
               {theme?.prompt ? (
-                <Typography element="p" as="p" className="text-lg">
-                  <span className="font-bold pr-1">Prompt:</span>
+                <Typography element="p" as="p" className="text-lg my-3">
+                  <span className="font-bold pr-1 text-xl">Prompt:</span>
                   {theme.prompt}
                 </Typography>
               ) : null}
-              <Carousel autoSlide={false}>
+              <Carousel autoSlide={false} bgColor={colors.bg}>
                 <MarketingTemplate
                   colors={colors}
                   shades={shades}
@@ -265,7 +289,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                   >
                     <div className="flex flex-col flex-1">
                       <div className="flex justify-between">
-                        <Typography element="h4" as="h4">
+                        <Typography element="h4" as="h4" className="text-lg">
                           {clr.name}
                         </Typography>
                         <TooltipProvider>
@@ -316,18 +340,50 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                 );
               })}
             </div>
-          </div>
-          {theme.tags && theme.tags.length > 0 ? (
-            <div className="flex gap-2 mb-4">
-              <span className="font-bold">Tags:</span>
-              {theme.tags?.map((itag) => (
+            <div className="flex gap-4 flex-1">
+              {Object.keys(fonts).map((key) => (
                 <div
-                  key={itag.tagId}
-                  className="flex items-center border-[0.5px] border-border px-3 py-0.5 rounded-[45px] text-sm whitespace-nowrap shadow-sm"
+                  key={key}
+                  className="flex flex-1 border-[0.5px] border-border p-2 flex-col gap-2 shadow-md bg-white/25"
                 >
-                  {tags?.find((tag) => tag.id === itag.tagId)?.name}
+                  <div className="flex items-center">
+                    <Typography element="h4" as="h4" className="text-lg">
+                      {key === "primary" ? "Primary Font" : "Secondary Font"}
+                    </Typography>
+                  </div>
+                  <Typography
+                    element="p"
+                    as="p"
+                    style={{
+                      fontFamily: fonts[key as keyof FontObjProps].fontFamily,
+                      backgroundColor:
+                        key === "primary" ? "#f5dc98" : "#9ceeff",
+                      wordBreak: "break-word",
+                    }}
+                    className="flex flex-col gap-1 relative p-1 h-[85px] w-full font-normal text-3xl text-center items-center justify-center border-[0.5px] border-border"
+                  >
+                    {fonts[key as keyof FontObjProps].fontFamily}
+                    <p className="text-lg">
+                      The quick brown fox jumps over a lazy dog.
+                    </p>
+                  </Typography>
                 </div>
               ))}
+            </div>
+          </div>
+          {theme.tags && theme.tags.length > 0 ? (
+            <div className="flex gap-2 my-4">
+              <span className="font-bold">Tags:</span>
+              <div className="flex flex-wrap overflow-y-auto gap-2 w-full">
+                {theme.tags?.map((itag) => (
+                  <div
+                    key={itag.tagId}
+                    className="flex items-center border-[0.5px] border-border px-3 py-0.5 rounded-[45px] text-sm whitespace-nowrap shadow-sm"
+                  >
+                    {tags?.find((tag) => tag.id === itag.tagId)?.name}
+                  </div>
+                ))}
+              </div>
             </div>
           ) : null}
           {type === "view" && theme.user ? (
@@ -393,6 +449,9 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
               prompt: prompt,
             }}
           />
+          {theme.isAIGenerated ? (
+            <div className="absolute gradient-border -top-[1.5px] -right-[1.5px] -left-[1.5px] -bottom-[1.5px] rounded-[8px]" />
+          ) : null}
         </div>
       </div>
     </div>
