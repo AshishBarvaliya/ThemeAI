@@ -333,7 +333,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                         </TooltipProvider>
                       </div>
                       <Typography element="p" as="p" className="italic">
-                        {`"${clr.reason}"`}
+                        {clr.reason ? `"${clr.reason}"` : "Not specified"}
                       </Typography>
                     </div>
                   </div>
