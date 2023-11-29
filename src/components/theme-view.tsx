@@ -31,6 +31,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/useToast";
 import { ThemeViewUser } from "./theme-view-user";
 import { getTags } from "@/services/theme";
+import { ThemeViewStats } from "./theme-view-stats";
 
 export interface ThemeVeiwProps {
   theme: {
@@ -51,6 +52,7 @@ export interface ThemeVeiwProps {
     createdAt?: Date;
     likedBy: { userId: string }[];
     savedBy: { userId: string }[];
+    views: { id: string }[];
     tags?: { tagId: string }[];
     user?: {
       id: string;
@@ -152,19 +154,19 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
         backgroundImage: `url('data:image/svg+xml;utf8,<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="rgb(73, 73, 73)" /></svg>')`,
       }}
     >
-      <div className="flex w-full mx-auto flex-col overflow-y-scroll pt-5">
-        <div className="max-w-[1000px] mx-auto w-full">
+      <div className="flex w-full mx-auto flex-col overflow-y-scroll pt-7">
+        <div className="relative w-full">
           <Button
-            variant={"link"}
             onClick={() => router.back()}
-            className="bg-background"
+            size="md"
+            className="bg-background absolute ml-5"
           >
             <ArrowLeftIcon className="h-4 w-4 mr-1.5" />
             Back
           </Button>
         </div>
         <div
-          className="flex flex-col h-fit w-full mt-2 mb-6 mx-auto p-[20px] bg-background px-[30px] max-w-[1000px] rounded-[8px]"
+          className="flex flex-col h-fit w-full mb-6 mx-auto p-[20px] bg-background px-[30px] max-w-[1000px] rounded-[8px]"
           style={{
             boxShadow:
               "6px 0 15px -3px rgb(0 0 0 / 0.1), -6px 0 15px -3px rgb(0 0 0 / 0.1), 0 6px 15px -3px rgb(0 0 0 / 0.1), 0 -6px 15px -3px rgb(0 0 0 / 0.1)",
@@ -221,7 +223,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
             )}
           </div>
           <div className="flex flex-col gap-5 py-4 flex-1">
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
               {theme?.prompt ? (
                 <Typography element="p" as="p" className="text-lg">
                   <span className="font-bold pr-1">Prompt:</span>
@@ -241,9 +243,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                   fonts={fonts}
                 />
               )}
-              {type === "view" && theme.user ? (
-                <ThemeViewUser theme={theme} />
-              ) : null}
+              {type === "view" ? <ThemeViewStats theme={theme} /> : null}
             </div>
             <div className="flex flex-col gap-4">
               {colorsList.map((clr) => (
@@ -261,16 +261,19 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
           </div>
           {theme.tags && theme.tags.length > 0 ? (
             <div className="flex gap-2 mb-4">
-              <span className="">Tags:</span>
+              <span className="font-bold">Tags:</span>
               {theme.tags?.map((itag) => (
                 <div
                   key={itag.tagId}
-                  className="flex items-center border-[0.5px] border-border px-3 py-0.5 rounded-[45px] text-sm whitespace-nowrap"
+                  className="flex items-center border-[0.5px] border-border px-3 py-0.5 rounded-[45px] text-sm whitespace-nowrap shadow-sm"
                 >
                   {tags?.find((tag) => tag.id === itag.tagId)?.name}
                 </div>
               ))}
             </div>
+          ) : null}
+          {type === "view" && theme.user ? (
+            <ThemeViewUser theme={theme} />
           ) : null}
           <div className="flex justify-between">
             {type === "view" && theme.createdAt ? (

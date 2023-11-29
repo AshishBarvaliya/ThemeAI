@@ -108,6 +108,11 @@ export default async function handler(
               },
               where: ne(usersToSavedThemes.status, "N"),
             },
+            views: {
+              columns: {
+                id: true,
+              },
+            },
           },
         });
 
