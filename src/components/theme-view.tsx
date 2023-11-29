@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/typography";
 import { FontProps, GOOGLE_FONTS } from "@/constants/fonts";
 import { ColorsProps, FontObjProps, ShadesProps } from "@/interfaces/theme";
-import { generateAllShades } from "@/lib/utils";
+import { generateAllShades, getLuminance } from "@/lib/utils";
 import {
   ArrowLeftIcon,
+  Copy,
+  CopyCheck,
   DownloadIcon,
   Flag,
   Pen,
@@ -55,7 +57,7 @@ export interface ThemeVeiwProps {
     likedBy: { userId: string }[];
     savedBy: { userId: string }[];
     views: { id: string }[];
-    tags?: { tagId: string }[];
+    tags: { tagId: string }[];
     user?: {
       id: string;
       name: string;
@@ -86,6 +88,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
   } = useHelpers();
   const [openExportThemeDialog, setOpenExportThemeDialog] = useState(false);
   const [openSaveThemeDialog, setOpenSaveThemeDialog] = useState(false);
+  const [copied, setCopied] = useState<null | string>(null);
   const { data: tags } = useQuery(["tags"], getTags);
 
   const { mutate: mutateMarkAsInappropriateTheme } = useMutation({
@@ -232,7 +235,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                   {theme.prompt}
                 </Typography>
               ) : null}
-              <Carousel autoSlide={true}>
+              <Carousel autoSlide={false}>
                 <MarketingTemplate
                   colors={colors}
                   shades={shades}
@@ -252,17 +255,66 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
               {type === "view" ? <ThemeViewStats theme={theme} /> : null}
             </div>
             <div className="flex flex-col gap-4">
-              {colorsList.map((clr) => (
-                <div className="flex flex-1 gap-4" key={clr.name}>
-                  <Typography element="p" as="p" className="italic flex-1">
-                    {`"${clr.reason}"`}
-                  </Typography>
+              {colorsList.map((clr) => {
+                const { color: lockColor, shade } = getLuminance(clr.color);
+
+                return (
                   <div
-                    className="h-24 w-10 shadow-md"
-                    style={{ backgroundColor: clr.color }}
-                  />
-                </div>
-              ))}
+                    className="flex flex-1 gap-4 border-[0.5px] border-border p-2 px-3 shadow-md bg-white/25"
+                    key={clr.name}
+                  >
+                    <div className="flex flex-col flex-1">
+                      <div className="flex justify-between">
+                        <Typography element="h4" as="h4">
+                          {clr.name}
+                        </Typography>
+                        <TooltipProvider>
+                          <Tooltip delayDuration={100}>
+                            <TooltipTrigger asChild>
+                              <div
+                                className="h-8 w-24 shadow-md parent_hover"
+                                style={{ backgroundColor: clr.color }}
+                              >
+                                <div
+                                  className="m-0.5 flex items-center justify-center w-[18px] h-[18px] hidden_child cursor-pointer"
+                                  style={{
+                                    backgroundColor: shade,
+                                  }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    navigator.clipboard.writeText(clr.color);
+                                    setCopied(clr.color);
+                                    setTimeout(() => {
+                                      setCopied(null);
+                                    }, 2000);
+                                  }}
+                                >
+                                  {copied === clr.color ? (
+                                    <CopyCheck
+                                      className="w-4 h-4"
+                                      style={{ color: lockColor }}
+                                    />
+                                  ) : (
+                                    <Copy
+                                      className="w-4 h-4"
+                                      style={{ color: lockColor }}
+                                    />
+                                  )}
+                                </div>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>{clr.color}</TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <Typography element="p" as="p" className="italic">
+                        {`"${clr.reason}"`}
+                      </Typography>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
           {theme.tags && theme.tags.length > 0 ? (

@@ -14,7 +14,7 @@ export const ThemeViewUser: React.FC<{ theme: ThemeVeiwProps["theme"] }> = ({
   const router = useRouter();
 
   return theme.user ? (
-    <div className="flex gap-3 border-[0.5px] border-border p-2 my-3 shadow-sm">
+    <div className="flex gap-3 border-[0.5px] border-border p-2 my-3 shadow-sm bg-white">
       <Avatar
         className="flex rounded-[6px] h-12 w-12 border-[0.5px] bg-primary border-border"
         onClick={() => router.push(`/user/${theme.user?.id}`)}

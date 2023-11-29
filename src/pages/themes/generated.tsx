@@ -24,7 +24,7 @@ export default function GeneratedTheme() {
           color_4_reason: generatedTheme.color_4_reason,
         },
         ...defaultFonts,
-        ...{ likedBy: [], savedBy: [] },
+        ...{ likedBy: [], savedBy: [], views: [], tags: [] },
       }}
       prompt={generatedTheme.prompt}
       isDark={generatedTheme.isDark}
