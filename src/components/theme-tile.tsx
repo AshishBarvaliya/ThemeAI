@@ -25,6 +25,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
+import EditorTemplate from "@/assets/templates/editor/editor-mini";
 
 interface ThemeTileProps {
   theme: GetThemeTileProps;
@@ -187,7 +188,7 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
             fonts={mappedTheme.fonts}
           />
         ) : (
-          <LearningTemplate
+          <EditorTemplate
             colors={mappedTheme.colors}
             shades={generateAllShades(mappedTheme.colors)}
             fonts={mappedTheme.fonts}

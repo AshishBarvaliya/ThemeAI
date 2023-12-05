@@ -1,4 +1,5 @@
 import DashboardTemplate from "@/assets/templates/dashboard/dashboard";
+import EditorTemplate from "@/assets/templates/editor/editor";
 import MarketingTemplate from "@/assets/templates/marketing/marketing";
 import ColorPicker from "@/components/color-picker";
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
@@ -225,7 +226,7 @@ const CreateTheme = () => {
         </div>
       </div>
       <div className="flex mt-[72px]">
-        <DashboardTemplate
+        <EditorTemplate
           colors={colors}
           shades={generateAllShades(colors)}
           fonts={fonts}

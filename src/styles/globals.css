@@ -295,6 +295,6 @@ textarea::placeholder {
   }
 }
 
-.divWithGradientColors {
+.divWithDotsBackground {
   animation: moveBackground 50s linear infinite;
 }

@@ -156,7 +156,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
 
   return theme ? (
     <div
-      className="divWithGradientColors flex w-full bg-white/50"
+      className="divWithDotsBackground flex w-full bg-white/50"
       style={{
         backgroundImage: `url('data:image/svg+xml;utf8,<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="rgb(73, 73, 73)" /></svg>')`,
       }}
