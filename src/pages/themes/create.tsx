@@ -227,6 +227,7 @@ const CreateTheme = () => {
       </div>
       <div className="flex mt-[72px]">
         <EditorTemplate
+          id={"create"}
           colors={colors}
           shades={generateAllShades(colors)}
           fonts={fonts}

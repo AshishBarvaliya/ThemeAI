@@ -183,12 +183,14 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
       <div className="relative parent_hover bg-white">
         {mappedTheme.template === "marketing" ? (
           <MarketingTemplate
+            id={mappedTheme.id}
             colors={mappedTheme.colors}
             shades={generateAllShades(mappedTheme.colors)}
             fonts={mappedTheme.fonts}
           />
         ) : (
           <EditorTemplate
+            id={mappedTheme.id}
             colors={mappedTheme.colors}
             shades={generateAllShades(mappedTheme.colors)}
             fonts={mappedTheme.fonts}
