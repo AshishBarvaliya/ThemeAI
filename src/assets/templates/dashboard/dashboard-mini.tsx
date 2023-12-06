@@ -2,6 +2,7 @@ import { TemplateProps } from "@/interfaces/templates";
 import * as React from "react";
 
 const DashboardTemplate: React.FC<TemplateProps> = ({
+  id,
   colors,
   shades,
   fonts,
@@ -24,7 +25,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
     <path fill={shades.bgDark} d="M3 20h276v880H3z" />
     <path fill="#E2E2E5" d="M0 0h276v900H0z" />
     <path fill={shades.bgDark} d="M3 0h276v900H3z" />
-    <path fill="url(#a)" d="M3 127h276v64H3z" opacity={0.4} />
+    <path fill={`url(#a${id})`} d="M3 127h276v64H3z" opacity={0.4} />
     <path
       fill={colors.accent}
       d="M274 131a4 4 0 0 1 4-4h.044v64H278a4 4 0 0 1-4-4v-56Z"
@@ -165,7 +166,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
       </div>
     </foreignObject>
     <ellipse cx={62} cy={63.5} fill={colors.extra} rx={26} ry={25.5} />
-    <g filter="url(#b)">
+    <g filter={`url(#b${id})`}>
       <ellipse cx={68} cy={57.5} fill={colors.accent} rx={18} ry={17.5} />
     </g>
     <path
@@ -315,7 +316,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
       height={45}
       x={1175.26}
       y={28}
-      fill="url(#c)"
+      fill={`url(#c${id})`}
       rx={12}
     />
     <foreignObject x="370" y="35" width="140" height="30">
@@ -762,7 +763,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
       d="M941.302 458.334c3.806 0 6.891-2.637 6.891-5.892 0-3.255-3.085-5.892-6.891-5.892s-6.89 2.637-6.89 5.892c0 3.255 3.084 5.892 6.89 5.892Zm4.824 1.474h-.899a10.747 10.747 0 0 1-3.925.736c-1.399 0-2.724-.267-3.924-.736h-.899c-3.994 0-7.235 2.771-7.235 6.186v1.915c0 1.22 1.157 2.21 2.584 2.21h18.949c1.427 0 2.584-.99 2.584-2.21v-1.915c0-3.415-3.241-6.186-7.235-6.186Z"
     />
 
-    <g filter="url(#d)" opacity={0.6}>
+    <g filter={`url(#d${id})`} opacity={0.6}>
       <rect
         width={174.849}
         height={137.488}
@@ -832,7 +833,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
       rx={32}
     />
     <mask
-      id="e"
+      id={`e${id}`}
       width={242}
       height={191}
       x={879}
@@ -851,8 +852,8 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
         rx={32}
       />
     </mask>
-    <g mask="url(#e)">
-      <g filter="url(#f)" opacity={0.9}>
+    <g mask={`url(#e${id})`}>
+      <g filter={`url(#f${id})`} opacity={0.9}>
         <ellipse
           cx={1076.46}
           cy={344.401}
@@ -861,7 +862,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
           ry={95.755}
         />
       </g>
-      <g filter="url(#g)" opacity={0.9}>
+      <g filter={`url(#g${id})`} opacity={0.9}>
         <ellipse
           cx={906.132}
           cy={233.761}
@@ -991,7 +992,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
       </div>
     </foreignObject>
     <path
-      stroke="url(#h)"
+      stroke={`url(#h${id})`}
       strokeWidth={3}
       d="M421.463 398.126c14.089 8.874 46.727 45.947 73.357 0 37.736-95.536 69.336-29.671 69.336-29.671s38.185 73.654 67.327 29.671c51.321-103.106 56.649-18.794 76.271 0 32.202 39.154 70.441 0 70.441 0"
     />
@@ -1034,7 +1035,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
     </foreignObject>
     <defs>
       <filter
-        id="b"
+        id={`b${id}`}
         width={82}
         height={81}
         x={27}
@@ -1050,7 +1051,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
         />
       </filter>
       <filter
-        id="d"
+        id={`d${id}`}
         width={266.849}
         height={229.488}
         x={868.458}
@@ -1066,7 +1067,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
         />
       </filter>
       <filter
-        id="f"
+        id={`f${id}`}
         width={406.01}
         height={389.511}
         x={873.454}
@@ -1082,7 +1083,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
         />
       </filter>
       <filter
-        id="g"
+        id={`g${id}`}
         width={264.585}
         height={263.074}
         x={773.839}
@@ -1098,7 +1099,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
         />
       </filter>
       <linearGradient
-        id="a"
+        id={`a${id}`}
         x1={279}
         x2={8}
         y1={191}
@@ -1109,7 +1110,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
         <stop offset={1} stopColor={colors.accent} stopOpacity={0.03} />
       </linearGradient>
       <linearGradient
-        id="h"
+        id={`h${id}`}
         x1={421.463}
         x2={778.195}
         y1={346.326}
@@ -1120,16 +1121,19 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
         <stop offset={1} stopColor={colors.extra} />
       </linearGradient>
       <pattern
-        id="c"
+        id={`c${id}`}
         width={1}
         height={1}
         patternContentUnits="objectBoundingBox"
       >
-        <use xlinkHref="#i" transform="matrix(.00463 0 0 .00455 0 -.03)" />
+        <use
+          xlinkHref={`url(#i${id})`}
+          transform="matrix(.00463 0 0 .00455 0 -.03)"
+        />
       </pattern>
       <image
         xlinkHref="data:image/png;base64,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"
-        id="i"
+        id={`i${id}`}
         width={216}
         height={233}
       />

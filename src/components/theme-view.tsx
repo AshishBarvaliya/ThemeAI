@@ -37,6 +37,7 @@ import { ThemeViewStats } from "./theme-view-stats";
 import Carousel from "./ui/carousel";
 import DashboardTemplate from "@/assets/templates/dashboard/dashboard-mini";
 import MagicWand from "@/assets/svgs/magic-wand";
+import EditorTemplate from "@/assets/templates/editor/editor-mini";
 
 export interface ThemeVeiwProps {
   theme: {
@@ -260,17 +261,26 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                 </Typography>
               ) : null}
               <Carousel autoSlide={false} bgColor={colors.bg}>
+                <EditorTemplate
+                  id="editor"
+                  colors={colors}
+                  shades={shades}
+                  fonts={fonts}
+                />
                 <MarketingTemplate
+                  id="marketing"
                   colors={colors}
                   shades={shades}
                   fonts={fonts}
                 />
                 <LearningTemplate
+                  id="learning"
                   colors={colors}
                   shades={shades}
                   fonts={fonts}
                 />
                 <DashboardTemplate
+                  id="dashboard"
                   colors={colors}
                   shades={shades}
                   fonts={fonts}
