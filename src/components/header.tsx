@@ -184,13 +184,6 @@ const Header = () => {
               </Label>
             </div>
           </div>
-        ) : router.pathname !== "/" ? (
-          <Link
-            className="text-primary-foreground text-md font-bold hover:bg-primary/40 py-2 px-3"
-            href={"/themes"}
-          >
-            Themes
-          </Link>
         ) : null}
       </div>
 

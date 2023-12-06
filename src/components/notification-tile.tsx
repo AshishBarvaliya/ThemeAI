@@ -111,6 +111,7 @@ export const NotificationTile: React.FC<INotificationTileProps> = ({
         ) : (
           <div className="w-20 mr-2">
             <LearningTemplate
+              id={`notification-${notification?.theme?.id}`}
               colors={{
                 bg: "#ffffff",
                 primary: "#000000",

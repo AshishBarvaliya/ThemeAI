@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import NiceAvatar from "react-nice-avatar";
 import { useRouter } from "next/router";
 import Typography from "@/components/ui/typography";
-import { Building, MapPin, User2 } from "lucide-react";
+import { ArrowLeftIcon, Building, MapPin, User2 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ProfileThemes from "@/components/profile-themes";
 import ProfileFollowers from "@/components/profile-followers";
@@ -225,6 +225,14 @@ export default function User() {
       <div className="flex flex-col fixed h-full border-border border-r-[0.5px] w-[300px] items-center shadow-lg">
         <div className="flex flex-col w-full p-6 pt-4 items-center">
           <div className="relative">
+            <Button
+              onClick={() => router.back()}
+              size="md"
+              className="bg-background absolute -ml-14 -mt-3"
+              variant={"link"}
+            >
+              <ArrowLeftIcon className="h-5 w-5 mr-1.5" />
+            </Button>
             <Avatar
               className={cn(
                 "h-[190px] w-[190px] border-border shadow-md",

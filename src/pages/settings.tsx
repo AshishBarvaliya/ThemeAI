@@ -7,14 +7,16 @@ import { Input } from "@/components/ui/input";
 import Typography from "@/components/ui/typography";
 import { useHelpers } from "@/hooks/useHelpers";
 import { useToast } from "@/hooks/useToast";
-import { Pen, Save } from "lucide-react";
+import { ArrowLeftIcon, Pen, Save } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import NiceAvatar from "react-nice-avatar";
 
 export default function Settings() {
   const { status, data: session, update } = useSession();
   const { addToast } = useToast();
+  const router = useRouter();
   const { runIfLoggedInElseOpenLoginDialog } = useHelpers();
   const [loading, setLoading] = useState(false);
   const [openAvatar, setOpenAvatar] = useState(false);
@@ -89,127 +91,145 @@ export default function Settings() {
   }, [status]);
 
   return status === "authenticated" && session ? (
-    <div className="flex flex-col w-full my-6 border-[0.5px] border-border bg-white mx-36 p-[30px] px-[40px]">
-      <Typography element="h1" as="h1" className="text-center">
-        Profile Settings
-      </Typography>
-      <div className="flex flex-col">
-        <Typography element="h3" as="h3" className="mx-10">
-          General
-        </Typography>
-        <div className="flex">
-          <div className="flex flex-col w-2/3 px-10 py-2">
-            <Input
-              id="title"
-              name="title"
-              label="Title"
-              className="mt-4"
-              disabled={!editMode || loading}
-              value={data.title}
-              placeholder="e.g. UX Designer"
-              onChange={(e) =>
-                setData((prev) => ({ ...prev, title: e.target.value }))
-              }
-            />
-            <Input
-              id="organization"
-              name="organization"
-              label="Organization"
-              className="mt-4"
-              disabled={!editMode || loading}
-              value={data.organization}
-              placeholder="e.g. Netflix, Inc."
-              onChange={(e) =>
-                setData((prev) => ({ ...prev, organization: e.target.value }))
-              }
-            />
-            <Input
-              id="location"
-              name="location"
-              label="Location"
-              className="mt-4"
-              disabled={!editMode || loading}
-              value={data.location}
-              placeholder="e.g. Seattle, WA"
-              onChange={(e) =>
-                setData((prev) => ({ ...prev, location: e.target.value }))
-              }
-            />
-            <div className="flex mt-7 justify-end">
-              {editMode ? (
-                <>
-                  <Button
-                    className="mr-4"
-                    size={"md"}
-                    variant="outline"
-                    onClick={() => {
-                      setEditMode(false);
-                      setData({
-                        title: session?.user?.title || "",
-                        organization: session?.user?.organization || "",
-                        location: session?.user?.location || "",
-                      });
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    size={"md"}
-                    onClick={onSaveUser}
-                    disabled={!isDirty || loading}
-                  >
-                    <Save className="h-3 w-3 mr-1.5" /> Save
-                  </Button>
-                </>
-              ) : (
-                <Button size={"md"} onClick={() => setEditMode(true)}>
-                  <Pen className="h-3 w-3 mr-1.5" /> Edit
-                </Button>
-              )}
-            </div>
-          </div>
-          <div className="flex flex-col w-1/3 items-center">
-            <Avatar className="h-[170px] w-[170px] border-[0.5px] border-border shadow-md">
-              {session?.user?.avatar ? (
-                <NiceAvatar
-                  className="h-[170px] w-[170px]"
-                  {...JSON.parse(session?.user?.avatar)}
-                />
-              ) : (
-                <>
-                  <AvatarImage src={session?.user.image} alt="profile image" />
-                  <AvatarFallback className="bg-primary text-primary-foreground text-[130px]">
-                    {session?.user.name?.split(" ")[0][0]}
-                  </AvatarFallback>
-                </>
-              )}
-            </Avatar>
-            <div className="flex flex-col mt-8 gap-4">
-              <Button onClick={() => setOpenAvatar(true)}>Update Avatar</Button>
-              <Button
-                onClick={onRemoveAvatar}
-                variant="destructive"
-                disabled={!session?.user.avatar}
-              >
-                Remove Avatar
-              </Button>
-            </div>
-          </div>
-        </div>
-        <Typography element="h3" as="h3" className="mx-10 mt-10">
-          Password
-        </Typography>
-      </div>
-      <div
-        className="flex mx-10 mt-5"
-        onClick={() =>
-          runIfLoggedInElseOpenLoginDialog(() => setNewPasswordOpen(true))
-        }
+    <div className="relative flex w-full h-full">
+      <Button
+        onClick={() => router.back()}
+        size="md"
+        className="bg-background absolute ml-5 my-6"
       >
-        <Button variant={"destructive"}>Reset Password</Button>
+        <ArrowLeftIcon className="h-4 w-4 mr-1.5" />
+        Back
+      </Button>
+      <div className="flex flex-col w-full my-6 border-[0.5px] border-border bg-white max-w-[1000px] mx-auto p-[30px] px-[40px]">
+        <Typography element="h1" as="h1" className="text-center">
+          Profile Settings
+        </Typography>
+        <div className="flex flex-col">
+          <Typography element="h3" as="h3" className="mx-10">
+            General
+          </Typography>
+          <div className="flex">
+            <div className="flex flex-col w-2/3 px-10 py-2">
+              <Input
+                id="title"
+                name="title"
+                label="Title"
+                className="mt-4"
+                disabled={!editMode || loading}
+                value={data.title}
+                placeholder="e.g. UX Designer"
+                onChange={(e) =>
+                  setData((prev) => ({ ...prev, title: e.target.value }))
+                }
+              />
+              <Input
+                id="organization"
+                name="organization"
+                label="Organization"
+                className="mt-4"
+                disabled={!editMode || loading}
+                value={data.organization}
+                placeholder="e.g. Netflix, Inc."
+                onChange={(e) =>
+                  setData((prev) => ({ ...prev, organization: e.target.value }))
+                }
+              />
+              <Input
+                id="location"
+                name="location"
+                label="Location"
+                className="mt-4"
+                disabled={!editMode || loading}
+                value={data.location}
+                placeholder="e.g. Seattle, WA"
+                onChange={(e) =>
+                  setData((prev) => ({ ...prev, location: e.target.value }))
+                }
+              />
+              <div className="flex mt-7 justify-end">
+                {editMode ? (
+                  <>
+                    <Button
+                      className="mr-4"
+                      size={"md"}
+                      variant="outline"
+                      onClick={() => {
+                        setEditMode(false);
+                        setData({
+                          title: session?.user?.title || "",
+                          organization: session?.user?.organization || "",
+                          location: session?.user?.location || "",
+                        });
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      size={"md"}
+                      onClick={onSaveUser}
+                      disabled={!isDirty || loading}
+                    >
+                      <Save className="h-3 w-3 mr-1.5" /> Save
+                    </Button>
+                  </>
+                ) : (
+                  <Button size={"md"} onClick={() => setEditMode(true)}>
+                    <Pen className="h-3 w-3 mr-1.5" /> Edit
+                  </Button>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-col w-1/3 items-center">
+              <Avatar className="h-[170px] w-[170px] border-[0.5px] border-border shadow-md">
+                {session?.user?.avatar ? (
+                  <NiceAvatar
+                    className="h-[170px] w-[170px]"
+                    {...JSON.parse(session?.user?.avatar)}
+                  />
+                ) : (
+                  <>
+                    <AvatarImage
+                      src={session?.user.image}
+                      alt="profile image"
+                    />
+                    <AvatarFallback className="bg-primary text-primary-foreground text-[130px]">
+                      {session?.user.name?.split(" ")[0][0]}
+                    </AvatarFallback>
+                  </>
+                )}
+              </Avatar>
+              <div className="flex flex-col mt-8 gap-4">
+                <Button onClick={() => setOpenAvatar(true)}>
+                  Update Avatar
+                </Button>
+                <Button
+                  onClick={onRemoveAvatar}
+                  variant="destructive"
+                  disabled={!session?.user.avatar}
+                >
+                  Remove Avatar
+                </Button>
+              </div>
+            </div>
+          </div>
+          <Typography element="h3" as="h3" className="mx-10 mt-10">
+            Password
+          </Typography>
+        </div>
+        <div
+          className="flex mx-10 mt-5"
+          onClick={() =>
+            runIfLoggedInElseOpenLoginDialog(() => setNewPasswordOpen(true))
+          }
+        >
+          <Button variant={"destructive"}>Reset Password</Button>
+        </div>
+        <ChooseAvatarDialog open={openAvatar} setOpen={setOpenAvatar} />
+        <NewPasswordDialog
+          open={newPasswordOpen}
+          setOpen={setNewPasswordOpen}
+        />
       </div>
-      <ChooseAvatarDialog open={openAvatar} setOpen={setOpenAvatar} />
-      <NewPasswordDialog open={newPasswordOpen} setOpen={setNewPasswordOpen} />
     </div>
   ) : status === "unauthenticated" ? (
     <RestrictedPage
