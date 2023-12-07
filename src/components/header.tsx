@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { Button } from "./ui/button";
 import { useRouter } from "next/router";
 import { landingMenu } from "@/constants/navigation";
@@ -22,6 +23,7 @@ import MagicWand from "@/assets/svgs/magic-wand";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { INPUT_LIMIT } from "@/constants/website";
+import { cn } from "@/lib/utils";
 
 const Header = () => {
   const router = useRouter();
@@ -126,21 +128,21 @@ const Header = () => {
     }
   }, [filterTags]);
 
+  const isLandingPage = router.pathname === "/";
+
   return (
-    <div className="fixed bg-background max-w-screen-2xl flex border-b-[0.5px] border-border w-full justify-between py-2 px-6 h-[60px] z-40">
+    <div
+      className={cn(
+        "fixed max-w-screen-2xl flex w-full justify-between py-2 px-6 h-[60px] z-40",
+        isLandingPage
+          ? "bg-background/40"
+          : "bg-background border-b-[0.5px] border-border "
+      )}
+    >
       <div className="flex items-center flex-1 pr-6">
         <div className="w-[176px]">
-          <Link href="/themes" className="flex">
-            <h1
-              className="text-3xl text-black font-bold"
-              style={{
-                fontFamily: "Monoton",
-                textShadow:
-                  "1px 1px 0px #eb452b, 2px 2px 0px #46b59b, 3px 3px 0px #052939, 4px 4px 0px #c11a2b",
-              }}
-            >
-              T
-            </h1>
+          <Link href={isLandingPage ? "/" : "/themes"} className="flex">
+            <Image src={"logo.svg"} alt="logo" width={150} height={20} />
           </Link>
         </div>
         {router.pathname === "/themes" ? (

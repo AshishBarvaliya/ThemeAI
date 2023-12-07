@@ -3,6 +3,7 @@ import Header from "./header";
 import { useSession } from "next-auth/react";
 import Sidebar from "./sidebar";
 import { useRouter } from "next/router";
+import { cn } from "@/lib/utils";
 
 const Layout = ({
   children,
@@ -22,10 +23,17 @@ const Layout = ({
       router.pathname === "/terms" ||
       router.pathname === "/privacy");
 
+  const isLandingPage = router.pathname === "/";
+
   return staticLoading ? null : (
     <div className="flex flex-col items-center">
       <Header />
-      <main className="flex w-full h-screen max-w-screen-2xl pt-[60px]">
+      <main
+        className={cn(
+          "flex w-full h-screen max-w-screen-2xl",
+          isLandingPage ? "" : "pt-[60px]"
+        )}
+      >
         {sidebar ? <Sidebar width={width} /> : null}
         {sidebar ? (
           <div className="flex flex-1" style={{ marginLeft: width }}>
