@@ -31,7 +31,7 @@ const Layout = ({
       <main
         className={cn(
           "flex w-full h-screen max-w-screen-2xl",
-          isLandingPage ? "" : "pt-[60px]"
+          isLandingPage ? "" : "pt-[54px] md:pt-[60px]"
         )}
       >
         {sidebar ? <Sidebar width={width} /> : null}

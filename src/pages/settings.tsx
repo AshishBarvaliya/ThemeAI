@@ -95,21 +95,25 @@ export default function Settings() {
       <Button
         onClick={() => router.back()}
         size="md"
-        className="bg-background absolute ml-5 my-6"
+        className="bg-background absolute ml-5 mb-6 mt-1 xl:my-6"
       >
         <ArrowLeftIcon className="h-4 w-4 mr-1.5" />
         Back
       </Button>
-      <div className="flex flex-col w-full my-6 border-[0.5px] border-border bg-white max-w-[1000px] mx-auto p-[30px] px-[40px]">
-        <Typography element="h1" as="h1" className="text-center">
+      <div className="flex flex-col w-full my-0 xl:my-6 border-[0.5px] border-border bg-white max-w-[1000px] mx-auto p-[30px] px-[40px]">
+        <Typography element="h1" as="h1" className="text-center pt-3 xl:pt-3">
           Profile Settings
         </Typography>
         <div className="flex flex-col">
-          <Typography element="h3" as="h3" className="mx-10">
+          <Typography
+            element="h3"
+            as="h3"
+            className="mx-0 md:mx-10 mt-3 md:mt-0"
+          >
             General
           </Typography>
-          <div className="flex">
-            <div className="flex flex-col w-2/3 px-10 py-2">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-3 md:gap-0">
+            <div className="flex flex-col  w-full md:w-2/3 px-0 md:px-10 py-2">
               <Input
                 id="title"
                 name="title"
@@ -179,7 +183,7 @@ export default function Settings() {
                 )}
               </div>
             </div>
-            <div className="flex flex-col w-1/3 items-center">
+            <div className="flex flex-col w-full md:w-1/3 items-center">
               <Avatar className="h-[170px] w-[170px] border-[0.5px] border-border shadow-md">
                 {session?.user?.avatar ? (
                   <NiceAvatar
@@ -212,17 +216,19 @@ export default function Settings() {
               </div>
             </div>
           </div>
-          <Typography element="h3" as="h3" className="mx-10 mt-10">
+          <Typography element="h3" as="h3" className="mx-0 md:mx-10 mt-10">
             Password
           </Typography>
         </div>
-        <div
-          className="flex mx-10 mt-5"
-          onClick={() =>
-            runIfLoggedInElseOpenLoginDialog(() => setNewPasswordOpen(true))
-          }
-        >
-          <Button variant={"destructive"}>Reset Password</Button>
+        <div className="flex mx-0 md:mx-10 mt-5">
+          <Button
+            variant={"destructive"}
+            onClick={() =>
+              runIfLoggedInElseOpenLoginDialog(() => setNewPasswordOpen(true))
+            }
+          >
+            Reset Password
+          </Button>
         </div>
         <ChooseAvatarDialog open={openAvatar} setOpen={setOpenAvatar} />
         <NewPasswordDialog
