@@ -94,7 +94,7 @@ export default function ProfileNotifications() {
   }
 
   return (
-    <div className="flex h-full w-[75%] flex-col py-4 gap-4 overflow-y-auto px-4">
+    <div className="flex h-full w-full xl:w-[75%] flex-col py-4 gap-4 overflow-y-auto px-4 min-h-[300px] min-w-[500px]">
       <div className="flex justify-between">
         <Button
           size={"md"}

@@ -13,7 +13,7 @@ export const LevelProgress: React.FC<LevelProgressProps> = ({
   setOpenRewardDialog,
 }) => {
   return level < 5 ? (
-    <div className="flex w-full mt-3 flex-col">
+    <div className="flex w-full md:w-[300px] lg:w-full mt-3 flex-col">
       <div className="flex w-full items-center">
         <AwardIcon
           className="h-5 w-5"

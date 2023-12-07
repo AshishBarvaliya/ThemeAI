@@ -55,7 +55,7 @@ export const RewardDialog: React.FC<ExportThemeDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="p-8 border max-w-fit border-border bg-white rounded-none">
+      <DialogContent className="p-8 border max-w-fit border-border bg-white rounded-none overflow-x-auto">
         <div className="flex flex-col w-[660px]">
           <Typography element="h3" as="h3">
             Experiences and Rewards

@@ -50,7 +50,7 @@ const ProfileFollowers: React.FC<ProfileFollowersProps> = ({ user }) => {
     });
 
   return (
-    <div className="flex h-full flex-col mt-4 gap-3 px-4 w-[75%]">
+    <div className="flex h-full flex-col my-4 gap-3 px-4 w-full xl:w-[75%] min-h-[300px] overflow-y-auto">
       {isLoadingFollowers ? (
         <div className="flex justify-center items-center flex-1 h-full">
           Loading...

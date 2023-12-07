@@ -124,8 +124,8 @@ export default function ProfileThemes() {
 
   return (
     <>
-      <div className="flex justify-between px-4 py-3">
-        <div className="flex gap-3">
+      <div className="flex flex-col gap-2 md:gap-0 md:flex-row justify-between px-4 py-3">
+        <div className="flex gap-3 justify-center md:justify-start">
           {tabs.map((tab, index) => (
             <div
               key={index}
@@ -150,42 +150,40 @@ export default function ProfileThemes() {
             </div>
           ))}
         </div>
-        <div className="flex">
-          <div className="flex items-center gap-3">
-            {session?.user.id === router.query.id &&
-            selectedTab === "createdThemes" ? (
-              <div className="flex items-center">
-                <Label
-                  htmlFor="privateOnly"
-                  className="cursor-pointer flex items-center mr-2"
-                >
-                  Private only
-                </Label>
-                <Switch
-                  id="privateOnly"
-                  name="privateOnly"
-                  className="border border-border cursor-pointer h-4 w-7"
-                  // @ts-ignore
-                  thumbClassName="h-3.5 w-3.5 data-[state=checked]:translate-x-3"
-                  checked={privateOnly}
-                  onCheckedChange={() => setPrivateOnly((prev) => !prev)}
-                />
-              </div>
-            ) : null}
-            {tags && (
-              <FiterTags
-                tags={tags}
-                setSelected={(selected) =>
-                  setFilters({ ...filters, [selectedTab]: selected })
-                }
-                selected={filters[selectedTab]}
+        <div className="flex items-center gap-3 flex-col md:flex-row">
+          {session?.user.id === router.query.id &&
+          selectedTab === "createdThemes" ? (
+            <div className="flex items-center">
+              <Label
+                htmlFor="privateOnly"
+                className="cursor-pointer flex items-center mr-2"
+              >
+                Private only
+              </Label>
+              <Switch
+                id="privateOnly"
+                name="privateOnly"
+                className="border border-border cursor-pointer h-4 w-7"
+                // @ts-ignore
+                thumbClassName="h-3.5 w-3.5 data-[state=checked]:translate-x-3"
+                checked={privateOnly}
+                onCheckedChange={() => setPrivateOnly((prev) => !prev)}
               />
-            )}
-            <SortThemes setSortItem={setSortItem} />
-          </div>
+            </div>
+          ) : null}
+          {tags && (
+            <FiterTags
+              tags={tags}
+              setSelected={(selected) =>
+                setFilters({ ...filters, [selectedTab]: selected })
+              }
+              selected={filters[selectedTab]}
+            />
+          )}
+          <SortThemes setSortItem={setSortItem} />
         </div>
       </div>
-      <div className="flex gap-4 px-4 h-full flex-wrap pb-4">
+      <div className="flex gap-4 px-4 h-full flex-col md:flex-row md:flex-wrap pb-4 min-h-[300px] items-center md:justify-start">
         {tabs.find((tab) => tab.id === selectedTab)?.getThemes()}
       </div>
     </>

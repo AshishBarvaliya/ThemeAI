@@ -49,7 +49,7 @@ const ProfileFollowing: React.FC<ProfileFollowingProps> = ({ user }) => {
     });
 
   return (
-    <div className="flex h-full flex-col mt-4 gap-3 px-4 w-[75%]">
+    <div className="flex h-full flex-col my-4 gap-3 px-4 w-full xl:w-[75%] min-h-[300px] overflow-y-auto">
       {isLoadingFollwings ? (
         <div className="flex justify-center items-center flex-1 h-full">
           Loading...
@@ -96,7 +96,7 @@ export const UserTile = ({
   return (
     <div
       key={user.id}
-      className="flex border-[0.5px] border-border p-1 fade-in-0 animate-in slide-in-from-top-2 bg-white"
+      className="flex border-[0.5px] border-border p-1 fade-in-0 animate-in slide-in-from-top-2 bg-white min-w-[450px]"
     >
       <Avatar className="h-12 w-12 border-[0.5px] border-border rounded-[6px]">
         {user.avatar ? (
