@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <div className="flex flex-1 flex-col overflow-y-auto">
       <div className="flex relative flex-1 min-h-[760px]">
-        <div className="flex backdrop-blur-3xl py-10 z-10">
+        <div className="flex backdrop-blur-3xl py-10 z-10 pt-[100px]">
           <div className="w-[60%]">
             <h1
               className="text-primary-foreground leading-[70px] text-6xl font-bold pt-[120px] px-7"

@@ -103,6 +103,12 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = () => {
           >
             Settings
           </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => router.push("/")}
+          >
+            Go to landing page
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>

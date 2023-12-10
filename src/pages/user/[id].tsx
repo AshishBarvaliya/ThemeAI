@@ -118,7 +118,7 @@ export default function User() {
     if (session?.user?.id === user?.id) {
       return (
         <Button
-          className="my-3.5 w-full"
+          className="my-3.5 w-full md:w-[350px] lg:w-full"
           onClick={() => router.push("/settings")}
         >
           Edit profile
@@ -135,7 +135,7 @@ export default function User() {
 
       return (
         <Button
-          className="my-3.5 w-full"
+          className="my-3.5 w-full md:w-[350px] lg:w-full"
           onClick={() =>
             isFollowing
               ? mutateUserUnfollow(user?.id as string)
@@ -220,10 +220,42 @@ export default function User() {
       : []),
   ];
 
+  const renderStats = () => (
+    <div className="flex flex-col w-full py-4 border-t border-border/20">
+      <Typography
+        element="p"
+        as="p"
+        className="text-primary-foreground/90 font-bold mb-2"
+      >
+        Community Stats
+      </Typography>
+      {stats.map((stat, index) => (
+        <div className="flex items-center gap-2" key={index}>
+          {stat.icon}
+          <Typography
+            element="p"
+            as="p"
+            className="text-primary-foreground/70 font-medium mr-1"
+          >
+            {stat.title}
+          </Typography>
+          <Typography
+            element="p"
+            as="p"
+            className="text-primary-foreground font-medium"
+          >
+            {stat.value}
+          </Typography>
+          {stat.helper}
+        </div>
+      ))}
+    </div>
+  );
+
   return user ? (
-    <div className="flex w-full">
-      <div className="flex flex-col fixed h-full border-border border-r-[0.5px] w-[300px] items-center shadow-lg">
-        <div className="flex flex-col w-full p-6 pt-4 items-center">
+    <div className="flex w-full flex-col lg:flex-row">
+      <div className="flex flex-col relative lg:fixed lg:h-full border-border border-r-[0.5px] w-full lg:w-[300px] items-center shadow-lg">
+        <div className="flex flex-col w-full p-6 pt-4 pb-0 lg:pb-6 items-center overflow-y-auto">
           <div className="relative">
             <Button
               onClick={() => router.back()}
@@ -319,46 +351,12 @@ export default function User() {
               <MapPin className="mr-2 h-4 w-4" /> {user?.location || "-"}
             </Typography>
           </div>
-          <div className="flex flex-col w-full py-4 border-t border-border/20">
-            <Typography
-              element="p"
-              as="p"
-              className="text-primary-foreground/90 font-bold mb-2"
-            >
-              Community Stats
-            </Typography>
-            {stats.map((stat, index) => (
-              <div className="flex items-center gap-2" key={index}>
-                {stat.icon}
-                <Typography
-                  element="p"
-                  as="p"
-                  className="text-primary-foreground/70 font-medium mr-1"
-                >
-                  {stat.title}
-                </Typography>
-                <Typography
-                  element="p"
-                  as="p"
-                  className="text-primary-foreground font-medium"
-                >
-                  {stat.value}
-                </Typography>
-                {stat.helper}
-              </div>
-            ))}
-          </div>
+          {renderStats()}
         </div>
       </div>
-      <div className="flex flex-col w-full ml-[300px] bg-black/5">
-        <div
-          className="flex justify-between flex-col border-b-[0.5px] px-6 py-3 pb-1.5 border-border fixed bg-background z-10 shadow-md"
-          style={{
-            maxWidth: "calc(1536px - 300px)",
-            width: "calc(100vw - 300px)",
-          }}
-        >
-          <div className="flex w-full">
+      <div className="flex flex-col w-full lg:ml-[300px] bg-black/5 flex-1 lg:flex-auto">
+        <div className="flex justify-between flex-col border-b-[0.5px] px-6 py-3 pb-1.5 border-border lg:fixed bg-background z-10 shadow-md w-full lg:max-w-[calc(1536px-300px)] lg:w-[calc(100vw-300px)]">
+          <div className="flex w-full overflow-x-auto overflow-y-hidden">
             <div className="flex gap-2">
               {navigations.map((tab, index) => (
                 <Label
@@ -395,7 +393,7 @@ export default function User() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col mt-[56px] overflow-y-auto flex-1">
+        <div className="flex flex-col lg:mt-[56px] overflow-y-auto flex-1">
           {navigations.find((tab) => tab.title === selectedNav)?.component}
         </div>
       </div>

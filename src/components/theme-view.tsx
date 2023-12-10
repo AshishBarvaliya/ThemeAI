@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/typography";
 import { FontProps, GOOGLE_FONTS } from "@/constants/fonts";
 import { ColorsProps, FontObjProps, ShadesProps } from "@/interfaces/theme";
-import { generateAllShades, getLuminance } from "@/lib/utils";
+import { cn, generateAllShades, getLuminance } from "@/lib/utils";
 import {
   ArrowLeftIcon,
   Copy,
@@ -157,17 +157,17 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
 
   return theme ? (
     <div
-      className="divWithDotsBackground flex w-full bg-white/50"
+      className="lg:divWithDotsBackground flex w-full bg-white/50"
       style={{
         backgroundImage: `url('data:image/svg+xml;utf8,<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="rgb(73, 73, 73)" /></svg>')`,
       }}
     >
-      <div className="flex w-full mx-auto flex-col overflow-y-scroll pt-7">
+      <div className="flex w-full mx-auto flex-col overflow-y-scroll pt-10 xl:pt-7">
         <div className="relative w-full">
           <Button
             onClick={() => router.back()}
             size="md"
-            className="bg-background absolute ml-5"
+            className="bg-background absolute ml-5 -mt-9 xl:mt-0"
           >
             <ArrowLeftIcon className="h-4 w-4 mr-1.5" />
             Back
@@ -180,8 +180,13 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
               "6px 0 15px -3px rgb(0 0 0 / 0.1), -6px 0 15px -3px rgb(0 0 0 / 0.1), 0 6px 15px -3px rgb(0 0 0 / 0.1), 0 -6px 15px -3px rgb(0 0 0 / 0.1)",
           }}
         >
-          <div className="flex justify-between gap-3">
-            <Typography element="h1" as="h1">
+          <div
+            className={cn(
+              "flex justify-between gap-3",
+              type === "generated" && "flex-col md:flex-row"
+            )}
+          >
+            <Typography element="h1" as="h1" className="text-2xl md:text-4xl">
               {type === "view" ? theme.name : "Untitled"}
               {type === "generated" && (
                 <span className="italic text-sm font-normal px-2">
@@ -299,7 +304,11 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                   >
                     <div className="flex flex-col flex-1">
                       <div className="flex justify-between">
-                        <Typography element="h4" as="h4" className="text-lg">
+                        <Typography
+                          element="h4"
+                          as="h4"
+                          className="text-md md:text-lg"
+                        >
                           {clr.name}
                         </Typography>
                         <TooltipProvider>
@@ -342,7 +351,11 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-                      <Typography element="p" as="p" className="italic">
+                      <Typography
+                        element="p"
+                        as="p"
+                        className="italic text-sm md:text-md"
+                      >
                         {clr.reason ? `"${clr.reason}"` : "Not specified"}
                       </Typography>
                     </div>
@@ -350,14 +363,18 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                 );
               })}
             </div>
-            <div className="flex gap-4 flex-1">
+            <div className="flex gap-4 flex-1 flex-col md:flex-row">
               {Object.keys(fonts).map((key) => (
                 <div
                   key={key}
                   className="flex flex-1 border-[0.5px] border-border p-2 flex-col gap-2 shadow-md bg-white/25"
                 >
                   <div className="flex items-center">
-                    <Typography element="h4" as="h4" className="text-lg">
+                    <Typography
+                      element="h4"
+                      as="h4"
+                      className="text-md md:text-lg"
+                    >
                       {key === "primary" ? "Primary Font" : "Secondary Font"}
                     </Typography>
                   </div>
@@ -370,10 +387,10 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                         key === "primary" ? "#f5dc98" : "#9ceeff",
                       wordBreak: "break-word",
                     }}
-                    className="flex flex-col gap-1 relative p-1 h-[85px] w-full font-normal text-3xl text-center items-center justify-center border-[0.5px] border-border"
+                    className="flex flex-col gap-1 relative p-1 h-[85px] w-full font-normal text-xl md:text-3xl text-center items-center justify-center border-[0.5px] border-border"
                   >
                     {fonts[key as keyof FontObjProps].fontFamily}
-                    <p className="text-lg">
+                    <p className="text-sm md:text-md">
                       The quick brown fox jumps over a lazy dog.
                     </p>
                   </Typography>
