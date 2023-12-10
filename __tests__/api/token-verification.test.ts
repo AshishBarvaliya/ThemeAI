@@ -113,9 +113,11 @@ describe("Token Verification API Endpoint", () => {
 
   it("should return 500 if there is an error", async () => {
     req.query = { token: "token" };
+    let date = new Date();
+    date.setDate(date.getDate() + 1);
     (db.query.verificationTokens.findFirst as jest.Mock).mockResolvedValue({
       token: "token",
-      expiresAt: new Date(),
+      expiresAt: date,
       user: {
         isActived: false,
       },
