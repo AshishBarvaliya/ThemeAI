@@ -57,17 +57,15 @@ export interface GetThemeTileProps {
   isAIGenerated: boolean;
   isPrivate?: boolean;
   template: string;
-  tags: { tagId: string }[];
+  tags: string[];
   createdAt?: Date;
-  user: {
-    id: string;
-    name: string;
-    avatar: string;
-    image: string;
-    level: number;
-  };
-  likedBy: { userId: string }[];
-  savedBy: { userId: string }[];
+  user_id: string;
+  user_name: string;
+  user_avatar: string;
+  user_image: string;
+  user_level: number;
+  likedBy: string[];
+  savedBy: string[];
 }
 
 export interface MappedThemeProps {
@@ -88,6 +86,8 @@ export interface MappedThemeProps {
   likes: number;
   saves: number;
   isAIGenerated: boolean;
+  likedBy: string[];
+  savedBy: string[];
 }
 
 export interface GeneratedThemeProps {

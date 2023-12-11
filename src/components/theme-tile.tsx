@@ -36,7 +36,6 @@ interface ThemeTileProps {
   mutateMarkAsInappropriateTheme: (themeId: string) => void;
   setLikeLoading: (themeId: string) => void;
   loading: boolean;
-  allTags: TagProps[] | undefined;
 }
 
 export const ThemeTile: React.FC<ThemeTileProps> = ({
@@ -48,7 +47,6 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
   mutateMarkAsInappropriateTheme,
   setLikeLoading,
   loading,
-  allTags,
 }) => {
   const router = useRouter();
   const moreMenuContainerRef = useRef<HTMLDivElement>(null);
@@ -58,12 +56,8 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
   const [openMore, setOpenMore] = useState(false);
 
   const mappedTheme = getMappedTheme(theme);
-  const isLiked = theme.likedBy.find(
-    (user) => user.userId === session?.user.id
-  );
-  const isSaved = theme.savedBy.find(
-    (user) => user.userId === session?.user.id
-  );
+  const isLiked = mappedTheme.likedBy.includes(session?.user.id as string);
+  const isSaved = mappedTheme.savedBy.includes(session?.user.id as string);
 
   const handleOutsideClick = (event: any) => {
     if (
@@ -93,12 +87,12 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
         <div className="flex flex-1 gap-2 items-center">
           <Avatar
             className="flex h-6 w-6 border-[0.5px] items-center justify-center bg-primary border-border cursor-pointer hover:shadow-normal hover:-translate-x-px hover:-translate-y-px"
-            onClick={() => router.push(`/user/${theme.user.id}`)}
+            onClick={() => router.push(`/user/${mappedTheme.user.id}`)}
           >
             {mappedTheme.user.avatar ? (
               <NiceAvatar
                 className="h-6 w-6"
-                {...JSON.parse(theme.user.avatar)}
+                {...JSON.parse(mappedTheme.user.avatar)}
               />
             ) : (
               <>
@@ -254,12 +248,12 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
         </div>
         <div className="flex gap-1 overflow-x-auto">
           {mappedTheme.tags.length ? (
-            mappedTheme.tags.map((tagId) => (
+            mappedTheme.tags.map((tag) => (
               <div
-                key={tagId}
+                key={tag}
                 className="flex items-center border-[0.5px] border-border px-2 py-0.5 rounded-[45px] text-xs whitespace-nowrap"
               >
-                {allTags?.find((tag) => tag.id === tagId)?.name}
+                {tag}
               </div>
             ))
           ) : (

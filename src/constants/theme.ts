@@ -1,5 +1,5 @@
 import { usersToLikedThemes, usersToSavedThemes } from "@/db/schema";
-import { ne } from "drizzle-orm";
+import { ne, sql } from "drizzle-orm";
 
 export const tileThemeProps = {
   columns: {
@@ -44,6 +44,28 @@ export const tileThemeProps = {
     },
   },
 };
+
+export const themeSelectProps = sql`
+  theme.id, 
+  theme.name, 
+  theme."createdAt",
+  theme."isAIGenerated",
+  theme.color_1,
+  theme.color_2,
+  theme.color_3,
+  theme.color_4,
+  theme.font_1,
+  theme.font_2,
+  theme.template,
+  "user".id AS user_id, 
+  "user".name AS user_name,
+  "user".avatar AS user_avatar,
+  "user".image AS user_image,
+  "user".level AS user_level,
+  array_agg(DISTINCT tag.name) FILTER (WHERE tag.name IS NOT NULL) AS tags,
+  array_agg(DISTINCT liked_users.id) FILTER (WHERE liked_users.id IS NOT NULL) AS "likedBy",
+  array_agg(DISTINCT saved_users.id) FILTER (WHERE saved_users.id IS NOT NULL) AS "savedBy"
+`;
 
 export const COLORS_FORMAT = {
   CSS: "CSS",

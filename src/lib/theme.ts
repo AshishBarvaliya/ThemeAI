@@ -3,7 +3,13 @@ import { GetThemeTileProps, MappedThemeProps } from "@/interfaces/theme";
 export const getMappedTheme = (theme: GetThemeTileProps): MappedThemeProps => ({
   id: theme.id,
   name: theme.name,
-  user: theme.user,
+  user: {
+    id: theme.user_id,
+    name: theme.user_name,
+    avatar: theme.user_avatar,
+    image: theme.user_image,
+    level: theme.user_level,
+  },
   template: theme.template,
   isAIGenerated: theme.isAIGenerated,
   colors: {
@@ -22,8 +28,10 @@ export const getMappedTheme = (theme: GetThemeTileProps): MappedThemeProps => ({
       weights: [],
     },
   },
-  tags: theme.tags.map((tag) => tag.tagId),
+  tags: theme.tags || [],
   createdAt: theme.createdAt,
-  likes: theme.likedBy.length,
-  saves: theme.savedBy.length,
+  likes: theme.likedBy?.length || 0,
+  saves: theme.savedBy?.length || 0,
+  likedBy: theme.likedBy || [],
+  savedBy: theme.savedBy || [],
 });

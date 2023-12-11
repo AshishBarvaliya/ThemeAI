@@ -51,13 +51,13 @@ export const FiterTags: React.FC<FilterTagsProps> = ({
           return (
             <DropdownMenuCheckboxItem
               key={tag.id}
-              checked={selected.includes(tag.id)}
+              checked={selected.includes(tag.name)}
               className="text-xs"
               onCheckedChange={() => {
-                if (selected.includes(tag.id)) {
-                  setSelected(selected.filter((t) => t !== tag.id));
+                if (selected.includes(tag.name)) {
+                  setSelected(selected.filter((t) => t !== tag.name));
                 } else {
-                  setSelected([...selected, tag.id]);
+                  setSelected([...selected, tag.name]);
                 }
               }}
             >
