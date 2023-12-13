@@ -39,6 +39,7 @@ jest.mock("@/db", () => ({
   insert: jest.fn().mockReturnThis(),
   values: jest.fn().mockReturnThis(),
   returning: jest.fn(() => Promise.resolve([{ id: "theme-id" }])),
+  execute: jest.fn(),
 }));
 
 describe("Themes API Endpoint", () => {
@@ -157,34 +158,17 @@ describe("Themes API Endpoint", () => {
     });
   });
 
-  it("should return 200 with a list of themes if created themes are requested with session user", async () => {
-    req.query = { userId: "user-id", type: "created" };
-    (db.query.users.findFirst as jest.Mock).mockResolvedValue({
-      id: "user-id",
-      createdThemes: [
-        {
-          id: "theme-id",
-          isPrivate: true,
-        },
-      ],
-    });
-
-    await handler(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith([
-      { id: "theme-id", isPrivate: true },
-    ]);
-  });
   describe("Fetch by themes by type of a user", () => {
-    it("should return 200 with a list of themes if created themes are requested with other user", async () => {
-      req.query = { userId: "other-user-id", type: "created" };
-      (db.query.users.findFirst as jest.Mock).mockResolvedValue({
-        id: "user-id",
-        createdThemes: [
+    it("should return 200 with a list of themes if created themes are requested with session user", async () => {
+      req.query = { userId: "user-id", type: "created" };
+      (db.execute as jest.Mock).mockResolvedValue({
+        rows: [
           {
             id: "theme-id",
-            isPrivate: false,
+            isPrivate: true,
+            tags: [],
+            savedBy: [],
+            likedBy: [],
           },
         ],
       });
@@ -193,26 +177,50 @@ describe("Themes API Endpoint", () => {
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith([
-        { id: "theme-id", isPrivate: false },
+        { id: "theme-id", isPrivate: true, tags: [], savedBy: [], likedBy: [] },
       ]);
     });
-
-    it("should return 200 with a list of themes if saved themes are requested with session user", async () => {
-      req.query = { userId: "user-id", type: "saved" };
-      (db.query.usersToSavedThemes.findMany as jest.Mock).mockResolvedValue([
-        {
-          theme: {
+    it("should return 200 with a list of themes if created themes are requested with other user", async () => {
+      req.query = { userId: "other-user-id", type: "created" };
+      (db.execute as jest.Mock).mockResolvedValue({
+        rows: [
+          {
             id: "theme-id",
-            isPrivate: false,
+            isPrivate: true,
+            tags: [],
+            savedBy: [],
+            likedBy: [],
           },
-        },
-      ]);
+        ],
+      });
 
       await handler(req, res);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith([
-        { id: "theme-id", isPrivate: false },
+        { id: "theme-id", isPrivate: true, tags: [], savedBy: [], likedBy: [] },
+      ]);
+    });
+
+    it("should return 200 with a list of themes if saved themes are requested with session user", async () => {
+      req.query = { userId: "user-id", type: "saved" };
+      (db.execute as jest.Mock).mockResolvedValue({
+        rows: [
+          {
+            id: "theme-id",
+            isPrivate: true,
+            tags: [],
+            savedBy: [],
+            likedBy: [],
+          },
+        ],
+      });
+
+      await handler(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith([
+        { id: "theme-id", isPrivate: true, tags: [], savedBy: [], likedBy: [] },
       ]);
     });
 
@@ -221,27 +229,36 @@ describe("Themes API Endpoint", () => {
 
       await handler(req, res);
 
-      expect(db.query.usersToSavedThemes.findMany).not.toHaveBeenCalled();
+      expect(db.execute).not.toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(403);
       expect(res.json).toHaveBeenCalledWith({ error: "Unauthorized" });
     });
 
     it("should return 200 with a list of themes if liked themes are requested with session user", async () => {
       req.query = { userId: "user-id", type: "liked" };
-      (db.query.usersToLikedThemes.findMany as jest.Mock).mockResolvedValue([
-        {
-          theme: {
+      (db.execute as jest.Mock).mockResolvedValue({
+        rows: [
+          {
             id: "theme-id",
             isPrivate: false,
+            tags: [],
+            savedBy: [],
+            likedBy: [],
           },
-        },
-      ]);
+        ],
+      });
 
       await handler(req, res);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith([
-        { id: "theme-id", isPrivate: false },
+        {
+          id: "theme-id",
+          isPrivate: false,
+          tags: [],
+          savedBy: [],
+          likedBy: [],
+        },
       ]);
     });
 
@@ -251,7 +268,7 @@ describe("Themes API Endpoint", () => {
 
       await handler(req, res);
 
-      expect(db.query.usersToLikedThemes.findMany).not.toHaveBeenCalled();
+      expect(db.execute).not.toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({ error: "Unauthorized" });
     });
@@ -269,7 +286,7 @@ describe("Themes API Endpoint", () => {
 
     it("should return 500 if if there is an error while fetching typed themes", async () => {
       req.query = { userId: "user-id", type: "created" };
-      (db.query.users.findFirst as jest.Mock).mockRejectedValue(new Error());
+      (db.execute as jest.Mock).mockRejectedValue(new Error());
 
       await handler(req, res);
 
@@ -283,51 +300,38 @@ describe("Themes API Endpoint", () => {
   describe("Fetch themes for home", () => {
     it("should return 200 with a list of themes if search string is present and tags are not defined", async () => {
       req.query = { search: "test", tags: undefined };
-      (db.query.themes.findMany as jest.Mock).mockResolvedValue([
+      (db.execute as jest.Mock).mockResolvedValue({
+        rows: [
+          {
+            id: "theme-id",
+            isPrivate: true,
+            tags: [],
+            savedBy: [],
+            likedBy: [],
+          },
+        ],
+      });
+
+      await handler(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith([
         {
           id: "theme-id",
-          name: "theme-name",
+          isPrivate: true,
+          tags: [],
+          savedBy: [],
+          likedBy: [],
         },
-      ]);
-
-      await handler(req, res);
-
-      expect(db.query.themesToTags.findMany).not.toHaveBeenCalled();
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith([
-        { id: "theme-id", name: "theme-name" },
-      ]);
-    });
-
-    it("should return 200 with a list of themes if search string is present and tags are defined", async () => {
-      req.query = { search: "test", tags: "tag1,tag2", type: "popular" };
-      (db.query.themesToTags.findMany as jest.Mock).mockResolvedValue([
-        {
-          theme: {
-            id: "theme-id",
-            name: "theme-name",
-            popularity: 0,
-            isPrivate: false,
-          },
-        },
-      ]);
-
-      await handler(req, res);
-
-      expect(db.query.themes.findMany).not.toHaveBeenCalled();
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith([
-        { id: "theme-id", name: "theme-name", isPrivate: false },
       ]);
     });
 
     it("should return 500 if if there is an error while fetching themes", async () => {
       req.query = { search: "test", tags: undefined };
-      (db.query.themes.findMany as jest.Mock).mockRejectedValue(new Error());
+      (db.execute as jest.Mock).mockRejectedValue(new Error());
 
       await handler(req, res);
 
-      expect(db.query.themesToTags.findMany).not.toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
         error: "Failed to fetch themes",

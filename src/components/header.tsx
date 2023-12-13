@@ -150,7 +150,7 @@ const Header = () => {
             <SeachBar
               id="font-search"
               name="font-search"
-              placeholder="Search by font, name, or description"
+              placeholder="Search by font, theme, user, or description"
               autoComplete="off"
               maxLength={INPUT_LIMIT.NAME_MAX}
               onRemoveCallback={() => {

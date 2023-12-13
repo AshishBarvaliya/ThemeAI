@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/typography";
 import { useHelpers } from "@/hooks/useHelpers";
 import { useToast } from "@/hooks/useToast";
-import { getTags, getThemes } from "@/services/theme";
+import { getThemes } from "@/services/theme";
 import {
   setMarkAsInappropriate,
   themeDislike,
@@ -27,7 +27,6 @@ export default function Themes() {
   const { themeType, filterTags, isAIOnly } = useHelpers();
   const { themeSearchQuery, setThemeSearchQuery, setFilterTags } = useHelpers();
   const [likeLoading, setLikeLoading] = useState<string | null>(null);
-  const { data: tags } = useQuery(["tags"], getTags);
   const {
     data: themes,
     isLoading,
@@ -77,7 +76,7 @@ export default function Themes() {
                   if (theme.id === data.themeId) {
                     return {
                       ...theme,
-                      likedBy: [...theme.likedBy, { userId: data.userId }],
+                      likedBy: [...theme.likedBy, data.userId],
                     };
                   }
                   return theme;
@@ -110,7 +109,7 @@ export default function Themes() {
                     return {
                       ...theme,
                       likedBy: theme.likedBy.filter(
-                        (user) => user.userId !== data.userId
+                        (user) => user !== data.userId
                       ),
                     };
                   }
@@ -136,7 +135,7 @@ export default function Themes() {
                 if (theme.id === data.themeId) {
                   return {
                     ...theme,
-                    savedBy: [...theme.savedBy, { userId: data.userId }],
+                    savedBy: [...theme.savedBy, data.userId],
                   };
                 }
                 return theme;
@@ -161,7 +160,7 @@ export default function Themes() {
                   return {
                     ...theme,
                     savedBy: theme.savedBy.filter(
-                      (user) => user.userId !== data.userId
+                      (user) => user !== data.userId
                     ),
                   };
                 }
@@ -210,7 +209,6 @@ export default function Themes() {
                       mutateMarkAsInappropriateTheme
                     }
                     setLikeLoading={setLikeLoading}
-                    allTags={tags}
                     loading={
                       likeLoading === theme.id &&
                       (isLoadingDislikeTheme || isLoadingLikeTheme)

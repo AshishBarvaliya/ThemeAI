@@ -76,7 +76,6 @@ export default function ProfileThemes() {
       getThemes: () => (
         <CreatedTheme
           mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
-          tags={tags}
           sortItem={sortItem}
           filters={filters.createdThemes}
           privateOnly={privateOnly}
@@ -91,7 +90,6 @@ export default function ProfileThemes() {
         session ? (
           <LikedTheme
             mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
-            tags={tags}
             sortItem={sortItem}
             filters={filters.likedThemes}
           />
@@ -108,7 +106,6 @@ export default function ProfileThemes() {
             getThemes: () => (
               <SavedTheme
                 mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
-                tags={tags}
                 sortItem={sortItem}
                 filters={filters.savedThemes}
               />
@@ -183,7 +180,7 @@ export default function ProfileThemes() {
           <SortThemes setSortItem={setSortItem} />
         </div>
       </div>
-      <div className="flex gap-4 px-4 h-full flex-col md:flex-row md:flex-wrap pb-4 min-h-[300px] items-center md:justify-start">
+      <div className="flex gap-4 px-4 h-full flex-col md:flex-row md:flex-wrap pb-4 min-h-[300px] md:justify-start">
         {tabs.find((tab) => tab.id === selectedTab)?.getThemes()}
       </div>
     </>
@@ -192,7 +189,6 @@ export default function ProfileThemes() {
 
 interface CreatedThemeProps {
   mutateMarkAsInappropriateTheme: (themeId: string) => void;
-  tags: TagProps[] | undefined;
   sortItem: SortByThemesProps["sortBy"];
   filters: string[];
   privateOnly?: boolean;
@@ -201,7 +197,6 @@ interface CreatedThemeProps {
 const CreatedTheme: React.FC<CreatedThemeProps> = ({
   mutateMarkAsInappropriateTheme,
   sortItem,
-  tags,
   filters,
   privateOnly,
 }) => {
@@ -228,7 +223,7 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
               if (theme.id === data.themeId) {
                 return {
                   ...theme,
-                  likedBy: [...theme.likedBy, { userId: data.userId }],
+                  likedBy: [...theme.likedBy, data.userId],
                 };
               }
               return theme;
@@ -249,9 +244,7 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
               if (theme.id === data.themeId) {
                 return {
                   ...theme,
-                  likedBy: theme.likedBy.filter(
-                    (user) => user.userId !== data.userId
-                  ),
+                  likedBy: theme.likedBy.filter((user) => user !== data.userId),
                 };
               }
               return theme;
@@ -272,7 +265,7 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
             if (theme.id === data.themeId) {
               return {
                 ...theme,
-                savedBy: [...theme.savedBy, { userId: data.userId }],
+                savedBy: [...theme.savedBy, data.userId],
               };
             }
             return theme;
@@ -292,9 +285,7 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
             if (theme.id === data.themeId) {
               return {
                 ...theme,
-                savedBy: theme.savedBy.filter(
-                  (user) => user.userId !== data.userId
-                ),
+                savedBy: theme.savedBy.filter((user) => user !== data.userId),
               };
             }
             return theme;
@@ -336,9 +327,7 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
   ) : (
     privateFiltered
       ?.filter((theme) =>
-        filters.length
-          ? theme.tags.some((tag) => filters.includes(tag.tagId))
-          : true
+        filters.length ? theme.tags.some((tag) => filters.includes(tag)) : true
       )
       .map((theme: GetThemeTileProps, index: number) => (
         <ThemeTile
@@ -350,7 +339,6 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
           mutateUnsaveTheme={mutateUnsaveTheme}
           mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
           setLikeLoading={setLikeLoading}
-          allTags={tags}
           loading={
             likeLoading === theme.id &&
             (isLoadingDislikeTheme || isLoadingLikeTheme)
@@ -363,7 +351,6 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
 const LikedTheme: React.FC<CreatedThemeProps> = ({
   mutateMarkAsInappropriateTheme,
   sortItem,
-  tags,
   filters,
 }) => {
   const queryClient = useQueryClient();
@@ -389,7 +376,7 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
               if (theme.id === data.themeId) {
                 return {
                   ...theme,
-                  likedBy: [...theme.likedBy, { userId: data.userId }],
+                  likedBy: [...theme.likedBy, data.userId],
                 };
               }
               return theme;
@@ -410,9 +397,7 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
               if (theme.id === data.themeId) {
                 return {
                   ...theme,
-                  likedBy: theme.likedBy.filter(
-                    (user) => user.userId !== data.userId
-                  ),
+                  likedBy: theme.likedBy.filter((user) => user !== data.userId),
                 };
               }
               return theme;
@@ -433,7 +418,7 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
             if (theme.id === data.themeId) {
               return {
                 ...theme,
-                savedBy: [...theme.savedBy, { userId: data.userId }],
+                savedBy: [...theme.savedBy, data.userId],
               };
             }
             return theme;
@@ -453,9 +438,7 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
             if (theme.id === data.themeId) {
               return {
                 ...theme,
-                savedBy: theme.savedBy.filter(
-                  (user) => user.userId !== data.userId
-                ),
+                savedBy: theme.savedBy.filter((user) => user !== data.userId),
               };
             }
             return theme;
@@ -492,9 +475,7 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
   ) : (
     sortedThemes
       ?.filter((theme) =>
-        filters.length
-          ? theme.tags.some((tag) => filters.includes(tag.tagId))
-          : true
+        filters.length ? theme.tags.some((tag) => filters.includes(tag)) : true
       )
       .map((theme: GetThemeTileProps, index: number) => (
         <ThemeTile
@@ -506,7 +487,6 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
           mutateUnsaveTheme={mutateUnsaveTheme}
           mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
           setLikeLoading={setLikeLoading}
-          allTags={tags}
           loading={
             likeLoading === theme.id &&
             (isLoadingDislikeTheme || isLoadingLikeTheme)
@@ -519,7 +499,6 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
 const SavedTheme: React.FC<CreatedThemeProps> = ({
   mutateMarkAsInappropriateTheme,
   sortItem,
-  tags,
   filters,
 }) => {
   const queryClient = useQueryClient();
@@ -544,7 +523,7 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
               if (theme.id === data.themeId) {
                 return {
                   ...theme,
-                  likedBy: [...theme.likedBy, { userId: data.userId }],
+                  likedBy: [...theme.likedBy, data.userId],
                 };
               }
               return theme;
@@ -565,9 +544,7 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
               if (theme.id === data.themeId) {
                 return {
                   ...theme,
-                  likedBy: theme.likedBy.filter(
-                    (user) => user.userId !== data.userId
-                  ),
+                  likedBy: theme.likedBy.filter((user) => user !== data.userId),
                 };
               }
               return theme;
@@ -588,7 +565,7 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
             if (theme.id === data.themeId) {
               return {
                 ...theme,
-                savedBy: [...theme.savedBy, { userId: data.userId }],
+                savedBy: [...theme.savedBy, data.userId],
               };
             }
             return theme;
@@ -608,9 +585,7 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
             if (theme.id === data.themeId) {
               return {
                 ...theme,
-                savedBy: theme.savedBy.filter(
-                  (user) => user.userId !== data.userId
-                ),
+                savedBy: theme.savedBy.filter((user) => user !== data.userId),
               };
             }
             return theme;
@@ -639,9 +614,7 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
   ) : (
     sortedThemes
       ?.filter((theme) =>
-        filters.length
-          ? theme.tags.some((tag) => filters.includes(tag.tagId))
-          : true
+        filters.length ? theme.tags.some((tag) => filters.includes(tag)) : true
       )
       .map((theme: GetThemeTileProps, index: number) => (
         <ThemeTile
@@ -653,7 +626,6 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
           mutateUnsaveTheme={mutateUnsaveTheme}
           mutateMarkAsInappropriateTheme={mutateMarkAsInappropriateTheme}
           setLikeLoading={setLikeLoading}
-          allTags={tags}
           loading={
             likeLoading === theme.id &&
             (isLoadingDislikeTheme || isLoadingLikeTheme)

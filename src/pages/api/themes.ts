@@ -2,8 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { createId } from "@paralleldrive/cuid2";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
-import { tileThemeProps } from "@/constants/theme";
-import { eq, desc, ne, and, or, ilike, asc } from "drizzle-orm";
+import { themeSelectProps } from "@/constants/theme";
+import { eq, ne, and, sql } from "drizzle-orm";
 import { TagProps } from "@/interfaces/theme";
 import {
   tags as tagsSchema,
@@ -161,36 +161,84 @@ export default async function handler(
         try {
           if (type === "created") {
             if (session?.user?.id === userId) {
-              const user: any = await db.query.users.findFirst({
-                where: eq(usersSchema.id, userId),
-                with: {
-                  createdThemes: {
-                    columns: { ...tileThemeProps.columns, isPrivate: true },
-                    with: tileThemeProps.with,
-                    orderBy: [
-                      desc(themesSchema.createdAt),
-                      asc(themesSchema.name),
-                    ],
-                  },
-                },
-              });
-              return res.status(200).json(user.createdThemes);
+              const statement = sql`
+                SELECT 
+                    ${themeSelectProps}
+                    ,theme."isPrivate"
+                FROM 
+                    theme
+                INNER JOIN
+                    "user" ON "user"."id" = theme."userId"
+                LEFT JOIN 
+                    themes_to_tags ON themes_to_tags."themeId" = theme.id
+                LEFT JOIN
+                    users_to_liked_themes ON users_to_liked_themes."themeId" = theme.id AND users_to_liked_themes.status <> 'N'
+                LEFT JOIN
+                    users_to_saved_themes ON users_to_saved_themes."themeId" = theme.id AND users_to_saved_themes.status <> 'N'
+                LEFT JOIN
+                    "user" AS liked_users ON liked_users.id = users_to_liked_themes."userId"
+                LEFT JOIN
+                    "user" AS saved_users ON saved_users.id = users_to_saved_themes."userId"
+                LEFT JOIN 
+                    tag ON tag.id = themes_to_tags."tagId"
+                WHERE 
+                    theme."userId" = ${userId}
+                GROUP BY 
+                    theme.id, "user".id
+                ORDER BY 
+                    theme."createdAt" DESC, theme.name ASC;
+              `;
+
+              const createdThemes = await db.execute(statement);
+
+              return res.status(200).json(
+                createdThemes?.rows.map((theme: any) => ({
+                  ...theme,
+                  likedBy: theme.likedBy || [],
+                  savedBy: theme.savedBy || [],
+                  tags: theme.tags || [],
+                }))
+              );
             } else {
-              const user: any = await db.query.users.findFirst({
-                where: eq(usersSchema.id, userId as string),
-                with: {
-                  createdThemes: {
-                    where: eq(themesSchema.isPrivate, false),
-                    columns: tileThemeProps.columns,
-                    with: tileThemeProps.with,
-                    orderBy: [
-                      desc(themesSchema.createdAt),
-                      asc(themesSchema.name),
-                    ],
-                  },
-                },
-              });
-              return res.status(200).json(user.createdThemes);
+              const statement = sql`
+                SELECT 
+                    ${themeSelectProps}
+                FROM 
+                    theme
+                INNER JOIN
+                    "user" ON "user"."id" = theme."userId"
+                LEFT JOIN 
+                    themes_to_tags ON themes_to_tags."themeId" = theme.id
+                LEFT JOIN
+                    users_to_liked_themes ON users_to_liked_themes."themeId" = theme.id AND users_to_liked_themes.status <> 'N'
+                LEFT JOIN
+                    users_to_saved_themes ON users_to_saved_themes."themeId" = theme.id AND users_to_saved_themes.status <> 'N'
+                LEFT JOIN
+                    "user" AS liked_users ON liked_users.id = users_to_liked_themes."userId"
+                LEFT JOIN
+                    "user" AS saved_users ON saved_users.id = users_to_saved_themes."userId"
+                LEFT JOIN 
+                    tag ON tag.id = themes_to_tags."tagId"
+                WHERE 
+                    theme."isPrivate" = false
+                  AND
+                    theme."userId" = ${userId}
+                GROUP BY 
+                    theme.id, "user".id
+                ORDER BY 
+                    theme."createdAt" DESC, theme.name ASC;
+              `;
+
+              const createdThemes = await db.execute(statement);
+
+              return res.status(200).json(
+                createdThemes?.rows.map((theme: any) => ({
+                  ...theme,
+                  likedBy: theme.likedBy || [],
+                  savedBy: theme.savedBy || [],
+                  tags: theme.tags || [],
+                }))
+              );
             }
           }
           if (type === "saved") {
@@ -198,42 +246,87 @@ export default async function handler(
               return res.status(403).json({ error: "Unauthorized" });
             }
 
-            const savedThemes = await db.query.usersToSavedThemes.findMany({
-              where: and(
-                eq(usersToSavedThemes.userId, userId as string),
-                ne(usersToSavedThemes.status, "N")
-              ),
-              with: {
-                theme: {
-                  columns: tileThemeProps.columns,
-                  with: tileThemeProps.with,
-                },
-              },
-            });
+            const statement = sql`
+              SELECT 
+                  ${themeSelectProps}
+              FROM 
+                  theme
+              INNER JOIN
+                  "user" ON "user"."id" = theme."userId"
+              LEFT JOIN 
+                  themes_to_tags ON themes_to_tags."themeId" = theme.id
+              LEFT JOIN
+                  users_to_liked_themes ON users_to_liked_themes."themeId" = theme.id AND users_to_liked_themes.status <> 'N'
+              LEFT JOIN
+                  users_to_saved_themes ON users_to_saved_themes."themeId" = theme.id AND users_to_saved_themes.status <> 'N'
+              LEFT JOIN
+                  "user" AS liked_users ON liked_users.id = users_to_liked_themes."userId"
+              LEFT JOIN
+                  "user" AS saved_users ON saved_users.id = users_to_saved_themes."userId"
+              LEFT JOIN 
+                  tag ON tag.id = themes_to_tags."tagId"
+              WHERE 
+                  theme."isPrivate" = false
+                  AND users_to_saved_themes."userId" = ${userId}
+              GROUP BY 
+                  theme.id, "user".id
+              ORDER BY 
+                  theme."createdAt" DESC, theme.name ASC;
+            `;
 
-            return res
-              .status(200)
-              .json(savedThemes?.map((theme: any) => theme.theme));
+            const savedThemes = await db.execute(statement);
+
+            return res.status(200).json(
+              savedThemes?.rows.map((theme: any) => ({
+                ...theme,
+                likedBy: theme.likedBy || [],
+                savedBy: theme.savedBy || [],
+                tags: theme.tags || [],
+              }))
+            );
           }
           if (type === "liked") {
             if (!session) {
               return res.status(401).json({ error: "Unauthorized" });
             }
-            const likedThemes = await db.query.usersToLikedThemes.findMany({
-              where: and(
-                eq(usersToLikedThemes.userId, userId as string),
-                ne(usersToLikedThemes.status, "N")
-              ),
-              with: {
-                theme: {
-                  columns: tileThemeProps.columns,
-                  with: tileThemeProps.with,
-                },
-              },
-            });
-            return res
-              .status(200)
-              .json(likedThemes?.map((theme: any) => theme.theme));
+            const statement = sql`
+              SELECT 
+                  ${themeSelectProps}
+              FROM 
+                  theme
+              INNER JOIN
+                  "user" ON "user"."id" = theme."userId"
+              LEFT JOIN 
+                  themes_to_tags ON themes_to_tags."themeId" = theme.id
+              LEFT JOIN
+                  users_to_liked_themes ON users_to_liked_themes."themeId" = theme.id AND users_to_liked_themes.status <> 'N'
+              LEFT JOIN
+                  users_to_saved_themes ON users_to_saved_themes."themeId" = theme.id AND users_to_saved_themes.status <> 'N'
+              LEFT JOIN
+                  "user" AS liked_users ON liked_users.id = users_to_liked_themes."userId"
+              LEFT JOIN
+                  "user" AS saved_users ON saved_users.id = users_to_saved_themes."userId"
+              LEFT JOIN 
+                  tag ON tag.id = themes_to_tags."tagId"
+              WHERE 
+                  theme."isPrivate" = false
+                  AND users_to_liked_themes."userId" = ${userId}
+              GROUP BY 
+                  theme.id, "user".id
+              ORDER BY 
+                  theme."createdAt" DESC, theme.name ASC;
+            `;
+
+            const likedThemes = await db.execute(statement);
+
+            return res.status(200).json(
+              likedThemes?.rows.map((theme: any) => ({
+                ...theme,
+                likedBy: theme.likedBy || [],
+                savedBy: theme.savedBy || [],
+                tags: theme.tags || [],
+              }))
+            );
           }
         } catch (error) {
           return res.status(500).json({ error: "Failed to fetch themes" });
@@ -245,73 +338,83 @@ export default async function handler(
         const type = req.query.type as string;
         const tags = req.query.tags as string;
         const aiOnly = req.query.aiOnly as string;
-        if (tags) {
-          const tagsArray = tags.split(",");
-          const themes = await db.query.themesToTags.findMany({
-            where: or(
-              ...tagsArray.map((tag) => eq(themesToTagsSchema.tagId, tag))
-            ),
-            with: {
-              theme: {
-                columns: {
-                  ...tileThemeProps.columns,
-                  popularity: true,
-                  isPrivate: true,
-                },
-                with: tileThemeProps.with,
-              },
-            },
-          });
+        const statement = sql`
+          SELECT 
+              ${themeSelectProps}
+          FROM 
+              theme
+          INNER JOIN
+              "user" ON "user"."id" = theme."userId"
+          ${
+            type === "foryou"
+              ? sql`INNER JOIN
+              users_to_follows ON users_to_follows."followingId" = theme."userId"`
+              : sql``
+          }
+          LEFT JOIN 
+              themes_to_tags ON themes_to_tags."themeId" = theme.id
+          LEFT JOIN
+              users_to_liked_themes ON users_to_liked_themes."themeId" = theme.id AND users_to_liked_themes.status <> 'N'
+          LEFT JOIN
+              users_to_saved_themes ON users_to_saved_themes."themeId" = theme.id AND users_to_saved_themes.status <> 'N'
+          LEFT JOIN
+              "user" AS liked_users ON liked_users.id = users_to_liked_themes."userId"
+          LEFT JOIN
+              "user" AS saved_users ON saved_users.id = users_to_saved_themes."userId"
+          LEFT JOIN 
+              tag ON tag.id = themes_to_tags."tagId"
+          WHERE 
+              theme."isPrivate" = false
+            AND
+              (theme.name ILIKE ${`%${query}%`} 
+                OR "user".name ILIKE ${`%${query}%`} 
+                OR theme.color_1_reason ILIKE ${`%${query}%`}
+                OR theme.color_2_reason ILIKE ${`%${query}%`}
+                OR theme.color_3_reason ILIKE ${`%${query}%`}
+                OR theme.color_4_reason ILIKE ${`%${query}%`}
+                OR theme.font_1 ILIKE ${`%${query}%`}
+                OR theme.font_2 ILIKE ${`%${query}%`}
+                OR theme.prompt ILIKE ${`%${query}%`}
+                OR tag.name ILIKE ${`%${query}%`})
+            ${
+              type === "foryou"
+                ? sql`AND users_to_follows."followerId" = ${session?.user.id}`
+                : sql``
+            }
+            ${aiOnly === "true" ? sql`AND theme."isAIGenerated" = true` : sql``}
+            ${
+              tags
+                ? sql`AND
+              theme.id IN (
+                  SELECT "themeId" 
+                  FROM themes_to_tags
+                  INNER JOIN tag ON tag.id = themes_to_tags."tagId"
+                  WHERE tag.id = ANY (${`{${tags}}`})
+              )`
+                : sql``
+            }
+          GROUP BY 
+              theme.id, "user".id
+          ORDER BY 
+              ${
+                type === "popular"
+                  ? sql`theme.popularity::int DESC, theme."createdAt" DESC`
+                  : sql`theme."createdAt" DESC, theme.name ASC`
+              }
+          LIMIT ${THEMES_PER_PAGE}
+          OFFSET ${(page - 1) * THEMES_PER_PAGE};
+        `;
 
-          return res.status(200).json(
-            themes
-              .sort((a: any, b: any) => {
-                return type === "popular"
-                  ? b.theme.popularity - a.theme.popularity
-                  : // @ts-ignore
-                    new Date(b.theme.createdAt) - new Date(a.theme.createdAt);
-              })
-              .filter((theme: any) => {
-                return (
-                  theme.theme.isPrivate === false &&
-                  (aiOnly === "true" ? theme.theme.isAIGenerated : true)
-                );
-              })
-              .map((theme: any) => {
-                const { popularity, ...rest } = theme.theme;
-                return { ...rest };
-              })
-          );
-        }
+        const themes = await db.execute(statement);
 
-        const themes = await db.query.themes.findMany({
-          where: and(
-            eq(themesSchema.isPrivate, false),
-            or(
-              ilike(themesSchema.name, `%${query}%`),
-              ilike(themesSchema.color_1_reason, `%${query}%`),
-              ilike(themesSchema.color_2_reason, `%${query}%`),
-              ilike(themesSchema.color_3_reason, `%${query}%`),
-              ilike(themesSchema.color_4_reason, `%${query}%`),
-              ilike(themesSchema.font_1, `%${query}%`),
-              ilike(themesSchema.font_2, `%${query}%`),
-              ilike(themesSchema.prompt, `%${query}%`)
-            ),
-            ...(aiOnly === "true" ? [eq(themesSchema.isAIGenerated, true)] : [])
-          ),
-          columns: tileThemeProps.columns,
-          with: tileThemeProps.with,
-          orderBy: [
-            type === "popular"
-              ? desc(themesSchema.popularity)
-              : desc(themesSchema.createdAt),
-            asc(themesSchema.name),
-          ],
-          limit: THEMES_PER_PAGE,
-          offset: (page - 1) * THEMES_PER_PAGE,
-        });
-
-        return res.status(200).json(themes);
+        return res.status(200).json(
+          themes?.rows.map((theme: any) => ({
+            ...theme,
+            likedBy: theme.likedBy || [],
+            savedBy: theme.savedBy || [],
+            tags: theme.tags || [],
+          }))
+        );
       } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Failed to fetch themes" });
