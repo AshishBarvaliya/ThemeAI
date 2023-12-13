@@ -38,6 +38,7 @@ import Carousel from "./ui/carousel";
 import DashboardTemplate from "@/assets/templates/dashboard/dashboard-mini";
 import MagicWand from "@/assets/svgs/magic-wand";
 import EditorTemplate from "@/assets/templates/editor/editor-mini";
+import FoodieTemplate from "@/assets/templates/foodie/foodie-mini";
 
 export interface ThemeVeiwProps {
   theme: {
@@ -286,6 +287,12 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                 />
                 <DashboardTemplate
                   id="dashboard"
+                  colors={colors}
+                  shades={shades}
+                  fonts={fonts}
+                />
+                <FoodieTemplate
+                  id="foodie"
                   colors={colors}
                   shades={shades}
                   fonts={fonts}
