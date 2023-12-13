@@ -27,6 +27,7 @@ import { useRouter } from "next/router";
 import { INPUT_LIMIT } from "@/constants/website";
 import { Textarea } from "./ui/textarea";
 import { validateInput } from "@/lib/error";
+import { useHelpers } from "@/hooks/useHelpers";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -69,6 +70,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
   isDirty,
 }) => {
   const { addToast } = useToast();
+  const { template } = useHelpers();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [openSure, setOpenSure] = useState(false);
@@ -101,6 +103,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
         color_4_reason: data.color4Reason,
         isPrivate: data.isPrivate,
         tags: selectedTags,
+        template,
         ...(defaultData
           ? {
               prompt: defaultData.prompt,

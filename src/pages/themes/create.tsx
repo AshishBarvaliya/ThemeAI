@@ -16,34 +16,20 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const templatesDefaultColors = [
-  {
-    bg: "#FFFFFF",
-    primary: "#1C1C1C",
-    accent: "#1B1AFF",
-    extra: "#FFBB37",
-  },
-  {
-    bg: "#FFFFFF",
-    primary: "#000000",
-    accent: "#B9FF66",
-    extra: "#FFBB37",
-  },
-];
+const templatesDefaultColors = {
+  bg: "#FFFFFF",
+  primary: "#1C1C1C",
+  accent: "#1B1AFF",
+  extra: "#FFBB37",
+};
 
-const defaultFonts = [
-  {
-    primary: GOOGLE_FONTS[0],
-    secondary: GOOGLE_FONTS[1],
+const defaultFonts = {
+  primary: {
+    fontFamily: "Roboto",
+    weights: ["100", "300", "400", "500", "700", "900"],
   },
-  {
-    primary: {
-      fontFamily: "Space Grotesk",
-      weights: ["300", "400", "500", "600", "700"],
-    },
-    secondary: GOOGLE_FONTS[1],
-  },
-];
+  secondary: GOOGLE_FONTS[1],
+};
 
 const CreateTheme = () => {
   const router = useRouter();
@@ -55,9 +41,9 @@ const CreateTheme = () => {
   const [openExportThemeDialog, setOpenExportThemeDialog] = useState(false);
   const [openSure, setOpenSure] = useState(false);
   const [defaultColors, setDefaultColors] = useState<ColorsProps>(
-    templatesDefaultColors[0]
+    templatesDefaultColors
   );
-  const [fonts, setFonts] = useState<FontObjProps>(defaultFonts[0]);
+  const [fonts, setFonts] = useState<FontObjProps>(defaultFonts);
   const [colors, setColors] = useState<ColorsProps>(defaultColors);
   const [isLocked, setIsLocked] = useState({
     bg: false,
@@ -68,16 +54,24 @@ const CreateTheme = () => {
   const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
-    if (!isDirty) {
-      setColors(DEAFULT_THEMES[template].colors);
+    if (router.query.generated !== "1") {
+      if (!isDirty) {
+        setColors(DEAFULT_THEMES[template].colors);
+      }
+      setDefaultColors(DEAFULT_THEMES[template].colors);
     }
-    setDefaultColors(DEAFULT_THEMES[template].colors);
   }, [template]);
 
   useEffect(() => {
-    if (router.query.generated == "1") {
+    if (router.query.generated === "1") {
       if (generatedTheme && status === "authenticated") {
         setDefaultColors({
+          bg: generatedTheme.color_1,
+          primary: generatedTheme.color_2,
+          accent: generatedTheme.color_3,
+          extra: generatedTheme.color_4,
+        });
+        setColors({
           bg: generatedTheme.color_1,
           primary: generatedTheme.color_2,
           accent: generatedTheme.color_3,
@@ -87,7 +81,7 @@ const CreateTheme = () => {
         router.push("/themes/create", undefined, { shallow: true });
       }
     } else {
-      setDefaultColors(templatesDefaultColors[0]);
+      setDefaultColors(templatesDefaultColors);
     }
     setIsLocked({
       bg: false,
