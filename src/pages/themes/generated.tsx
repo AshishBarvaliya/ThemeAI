@@ -3,8 +3,8 @@ import { ThemeView } from "@/components/theme-view";
 import { useHelpers } from "@/hooks/useHelpers";
 
 const defaultFonts = {
-  font_1: "Inter",
-  font_2: "Inter",
+  font_1: "Roboto",
+  font_2: "Poppins",
 };
 
 export default function GeneratedTheme() {

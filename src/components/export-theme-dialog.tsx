@@ -378,9 +378,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                           </Button>
                         </div>
                       </div>
-                      <Typography
-                        element="p"
-                        as="p"
+                      <div
                         style={{
                           fontFamily:
                             fonts[key as keyof FontObjProps].fontFamily,
@@ -394,7 +392,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                         <p className="text-lg">
                           The quick brown fox jumps over a lazy dog.
                         </p>
-                      </Typography>
+                      </div>
                     </div>
                   ))}
                 </div>

@@ -147,7 +147,7 @@ export default function TagPicker({
           selectedTags?.map((tag) => (
             <div
               key={tag.name}
-              className="mr-2 h-[28px] text-sm flex items-center border-[0.5px] border-border px-3 rounded-[45px]"
+              className="mr-2 h-[28px] text-sm flex items-center border-[0.5px] border-border px-3 rounded-[45px] my-1"
             >
               {tag.name}
               <Cross1Icon
@@ -162,7 +162,7 @@ export default function TagPicker({
             </div>
           ))
         ) : (
-          <p className="">No tags selected</p>
+          <p className="h-[36px]">No tags selected</p>
         )}
       </div>
     </div>

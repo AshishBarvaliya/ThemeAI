@@ -1127,7 +1127,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
         patternContentUnits="objectBoundingBox"
       >
         <use
-          xlinkHref={`url(#i${id})`}
+          xlinkHref={`#i${id}`}
           transform="matrix(.00463 0 0 .00455 0 -.03)"
         />
       </pattern>

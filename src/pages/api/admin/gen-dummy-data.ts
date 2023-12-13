@@ -8,6 +8,8 @@ import { createId } from "@paralleldrive/cuid2";
 import { NextApiRequest, NextApiResponse } from "next";
 import { LoremIpsum } from "lorem-ipsum";
 import { GOOGLE_FONTS } from "@/constants/fonts";
+import { TEMPLATE_NAMES } from "@/constants/templates";
+import { TemplateType } from "@/interfaces/templates";
 
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
@@ -53,13 +55,13 @@ export default async function handler(
           id: createId(),
           name: lorem.generateWords(3),
           color_1: "#" + genRanHex(6),
-          color_1_reason: lorem.generateWords(8),
+          color_1_reason: lorem.generateWords(18),
           color_2: "#" + genRanHex(6),
-          color_2_reason: lorem.generateWords(9),
+          color_2_reason: lorem.generateWords(19),
           color_3: "#" + genRanHex(6),
-          color_3_reason: lorem.generateWords(7),
+          color_3_reason: lorem.generateWords(12),
           color_4: "#" + genRanHex(6),
-          color_4_reason: lorem.generateWords(10),
+          color_4_reason: lorem.generateWords(20),
           font_1:
             GOOGLE_FONTS[Math.floor(Math.random() * GOOGLE_FONTS.length)]
               .fontFamily,
@@ -68,14 +70,17 @@ export default async function handler(
               .fontFamily,
           prompt: lorem.generateWords(15),
           isPrivate: [false, true][Math.floor(Math.random() * 2)],
-          template: ["marketing", "learning"][Math.floor(Math.random() * 2)],
+          template: TEMPLATE_NAMES[
+            Math.floor(Math.random() * 5)
+          ] as TemplateType,
           isAIGenerated: [false, true][Math.floor(Math.random() * 2)],
           userId: [
             "payikqhn4fdveyhd6u3s5af1",
             "ts1gb3wynj7w3ku4dyfxjrss",
             "st1fakkn96guwxccgyojp4tp",
             "iyukgfe4m2qgzpczjfxf0ohq",
-          ][Math.floor(Math.random() * 4)],
+            "d0cqvzexpl96fxm861qyifqv",
+          ][Math.floor(Math.random() * 5)],
         }));
 
         await db.insert(themesSchema).values(newThemes);

@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import { useHelpers } from "@/hooks/useHelpers";
 import { INPUT_LIMIT } from "@/constants/website";
 import { validateInput } from "@/lib/error";
+import { TEMPLATE_NAMES } from "@/constants/templates";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -81,15 +82,17 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
         color_4_reason: generatedTheme.color_4_reason,
         isPrivate: data.isPrivate,
         tags: selectedTags,
+        template:
+          TEMPLATE_NAMES[Math.floor(Math.random() * TEMPLATE_NAMES.length)],
       })
       .then((res) => {
+        if (res.data) {
+          router.push(`/themes/${res.data?.id}`);
+        }
         addToast({ title: "New theme has been registered!", type: "success" });
         setLoading(false);
         setOpen(false);
         setGeneratedTheme(null);
-        if (res.data?.theme) {
-          router.push(`/themes/${res.data?.theme?.id}`);
-        }
       })
       .catch((error) => {
         addToast({ title: error.response.data.error, type: "error" });
@@ -132,7 +135,6 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
                   <TagPicker
                     selectedTags={selectedTags}
                     setSelectedTags={setSelectedTags}
-                    defaultTag={generatedTheme?.isDark ? "dark" : "light"}
                   />
                 </div>
                 <div className="flex items-center space-x-2 mt-3">

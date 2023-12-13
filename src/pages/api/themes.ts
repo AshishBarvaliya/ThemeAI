@@ -16,6 +16,7 @@ import {
 } from "@/db/schema";
 import db from "@/db";
 import { USER_LEVELS } from "@/constants/user";
+import { TemplateType } from "@/interfaces/templates";
 
 const THEMES_PER_PAGE = Number(process.env.THEMES_PER_PAGE || 10);
 
@@ -32,7 +33,7 @@ interface ThemeProps {
   color_4_reason: string;
   font_1: string;
   font_2: string;
-  template: string;
+  template: TemplateType;
   prompt: string;
   isPrivate: boolean;
   isAIGenerated: boolean;
@@ -437,7 +438,7 @@ export default async function handler(
         prompt = "",
         isPrivate,
         isAIGenerated = false,
-        template = "learning",
+        template = "Learning",
         tags = [],
       }: ThemeProps = req.body;
 

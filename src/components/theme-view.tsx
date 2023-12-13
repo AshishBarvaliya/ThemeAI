@@ -39,6 +39,7 @@ import DashboardTemplate from "@/assets/templates/dashboard/dashboard-mini";
 import MagicWand from "@/assets/svgs/magic-wand";
 import EditorTemplate from "@/assets/templates/editor/editor-mini";
 import FoodieTemplate from "@/assets/templates/foodie/foodie-mini";
+import { ConfirmationDialog } from "./confirmation-dialog";
 
 export interface ThemeVeiwProps {
   theme: {
@@ -92,6 +93,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
   } = useHelpers();
   const [openExportThemeDialog, setOpenExportThemeDialog] = useState(false);
   const [openSaveThemeDialog, setOpenSaveThemeDialog] = useState(false);
+  const [openSure, setOpenSure] = useState(false);
   const [copied, setCopied] = useState<null | string>(null);
   const { data: tags } = useQuery(["tags"], getTags);
 
@@ -166,7 +168,13 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
       <div className="flex w-full mx-auto flex-col overflow-y-scroll pt-10 xl:pt-7">
         <div className="relative w-full">
           <Button
-            onClick={() => router.back()}
+            onClick={() => {
+              if (type === "generated") {
+                setOpenSure(true);
+              } else {
+                router.back();
+              }
+            }}
             size="md"
             className="bg-background absolute ml-5 -mt-9 xl:mt-0"
           >
@@ -385,9 +393,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                       {key === "primary" ? "Primary Font" : "Secondary Font"}
                     </Typography>
                   </div>
-                  <Typography
-                    element="p"
-                    as="p"
+                  <div
                     style={{
                       fontFamily: fonts[key as keyof FontObjProps].fontFamily,
                       backgroundColor:
@@ -400,7 +406,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                     <p className="text-sm md:text-md">
                       The quick brown fox jumps over a lazy dog.
                     </p>
-                  </Typography>
+                  </div>
                 </div>
               ))}
             </div>
@@ -483,6 +489,18 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
               prompt: prompt,
             }}
           />
+          <ConfirmationDialog
+            open={openSure}
+            setOpen={setOpenSure}
+            onYes={() => {
+              history.back();
+              setOpenSure(false);
+            }}
+          >
+            <div className="text-md">
+              You have unsaved changes. are you sure want to leave?
+            </div>
+          </ConfirmationDialog>
           {theme.isAIGenerated ? (
             <div className="absolute gradient-border -top-[1.5px] -right-[1.5px] -left-[1.5px] -bottom-[1.5px] rounded-[8px]" />
           ) : null}

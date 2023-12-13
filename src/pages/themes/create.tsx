@@ -1,6 +1,3 @@
-import DashboardTemplate from "@/assets/templates/dashboard/dashboard";
-import EditorTemplate from "@/assets/templates/editor/editor";
-import MarketingTemplate from "@/assets/templates/marketing/marketing";
 import ColorPicker from "@/components/color-picker";
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
 import { ExportThemeDialog } from "@/components/export-theme-dialog";
@@ -8,8 +5,10 @@ import FontPicker from "@/components/font-picker";
 import { SaveThemeDialog } from "@/components/save-theme-dialog";
 import { Button } from "@/components/ui/button";
 import { GOOGLE_FONTS } from "@/constants/fonts";
+import { DEAFULT_THEMES } from "@/constants/templates";
 import { useHelpers } from "@/hooks/useHelpers";
 import { ColorsProps, FontObjProps } from "@/interfaces/theme";
+import { getTemplate } from "@/lib/templates";
 import { generateAllShades } from "@/lib/utils";
 import { ArrowLeftIcon, DownloadIcon } from "@radix-ui/react-icons";
 import { RotateCcw } from "lucide-react";
@@ -17,47 +16,34 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const templatesDefaultColors = [
-  {
-    bg: "#FFFFFF",
-    primary: "#1C1C1C",
-    accent: "#1B1AFF",
-    extra: "#FFBB37",
-  },
-  {
-    bg: "#FFFFFF",
-    primary: "#000000",
-    accent: "#B9FF66",
-    extra: "#FFBB37",
-  },
-];
+const templatesDefaultColors = {
+  bg: "#FFFFFF",
+  primary: "#1C1C1C",
+  accent: "#1B1AFF",
+  extra: "#FFBB37",
+};
 
-const defaultFonts = [
-  {
-    primary: GOOGLE_FONTS[0],
-    secondary: GOOGLE_FONTS[1],
+const defaultFonts = {
+  primary: {
+    fontFamily: "Roboto",
+    weights: ["100", "300", "400", "500", "700", "900"],
   },
-  {
-    primary: {
-      fontFamily: "Space Grotesk",
-      weights: ["300", "400", "500", "600", "700"],
-    },
-    secondary: GOOGLE_FONTS[1],
-  },
-];
+  secondary: GOOGLE_FONTS[1],
+};
 
 const CreateTheme = () => {
   const router = useRouter();
   const { status } = useSession();
-  const { generatedTheme, runIfLoggedInElseOpenLoginDialog } = useHelpers();
+  const { template, generatedTheme, runIfLoggedInElseOpenLoginDialog } =
+    useHelpers();
   const [openColorPicker, setOpenColorPicker] = useState<string | null>(null);
   const [openSaveThemeDialog, setOpenSaveThemeDialog] = useState(false);
   const [openExportThemeDialog, setOpenExportThemeDialog] = useState(false);
   const [openSure, setOpenSure] = useState(false);
   const [defaultColors, setDefaultColors] = useState<ColorsProps>(
-    templatesDefaultColors[0]
+    templatesDefaultColors
   );
-  const [fonts, setFonts] = useState<FontObjProps>(defaultFonts[0]);
+  const [fonts, setFonts] = useState<FontObjProps>(defaultFonts);
   const [colors, setColors] = useState<ColorsProps>(defaultColors);
   const [isLocked, setIsLocked] = useState({
     bg: false,
@@ -68,13 +54,24 @@ const CreateTheme = () => {
   const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
-    setColors(defaultColors);
-  }, [defaultColors]);
+    if (router.query.generated !== "1") {
+      if (!isDirty) {
+        setColors(DEAFULT_THEMES[template].colors);
+      }
+      setDefaultColors(DEAFULT_THEMES[template].colors);
+    }
+  }, [template]);
 
   useEffect(() => {
-    if (router.query.generated == "1") {
+    if (router.query.generated === "1") {
       if (generatedTheme && status === "authenticated") {
         setDefaultColors({
+          bg: generatedTheme.color_1,
+          primary: generatedTheme.color_2,
+          accent: generatedTheme.color_3,
+          extra: generatedTheme.color_4,
+        });
+        setColors({
           bg: generatedTheme.color_1,
           primary: generatedTheme.color_2,
           accent: generatedTheme.color_3,
@@ -84,7 +81,7 @@ const CreateTheme = () => {
         router.push("/themes/create", undefined, { shallow: true });
       }
     } else {
-      setDefaultColors(templatesDefaultColors[0]);
+      setDefaultColors(templatesDefaultColors);
     }
     setIsLocked({
       bg: false,
@@ -226,12 +223,12 @@ const CreateTheme = () => {
         </div>
       </div>
       <div className="flex mt-[72px]">
-        <EditorTemplate
-          id={"create"}
-          colors={colors}
-          shades={generateAllShades(colors)}
-          fonts={fonts}
-        />
+        {getTemplate(template, {
+          id: template + "-create",
+          fonts,
+          colors,
+          shades: generateAllShades(colors),
+        })}
       </div>
       <SaveThemeDialog
         open={openSaveThemeDialog}
