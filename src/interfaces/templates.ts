@@ -7,3 +7,10 @@ export interface TemplateProps {
   fonts: FontObjProps;
   svgProps?: any;
 }
+
+export type TemplateType =
+  | "Learning"
+  | "Marketing"
+  | "Foodie"
+  | "Dashboard"
+  | "Editor";

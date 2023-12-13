@@ -2,6 +2,7 @@ import { TemplateProps } from "@/interfaces/templates";
 import * as React from "react";
 
 const MarketingTemplate: React.FC<TemplateProps> = ({
+  id,
   colors,
   shades,
   fonts,
@@ -63,8 +64,8 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
         </p>
       </div>
     </foreignObject>
-    <g clipPath="url(#clip0_502_231)">
-      <g clipPath="url(#clip1_502_231)">
+    <g clipPath={`url(#clip0_502_231${id})`}>
+      <g clipPath={`url(#clip1_502_231${id})`}>
         <path
           d="M125.999 81.5347L143.6 76.3491L138.464 94.0001L143.6 111.601L125.999 106.465L108.348 111.601L113.533 94.0001L108.348 76.3491L125.999 81.5347Z"
           fill={colors.primary}
@@ -184,7 +185,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
         </p>
       </div>
     </foreignObject>
-    <g clipPath="url(#clip2_502_231)">
+    <g clipPath={`url(#clip2_502_231${id})`}>
       <path
         d="M1058.54 630.535L1076.14 625.349L1071 643L1076.14 660.601L1058.54 655.465L1040.88 660.601L1046.07 643L1040.88 625.349L1058.54 630.535Z"
         fill={colors.extra}
@@ -192,7 +193,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
         strokeMiterlimit="10"
       />
     </g>
-    <g clipPath="url(#clip3_502_231)">
+    <g clipPath={`url(#clip3_502_231${id})`}>
       <path
         d="M872.484 543.509L903.96 560.659L872.484 577.947L855.266 609.354L838.047 577.947L806.571 560.659L838.047 543.509L855.266 511.964L872.484 543.509Z"
         fill={colors.extra}
@@ -385,7 +386,10 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
         fill={colors.primary}
       />
     </g>
-    <g style={{ mixBlendMode: "luminosity" }} clipPath="url(#clip4_502_231)">
+    <g
+      style={{ mixBlendMode: "luminosity" }}
+      clipPath={`url(#clip4_502_231${id})`}
+    >
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -393,7 +397,10 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
         fill={shades.primaryDark}
       />
     </g>
-    <g style={{ mixBlendMode: "luminosity" }} clipPath="url(#clip5_502_231)">
+    <g
+      style={{ mixBlendMode: "luminosity" }}
+      clipPath={`url(#clip5_502_231${id})`}
+    >
       <path
         d="M564.181 796.106V805.194H554.764V796.106H550.293V817.8H554.764V809.007H564.181V817.8H568.651V796.106H564.181Z"
         fill={shades.primaryDark}
@@ -423,7 +430,10 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
         fill={shades.primaryDark}
       />
     </g>
-    <g style={{ mixBlendMode: "luminosity" }} clipPath="url(#clip6_502_231)">
+    <g
+      style={{ mixBlendMode: "luminosity" }}
+      clipPath={`url(#clip6_502_231${id})`}
+    >
       <path
         d="M825.525 817.775V803.22H825.818L837.772 817.775H841.533V796.401H837.354V810.919H837.061L825.107 796.401H821.345V817.775H825.525ZM853.362 818.105C858.879 818.105 862.265 814.952 862.265 809.672C862.265 804.43 858.879 801.24 853.362 801.24C847.886 801.24 844.459 804.43 844.459 809.672C844.501 814.952 847.845 818.105 853.362 818.105ZM853.362 815.025C850.436 815.025 848.764 813.082 848.764 809.672C848.764 806.3 850.436 804.32 853.362 804.32C856.288 804.32 857.959 806.3 857.959 809.672C857.959 813.082 856.288 815.025 853.362 815.025ZM866.068 797.611V801.68H863.142V804.613H866.068V813.449C866.068 816.602 867.74 817.848 872.003 817.848C872.797 817.848 873.592 817.775 874.219 817.665V814.805C873.717 814.842 873.383 814.879 872.797 814.879C871.042 814.879 870.248 814.182 870.248 812.569V804.613H874.219V801.68H870.248V797.611H866.068ZM876.726 817.775H880.906V801.57H876.726V817.775ZM878.816 798.894C880.196 798.894 881.324 797.904 881.324 796.694C881.324 795.447 880.196 794.458 878.816 794.458C877.437 794.458 876.308 795.447 876.308 796.694C876.308 797.904 877.437 798.894 878.816 798.894ZM892.358 818.105C897.876 818.105 901.261 814.952 901.261 809.672C901.261 804.43 897.876 801.24 892.358 801.24C886.883 801.24 883.456 804.43 883.456 809.672C883.456 814.952 886.799 818.105 892.358 818.105ZM892.358 815.025C889.433 815.025 887.761 813.082 887.761 809.672C887.761 806.3 889.433 804.32 892.358 804.32C895.242 804.32 896.956 806.3 896.956 809.672C896.914 813.082 895.242 815.025 892.358 815.025ZM903.727 817.775H907.907V808.353C907.907 805.97 909.495 804.466 911.961 804.466C914.511 804.466 915.681 805.713 915.681 808.169V817.775H919.861V807.289C919.861 803.403 917.604 801.24 913.508 801.24C910.749 801.24 908.91 802.34 908.032 804.173H907.74V801.57H903.685C903.727 801.57 903.727 817.775 903.727 817.775Z"
         fill={colors.primary}
@@ -435,13 +445,19 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
         fill={shades.primaryDark}
       />
     </g>
-    <g style={{ mixBlendMode: "luminosity" }} clipPath="url(#clip7_502_231)">
+    <g
+      style={{ mixBlendMode: "luminosity" }}
+      clipPath={`url(#clip7_502_231${id})`}
+    >
       <path
         d="M1033.5 821.066C1031.62 821.36 1029.7 821.447 1027.72 821.682L1021.67 805.979V822.356C1019.78 822.531 1018.06 822.766 1016.28 823V793H1021.3L1028.18 810.022V793H1033.5V821.066ZM1043.91 803.986C1045.96 803.986 1049.1 803.898 1050.99 803.898V808.586C1048.64 808.586 1045.9 808.586 1043.91 808.674V815.647C1047.02 815.471 1050.13 815.236 1053.27 815.148V819.66L1038.62 820.685V793H1053.27V797.688H1043.91V803.986V803.986ZM1072.94 797.688H1067.45V819.25C1065.66 819.25 1063.88 819.25 1062.16 819.309V797.688H1056.67V793H1072.94L1072.94 797.688V797.688ZM1081.53 803.664H1088.77V808.352H1081.53V818.986H1076.34V793H1091.12V797.688H1081.53V803.664V803.664ZM1099.71 814.885C1102.72 814.943 1105.76 815.149 1108.7 815.295V819.924C1103.98 819.66 1099.25 819.397 1094.42 819.309V793H1099.71V814.885ZM1113.17 820.246C1114.85 820.334 1116.64 820.422 1118.35 820.598V793H1113.17V820.246V820.246ZM1141.53 793L1134.82 807.268L1141.53 823C1139.54 822.766 1137.56 822.443 1135.58 822.15L1131.78 813.479L1127.91 821.447C1125.99 821.154 1124.14 821.066 1122.22 820.832L1129.03 807.092L1122.88 793H1128.57L1132.04 800.881L1135.74 793H1141.53V793Z"
         fill={shades.primaryDark}
       />
     </g>
-    <g style={{ mixBlendMode: "luminosity" }} clipPath="url(#clip8_502_231)">
+    <g
+      style={{ mixBlendMode: "luminosity" }}
+      clipPath={`url(#clip8_502_231${id})`}
+    >
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -1135,7 +1151,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
     </foreignObject>
     <defs>
       <filter
-        id="filter0_d_502_231"
+        id={`filter0_d_502_231${id}`}
         x="108"
         y="1027"
         width="600"
@@ -1169,7 +1185,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
         />
       </filter>
       <filter
-        id="filter1_d_502_231"
+        id={`filter1_d_502_231${id}`}
         x="748"
         y="1027"
         width="600"
@@ -1203,7 +1219,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
         />
       </filter>
       <filter
-        id="filter2_d_502_231"
+        id={`filter2_d_502_231${id}`}
         x="108"
         y="1377"
         width="600"
@@ -1237,7 +1253,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
         />
       </filter>
       <filter
-        id="filter3_d_502_231"
+        id={`filter3_d_502_231${id}`}
         x="748"
         y="1377"
         width="600"
@@ -1271,7 +1287,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
         />
       </filter>
       <filter
-        id="filter4_d_502_231"
+        id={`filter4_d_502_231${id}`}
         x="100"
         y="1882"
         width="387"
@@ -1305,7 +1321,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
         />
       </filter>
       <filter
-        id="filter5_d_502_231"
+        id={`filter5_d_502_231${id}`}
         x="527"
         y="1882"
         width="387"
@@ -1339,7 +1355,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
         />
       </filter>
       <filter
-        id="filter6_d_502_231"
+        id={`filter6_d_502_231${id}`}
         x="954"
         y="1882"
         width="387"
@@ -1372,7 +1388,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
           result="shape"
         />
       </filter>
-      <clipPath id="clip0_502_231">
+      <clipPath id={`clip0_502_231${id}`}>
         <rect
           width="219.537"
           height="56"
@@ -1380,7 +1396,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
           transform="translate(108 66)"
         />
       </clipPath>
-      <clipPath id="clip1_502_231">
+      <clipPath id={`clip1_502_231${id}`}>
         <rect
           width="36"
           height="36"
@@ -1388,7 +1404,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
           transform="translate(108 76)"
         />
       </clipPath>
-      <clipPath id="clip2_502_231">
+      <clipPath id={`clip2_502_231${id}`}>
         <rect
           width="36"
           height="36"
@@ -1396,7 +1412,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
           transform="translate(1040.54 625)"
         />
       </clipPath>
-      <clipPath id="clip3_502_231">
+      <clipPath id={`clip3_502_231${id}`}>
         <rect
           width="70.3259"
           height="70.3259"
@@ -1404,7 +1420,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
           transform="translate(855.266 511) rotate(45)"
         />
       </clipPath>
-      <clipPath id="clip4_502_231">
+      <clipPath id={`clip4_502_231${id}`}>
         <rect
           width="126.369"
           height="48"
@@ -1412,7 +1428,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
           transform="translate(328.018 783)"
         />
       </clipPath>
-      <clipPath id="clip5_502_231">
+      <clipPath id={`clip5_502_231${id}`}>
         <rect
           width="128.626"
           height="48"
@@ -1420,7 +1436,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
           transform="translate(550.293 783)"
         />
       </clipPath>
-      <clipPath id="clip6_502_231">
+      <clipPath id={`clip6_502_231${id}`}>
         <rect
           width="145.551"
           height="48"
@@ -1428,7 +1444,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
           transform="translate(774.824 783)"
         />
       </clipPath>
-      <clipPath id="clip7_502_231">
+      <clipPath id={`clip7_502_231${id}`}>
         <rect
           width="125.241"
           height="48"
@@ -1436,7 +1452,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
           transform="translate(1016.28 783)"
         />
       </clipPath>
-      <clipPath id="clip8_502_231">
+      <clipPath id={`clip8_502_231${id}`}>
         <rect
           width="110.573"
           height="48"
@@ -1444,7 +1460,7 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
           transform="translate(1237.43 783)"
         />
       </clipPath>
-      <clipPath id="clip9_502_231">
+      <clipPath id={`clip9_502_231${id}`}>
         <rect
           width="29.5167"
           height="29"

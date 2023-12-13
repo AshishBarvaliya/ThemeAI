@@ -8,6 +8,7 @@ import {
 import { useSession } from "next-auth/react";
 import { VerificationDialogProps } from "@/components/verification-dialog";
 import { GeneratedThemeProps } from "@/interfaces/theme";
+import { TemplateType } from "@/interfaces/templates";
 
 type Context = {
   loginOpen: boolean;
@@ -46,6 +47,8 @@ type Context = {
   setGenerateDialogDefaultValues: Dispatch<
     SetStateAction<{ prompt: string; isDark: boolean } | undefined>
   >;
+  template: TemplateType;
+  setTemplate: Dispatch<SetStateAction<TemplateType>>;
 };
 
 const HelpersContext = createContext({
@@ -77,6 +80,8 @@ const HelpersContext = createContext({
     isDark: false,
   },
   setGenerateDialogDefaultValues: () => {},
+  template: "Learning",
+  setTemplate: () => {},
 } as Context);
 
 export const HelpersProvider = ({
@@ -104,6 +109,7 @@ export const HelpersProvider = ({
     useState<Context["generateDialogDefaultValues"]>();
   const [generatedTheme, setGeneratedTheme] =
     useState<GeneratedThemeProps | null>(null);
+  const [template, setTemplate] = useState<TemplateType>("Learning");
   const { data: session, status } = useSession();
 
   const runIfLoggedInElseOpenLoginDialog = (fn: () => void) => {
@@ -146,6 +152,8 @@ export const HelpersProvider = ({
         setIsAIOnly,
         generateDialogDefaultValues,
         setGenerateDialogDefaultValues,
+        template,
+        setTemplate,
       }}
     >
       {children}

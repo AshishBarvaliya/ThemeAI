@@ -1,5 +1,7 @@
 import DashboardTemplate from "@/assets/templates/dashboard/dashboard";
 import EditorTemplate from "@/assets/templates/editor/editor";
+import FoodieTemplate from "@/assets/templates/foodie/foodie";
+import LearningTemplate from "@/assets/templates/learning/learning";
 import MarketingTemplate from "@/assets/templates/marketing/marketing";
 import ColorPicker from "@/components/color-picker";
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
@@ -8,7 +10,9 @@ import FontPicker from "@/components/font-picker";
 import { SaveThemeDialog } from "@/components/save-theme-dialog";
 import { Button } from "@/components/ui/button";
 import { GOOGLE_FONTS } from "@/constants/fonts";
+import { DEAFULT_THEMES } from "@/constants/templates";
 import { useHelpers } from "@/hooks/useHelpers";
+import { TemplateType } from "@/interfaces/templates";
 import { ColorsProps, FontObjProps } from "@/interfaces/theme";
 import { generateAllShades } from "@/lib/utils";
 import { ArrowLeftIcon, DownloadIcon } from "@radix-ui/react-icons";
@@ -49,7 +53,8 @@ const defaultFonts = [
 const CreateTheme = () => {
   const router = useRouter();
   const { status } = useSession();
-  const { generatedTheme, runIfLoggedInElseOpenLoginDialog } = useHelpers();
+  const { template, generatedTheme, runIfLoggedInElseOpenLoginDialog } =
+    useHelpers();
   const [openColorPicker, setOpenColorPicker] = useState<string | null>(null);
   const [openSaveThemeDialog, setOpenSaveThemeDialog] = useState(false);
   const [openExportThemeDialog, setOpenExportThemeDialog] = useState(false);
@@ -67,9 +72,55 @@ const CreateTheme = () => {
   });
   const [isDirty, setIsDirty] = useState(false);
 
+  const templates: { [key in TemplateType]: JSX.Element } = {
+    Learning: (
+      <LearningTemplate
+        id="leaning-create"
+        colors={colors}
+        shades={generateAllShades(colors)}
+        fonts={fonts}
+      />
+    ),
+    Marketing: (
+      <MarketingTemplate
+        id="marketing-create"
+        colors={colors}
+        shades={generateAllShades(colors)}
+        fonts={fonts}
+      />
+    ),
+    Dashboard: (
+      <DashboardTemplate
+        id="dashboard-create"
+        colors={colors}
+        shades={generateAllShades(colors)}
+        fonts={fonts}
+      />
+    ),
+    Editor: (
+      <EditorTemplate
+        id="editor-create"
+        colors={colors}
+        shades={generateAllShades(colors)}
+        fonts={fonts}
+      />
+    ),
+    Foodie: (
+      <FoodieTemplate
+        id="foodie-create"
+        colors={colors}
+        shades={generateAllShades(colors)}
+        fonts={fonts}
+      />
+    ),
+  };
+
   useEffect(() => {
-    setColors(defaultColors);
-  }, [defaultColors]);
+    if (!isDirty) {
+      setColors(DEAFULT_THEMES[template].colors);
+    }
+    setDefaultColors(DEAFULT_THEMES[template].colors);
+  }, [template]);
 
   useEffect(() => {
     if (router.query.generated == "1") {
@@ -225,14 +276,7 @@ const CreateTheme = () => {
           </Button>
         </div>
       </div>
-      <div className="flex mt-[72px]">
-        <EditorTemplate
-          id={"create"}
-          colors={colors}
-          shades={generateAllShades(colors)}
-          fonts={fonts}
-        />
-      </div>
+      <div className="flex mt-[72px]">{templates[template]}</div>
       <SaveThemeDialog
         open={openSaveThemeDialog}
         fonts={fonts}

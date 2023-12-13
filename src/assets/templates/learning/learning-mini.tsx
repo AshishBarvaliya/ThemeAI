@@ -2,6 +2,7 @@ import { TemplateProps } from "@/interfaces/templates";
 import * as React from "react";
 
 const LearningTemplate: React.FC<TemplateProps> = ({
+  id,
   colors,
   shades,
   fonts,
@@ -80,7 +81,7 @@ const LearningTemplate: React.FC<TemplateProps> = ({
       rx={16}
     />
     <mask
-      id="i"
+      id={`i${id}`}
       width={540}
       height={604}
       x={820}
@@ -97,7 +98,7 @@ const LearningTemplate: React.FC<TemplateProps> = ({
         rx={16}
       />
     </mask>
-    <g mask="url(#i)">
+    <g mask={`url(#i${id})`}>
       <path
         fill={colors.accent}
         d="M918.175 833.172 755.48 386.193l81.876-32.547 134.699 291.838 13.206-334.149 111.989-22.783 110.4 239.763 59.69-343.371h136.28l-136.28 610.257h-72.9l-121.49-310.824-39.09 310.824-115.685 37.971Z"
@@ -105,7 +106,7 @@ const LearningTemplate: React.FC<TemplateProps> = ({
     </g>
 
     <mask
-      id="j"
+      id={`j${id}`}
       width={587}
       height={656}
       x={797}
@@ -122,8 +123,11 @@ const LearningTemplate: React.FC<TemplateProps> = ({
         rx={16}
       />
     </mask>
-    <g mask="url(#j)">
-      <path fill="url(#k)" d="M811.954 182.93h517.422v670.954H811.954z" />
+    <g mask={`url(#j${id})`}>
+      <path
+        fill={`url(#k${id})`}
+        d="M811.954 182.93h517.422v670.954H811.954z"
+      />
     </g>
     <path
       fill={colors.extra}
@@ -207,36 +211,42 @@ const LearningTemplate: React.FC<TemplateProps> = ({
       rx={7.5}
     />
     <defs>
-      <clipPath id="a">
+      <clipPath id={`a${id}`}>
         <path fill={colors.bg} d="M968 2174h40v40h-40z" />
       </clipPath>
-      <clipPath id="b">
+      <clipPath id={`b${id}`}>
         <path fill={colors.bg} d="M560 2174h40v40h-40z" />
       </clipPath>
-      <clipPath id="c">
+      <clipPath id={`c${id}`}>
         <path fill={colors.bg} d="M152 2174h40v40h-40z" />
       </clipPath>
-      <clipPath id="g">
+      <clipPath id={`g${id}`}>
         <path fill={colors.bg} d="M112 1228h44.772v42H112z" />
       </clipPath>
-      <clipPath id="h">
+      <clipPath id={`h${id}`}>
         <path fill={colors.bg} d="M1139 1228h173v34.654h-173z" />
       </clipPath>
       <pattern
-        id="f"
+        id={`f${id}`}
         width={1}
         height={1}
         patternContentUnits="objectBoundingBox"
       >
-        <use xlinkHref="#l" transform="matrix(.00246 0 0 .00236 0 -.442)" />
+        <use
+          xlinkHref={`#l${id}`}
+          transform="matrix(.00246 0 0 .00236 0 -.442)"
+        />
       </pattern>
       <pattern
-        id="k"
+        id={`k${id}`}
         width={1}
         height={1}
         patternContentUnits="objectBoundingBox"
       >
-        <use xlinkHref="#m" transform="matrix(.00245 0 0 .00189 0 -.078)" />
+        <use
+          xlinkHref={`#m${id}`}
+          transform="matrix(.00245 0 0 .00189 0 -.078)"
+        />
       </pattern>
     </defs>
   </svg>

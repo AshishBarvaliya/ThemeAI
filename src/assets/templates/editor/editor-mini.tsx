@@ -157,7 +157,7 @@ const EditorTemplate: React.FC<TemplateProps> = ({
         </div>
       </div>
     </foreignObject>
-    <g filter="url(#g)">
+    <g filter={`url(#g${id})`}>
       <path fill="#000" fillOpacity={0.01} d="M160.5 749h1120v667h-1120z" />
     </g>
     <path
