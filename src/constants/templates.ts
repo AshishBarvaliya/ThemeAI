@@ -145,3 +145,11 @@ export const DEAFULT_THEMES = {
     },
   },
 };
+
+export const TEMPLATE_NAMES = [
+  "Learning",
+  "Marketing",
+  "Foodie",
+  "Dashboard",
+  "Editor",
+];

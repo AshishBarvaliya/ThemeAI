@@ -1,8 +1,3 @@
-import DashboardTemplate from "@/assets/templates/dashboard/dashboard";
-import EditorTemplate from "@/assets/templates/editor/editor";
-import FoodieTemplate from "@/assets/templates/foodie/foodie";
-import LearningTemplate from "@/assets/templates/learning/learning";
-import MarketingTemplate from "@/assets/templates/marketing/marketing";
 import ColorPicker from "@/components/color-picker";
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
 import { ExportThemeDialog } from "@/components/export-theme-dialog";
@@ -12,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { GOOGLE_FONTS } from "@/constants/fonts";
 import { DEAFULT_THEMES } from "@/constants/templates";
 import { useHelpers } from "@/hooks/useHelpers";
-import { TemplateType } from "@/interfaces/templates";
 import { ColorsProps, FontObjProps } from "@/interfaces/theme";
+import { getTemplate } from "@/lib/templates";
 import { generateAllShades } from "@/lib/utils";
 import { ArrowLeftIcon, DownloadIcon } from "@radix-ui/react-icons";
 import { RotateCcw } from "lucide-react";
@@ -71,49 +66,6 @@ const CreateTheme = () => {
     extra: false,
   });
   const [isDirty, setIsDirty] = useState(false);
-
-  const templates: { [key in TemplateType]: JSX.Element } = {
-    Learning: (
-      <LearningTemplate
-        id="leaning-create"
-        colors={colors}
-        shades={generateAllShades(colors)}
-        fonts={fonts}
-      />
-    ),
-    Marketing: (
-      <MarketingTemplate
-        id="marketing-create"
-        colors={colors}
-        shades={generateAllShades(colors)}
-        fonts={fonts}
-      />
-    ),
-    Dashboard: (
-      <DashboardTemplate
-        id="dashboard-create"
-        colors={colors}
-        shades={generateAllShades(colors)}
-        fonts={fonts}
-      />
-    ),
-    Editor: (
-      <EditorTemplate
-        id="editor-create"
-        colors={colors}
-        shades={generateAllShades(colors)}
-        fonts={fonts}
-      />
-    ),
-    Foodie: (
-      <FoodieTemplate
-        id="foodie-create"
-        colors={colors}
-        shades={generateAllShades(colors)}
-        fonts={fonts}
-      />
-    ),
-  };
 
   useEffect(() => {
     if (!isDirty) {
@@ -276,7 +228,14 @@ const CreateTheme = () => {
           </Button>
         </div>
       </div>
-      <div className="flex mt-[72px]">{templates[template]}</div>
+      <div className="flex mt-[72px]">
+        {getTemplate(template, {
+          id: template + "-create",
+          fonts,
+          colors,
+          shades: generateAllShades(colors),
+        })}
+      </div>
       <SaveThemeDialog
         open={openSaveThemeDialog}
         fonts={fonts}

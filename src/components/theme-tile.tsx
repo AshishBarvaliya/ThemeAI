@@ -1,6 +1,4 @@
 import HeartIcon from "@/assets/icons/heart";
-import LearningTemplate from "@/assets/templates/learning/learning-mini";
-import MarketingTemplate from "@/assets/templates/marketing/marketing-mini";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import Typography from "@/components/ui/typography";
 import { useHelpers } from "@/hooks/useHelpers";
@@ -25,7 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import EditorTemplate from "@/assets/templates/editor/editor-mini";
+import { getMiniTemplate } from "@/lib/templates";
 
 interface ThemeTileProps {
   theme: GetThemeTileProps;
@@ -175,21 +173,12 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
         </div>
       </div>
       <div className="relative parent_hover bg-white">
-        {mappedTheme.template === "marketing" ? (
-          <MarketingTemplate
-            id={mappedTheme.id}
-            colors={mappedTheme.colors}
-            shades={generateAllShades(mappedTheme.colors)}
-            fonts={mappedTheme.fonts}
-          />
-        ) : (
-          <EditorTemplate
-            id={mappedTheme.id}
-            colors={mappedTheme.colors}
-            shades={generateAllShades(mappedTheme.colors)}
-            fonts={mappedTheme.fonts}
-          />
-        )}
+        {getMiniTemplate(mappedTheme.template, {
+          id: mappedTheme.id,
+          colors: mappedTheme.colors,
+          shades: generateAllShades(mappedTheme.colors),
+          fonts: mappedTheme.fonts,
+        })}
         <div className="hidden_child absolute top-0 bg-black/30 w-full h-full items-center justify-center flex">
           <Button
             size={"md"}

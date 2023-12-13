@@ -1,4 +1,5 @@
 import { FontProps } from "@/constants/fonts";
+import { TemplateType } from "./templates";
 
 export type IColor = "bg" | "primary" | "accent" | "extra";
 
@@ -56,7 +57,7 @@ export interface GetThemeTileProps {
   font_2: string;
   isAIGenerated: boolean;
   isPrivate?: boolean;
-  template: string;
+  template: TemplateType;
   tags: string[];
   createdAt?: Date;
   user_id: string;
@@ -75,7 +76,7 @@ export interface MappedThemeProps {
   fonts: FontObjProps;
   tags: string[];
   createdAt?: Date;
-  template: string;
+  template: TemplateType;
   user: {
     id: string;
     name: string;

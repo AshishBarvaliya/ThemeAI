@@ -5,7 +5,6 @@ export interface TemplateProps {
   colors: ColorsProps;
   shades: ShadesProps;
   fonts: FontObjProps;
-  svgProps?: any;
 }
 
 export type TemplateType =

@@ -98,6 +98,14 @@ export const accounts = pgTable(
   })
 );
 
+export const templateEnum = pgEnum("theme_template", [
+  "Learning",
+  "Marketing",
+  "Foodie",
+  "Dashboard",
+  "Editor",
+]);
+
 export const themes = pgTable("theme", {
   id: text("id").notNull().primaryKey(),
   name: text("name").notNull(),
@@ -111,7 +119,7 @@ export const themes = pgTable("theme", {
   color_4_reason: text("color_4_reason").notNull(),
   font_1: text("font_1").notNull(),
   font_2: text("font_2").notNull(),
-  template: text("template").notNull(),
+  template: templateEnum("template").notNull(),
   prompt: text("prompt"),
   isPrivate: boolean("isPrivate").default(false),
   isAIGenerated: boolean("isAIGenerated").default(false),
