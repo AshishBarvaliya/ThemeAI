@@ -95,12 +95,12 @@ export default function Settings() {
       <Button
         onClick={() => router.back()}
         size="md"
-        className="bg-background absolute ml-5 mb-6 mt-1 xl:my-6"
+        className="bg-background absolute ml-5 mb-6 mt-1 xl:my-6 z-10"
       >
         <ArrowLeftIcon className="h-4 w-4 mr-1.5" />
         Back
       </Button>
-      <div className="flex flex-col w-full my-0 xl:my-6 border-[0.5px] border-border bg-white max-w-[1000px] mx-auto p-[30px] px-[40px]">
+      <div className="flex flex-col w-full my-0 xl:my-6 md:border-[0.5px] border-border overflow-y-auto bg-white max-w-[1000px] mx-auto p-[30px] px-[40px]">
         <Typography element="h1" as="h1" className="text-center pt-3 xl:pt-3">
           Profile Settings
         </Typography>

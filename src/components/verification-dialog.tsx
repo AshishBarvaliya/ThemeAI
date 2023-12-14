@@ -145,14 +145,14 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
         clearURL && router.push("/themes", undefined, { shallow: true });
       }}
     >
-      <DialogContent className="p-8 border max-w-[400px] border-border bg-white rounded-none">
+      <DialogContent className="p-6 md:p-8 border max-w-[400px] border-border bg-white rounded-none">
         <div className="flex flex-col items-center">
           <div
             className={`flex items-center ${messages[type].bg} justify-center border border-border w-10 h-10`}
           >
             {messages[type].icon}
           </div>
-          <Typography element="h3" as="h3" className="mt-4">
+          <Typography element="h3" as="h3" className="mt-4 text-center">
             {messages[type].title}
           </Typography>
           <Typography element="p" as="p" className="text-center text-xs mt-2">

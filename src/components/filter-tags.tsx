@@ -27,12 +27,17 @@ export const FiterTags: React.FC<FilterTagsProps> = ({
       <DropdownMenuTrigger asChild>
         <div
           className={cn(
-            "flex items-center cursor-pointer px-3 text-xs bg-white border-[0.5px] border-border",
+            "flex items-center cursor-pointer px-3 text-xs bg-white border-[0.5px] border-border min-w-[90px] md:min-w-auto",
             isHeader ? "py-1.5" : "h-8"
           )}
         >
-          Filter by tags{selected.length ? ` [${selected.length}]` : ""}
-          <ChevronDown className="h-4 w-4 ml-2" />
+          <p className="hidden flex-1 md:flex">
+            Filter by tags{selected.length ? ` [${selected.length}]` : ""}
+          </p>
+          <p className="flex flex-1 md:hidden">
+            Filter{selected.length ? ` [${selected.length}]` : ""}
+          </p>
+          <ChevronDown className="h-4 w-4 ml-0.5 md:ml-2" />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent

@@ -1,4 +1,3 @@
-import CanvasAnimation from "@/components/canvas-animation";
 import { Footer } from "@/components/footer";
 import GlowingBoxes from "@/components/growing-dots";
 import { Button } from "@/components/ui/button";
@@ -53,17 +52,6 @@ export default function Home() {
         </div>
         <div className="absolute top-0 left-0 right-0 bottom-0 z-0">
           <GlowingBoxes />
-        </div>
-      </div>
-      <div className="relative h-[170px] border-b-[0.5px] border-t-[0.5px] border-border">
-        <CanvasAnimation />
-        <div className="absolute top-0 left-0 right-0 bottom-0 justify-center items-center flex">
-          <h1
-            className="text-[130px] text-center leading-[130px] font-bold text-primary-foreground"
-            style={{ fontFamily: "Nosifer" }}
-          >
-            ThemeGPT
-          </h1>
         </div>
       </div>
       <Footer />

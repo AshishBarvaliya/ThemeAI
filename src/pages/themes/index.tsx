@@ -13,7 +13,6 @@ import {
 } from "@/services/toggle";
 import {
   useMutation,
-  useQuery,
   useQueryClient,
   useInfiniteQuery,
 } from "@tanstack/react-query";
@@ -191,7 +190,7 @@ export default function Themes() {
     <div className="flex bg-black/5 w-full">
       {isLoading ? null : themes?.pages[0]?.length ? (
         <div
-          className="flex flex-wrap p-5 overflow-y-auto px-10 gap-6 w-full"
+          className="flex flex-col md:flex-row h-full md:flex-wrap p-5 overflow-y-auto lg:px-10 gap-6 w-full items-center md:items-start"
           onScroll={handleScroll}
         >
           {themes?.pages?.map((page, index) =>

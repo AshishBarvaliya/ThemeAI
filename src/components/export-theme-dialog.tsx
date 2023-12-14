@@ -229,7 +229,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
     handleDraw(ctx, 4, true);
 
     const link = document.createElement("a");
-    link.download = `ThemeGPT_Theme_${+new Date()}.png`;
+    link.download = `ThemeAI_Theme_${+new Date()}.png`;
     link.href = tempCanvas.toDataURL("image/png");
     link.click();
   };
