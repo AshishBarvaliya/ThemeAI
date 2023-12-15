@@ -27,7 +27,7 @@ export const FiterTags: React.FC<FilterTagsProps> = ({
       <DropdownMenuTrigger asChild>
         <div
           className={cn(
-            "flex items-center cursor-pointer px-3 text-xs bg-white border-[0.5px] border-border min-w-[90px] md:min-w-auto",
+            "flex items-center cursor-pointer px-3 text-xs bg-white border-[0.5px] border-border min-w-[90px] md:min-w-[130px]",
             isHeader ? "py-1.5" : "h-8"
           )}
         >

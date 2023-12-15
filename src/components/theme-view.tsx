@@ -176,7 +176,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
               }
             }}
             size="md"
-            className="bg-background absolute ml-5 -mt-9 xl:mt-0"
+            className="bg-background absolute ml-5 -mt-9 xl:mt-0 shadow-lg"
           >
             <ArrowLeftIcon className="h-4 w-4 mr-1.5" />
             Back
@@ -186,14 +186,11 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
           className="flex relative flex-col h-fit w-full mb-6 mx-auto p-[20px] bg-background px-[30px] max-w-[1000px] rounded-[8px]"
           style={{
             boxShadow:
-              "6px 0 15px -3px rgb(0 0 0 / 0.1), -6px 0 15px -3px rgb(0 0 0 / 0.1), 0 6px 15px -3px rgb(0 0 0 / 0.1), 0 -6px 15px -3px rgb(0 0 0 / 0.1)",
+              "6px 0 10px -3px rgb(0 0 0 / 0.1), -6px 0 10px -3px rgb(0 0 0 / 0.1), 0 6px 10px -3px rgb(0 0 0 / 0.1), 0 -6px 10px -3px rgb(0 0 0 / 0.1)",
           }}
         >
           <div
-            className={cn(
-              "flex justify-between gap-3",
-              type === "generated" && "flex-col md:flex-row"
-            )}
+            className={cn("flex justify-between gap-3", "flex-col md:flex-row")}
           >
             <Typography element="h1" as="h1" className="text-2xl md:text-4xl">
               {type === "view" ? theme.name : "Untitled"}

@@ -38,8 +38,12 @@ const Sidebar = ({
 
   return (
     <div
-      style={isMobileView ? { width: "100%" } : { width: width }}
-      className={`flex md:fixed bg-background flex-col md:flex-row justify-between md:h-screen md:pb-[74px] md:border-r-[0.5px] border-border shadow-lg`}
+      style={
+        isMobileView
+          ? { width: "100%" }
+          : { width: width, boxShadow: "7px 0 15px -15px rgba(0, 0, 0, 0.2)" }
+      }
+      className={`flex md:fixed bg-background flex-col md:flex-row justify-between md:h-screen md:pb-[74px] md:border-r-[0.5px] border-border`}
     >
       {isTemplate ? (
         <TemplateList />

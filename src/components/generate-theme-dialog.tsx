@@ -109,7 +109,7 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
         setIsPromptError(false);
       }}
     >
-      <DialogContent className="p-[1px] max-w-fit bg-white border-none rounded-none">
+      <DialogContent className="p-[1px] w-full md:max-w-fit bg-white border-none rounded-none">
         <div className="z-10 p-8 bg-white">
           <DialogHeader>
             <DialogTitle>Generate Theme</DialogTitle>
@@ -122,11 +122,11 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
               <div className="flex flex-col">
                 <div className="flex justify-between h-6">
                   <div className="flex">
-                    <Label htmlFor="prompt" className="mb-2">
+                    <Label htmlFor="prompt" className="mb-2 w-fit">
                       Describe your project
                     </Label>
                     {isPromptError ? (
-                      <span className="text-destructive ml-3 text-xs p-0">
+                      <span className="text-destructive ml-3 text-xs p-0 truncate">
                         {data.prompt.trim().length > INPUT_LIMIT.PROMPT_MAX
                           ? "(maximum 200 characters allowed)"
                           : "(minimum 30 characters required)"}
@@ -149,7 +149,7 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
                   rows={4}
                   placeholder="Docter's apointment app theme"
                   className={cn(
-                    "w-[750px] min-h-[100px] resize-none",
+                    "md:w-[750px] min-h-[100px] resize-none",
                     isPromptError ? "border border-destructive" : ""
                   )}
                   onChange={(e) => {
