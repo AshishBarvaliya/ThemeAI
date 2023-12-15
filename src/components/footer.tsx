@@ -27,7 +27,7 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
         </div>
       </div>
       <Typography element="p" as="p" className="text-sm">
-        Copyright © 2024 ThemeGPT. All rights reserved.
+        Copyright © 2024 ThemeAI. All rights reserved.
       </Typography>
       <ContactUsDialog open={open} setOpen={setOpen} />
     </div>

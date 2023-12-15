@@ -662,7 +662,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
           00:03:27
         </p>
         <p
-          className="text-md font-bold"
+          className="text-base font-bold"
           style={{
             color: shades.primaryLight,
             fontFamily: fonts.secondary.fontFamily,
@@ -722,7 +722,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
           326.60K
         </p>
         <p
-          className="text-md font-bold"
+          className="text-base font-bold"
           style={{
             color: shades.primaryLight,
             fontFamily: fonts.secondary.fontFamily,
@@ -814,7 +814,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
           42.34%
         </p>
         <p
-          className="text-md font-bold"
+          className="text-base font-bold"
           style={{
             color: shades.primaryLight,
             fontFamily: fonts.secondary.fontFamily,
@@ -884,7 +884,7 @@ const DashboardTemplate: React.FC<TemplateProps> = ({
           42.34%
         </p>
         <p
-          className="text-md font-bold"
+          className="text-base font-bold"
           style={{
             color: shades.bgLight,
             fontFamily: fonts.secondary.fontFamily,

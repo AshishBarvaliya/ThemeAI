@@ -24,7 +24,7 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
 }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="p-8 max-w-fit border border-border bg-white rounded-none">
+      <DialogContent className="p-8 w-[350px] md:max-w-fit border border-border bg-white rounded-none">
         <DialogHeader>
           <DialogTitle>Are you sure?</DialogTitle>
         </DialogHeader>

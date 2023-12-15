@@ -29,7 +29,7 @@ const Input = React.forwardRef<
       <input
         type={type}
         className={cn(
-          "flex h-9 w-full rounded-md shadow-inset border-[0.5px] border-border bg-white px-3 py-2 text-md ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none focus:border-secondary focus:border-5 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-9 w-full rounded-md shadow-inset border-[0.5px] border-border bg-white px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none focus:border-secondary focus:border-5 disabled:cursor-not-allowed disabled:opacity-50",
           errorMessage && "border-destructive ring-1 ring-destructive",
           postElement && "pr-9"
         )}
@@ -72,7 +72,7 @@ const SeachBar = React.forwardRef<
         <input
           type={type}
           className={cn(
-            "flex h-9 w-full rounded-md shadow-inset border-[0.5px] border-border bg-white px-3 py-2 pr-[70px] text-md ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+            "flex h-9 w-full rounded-md shadow-inset border-[0.5px] border-border bg-white px-3 py-2 pr-[70px] text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-50",
             className
           )}
           ref={ref}

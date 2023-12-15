@@ -532,7 +532,7 @@ const LearningTemplate: React.FC<TemplateProps> = ({
           leading universities and companies
         </p>
         <p
-          className="text-md mt-10 w-[900px] text-center"
+          className="text-base mt-10 w-[900px] text-center"
           style={{
             color: colors.primaryLight,
             fontFamily: fonts.secondary.fontFamily,
@@ -686,7 +686,7 @@ const LearningTemplate: React.FC<TemplateProps> = ({
       <div className="h-full items-center flex justify-center gap-14">
         {["Home", "Courses", "About", "FAQ", "Blog"].map((itm) => (
           <p
-            className="text-md"
+            className="text-base"
             key={itm}
             style={{
               color: colors.primary,
@@ -709,7 +709,7 @@ const LearningTemplate: React.FC<TemplateProps> = ({
     <foreignObject x="1213" y="40" width="106" height="48">
       <div className="h-full items-center flex justify-center">
         <p
-          className="text-md"
+          className="text-base"
           style={{ color: colors.bg, fontFamily: fonts.primary.fontFamily }}
         >
           Sign up
@@ -719,7 +719,7 @@ const LearningTemplate: React.FC<TemplateProps> = ({
     <foreignObject x="1090.5" y="40.5" width="106" height="47">
       <div className="h-full items-center flex justify-center">
         <p
-          className="text-md"
+          className="text-base"
           style={{
             color: colors.primary,
             fontFamily: fonts.primary.fontFamily,

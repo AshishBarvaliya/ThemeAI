@@ -139,7 +139,7 @@ export default function TagPicker({
         </div>
       )}
       <div
-        className={`flex flex-wrap items-center overflow-x-scroll w-[750px] mt-1.5 min-h-[28px] text-md ${
+        className={`flex flex-wrap items-center overflow-x-scroll md:w-[750px] mt-1.5 min-h-[28px] text-base ${
           selectedTags.length > 0 ? "" : "italic text-[rgb(135,135,135)]"
         }`}
       >

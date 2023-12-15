@@ -176,7 +176,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
               }
             }}
             size="md"
-            className="bg-background absolute ml-5 -mt-9 xl:mt-0"
+            className="bg-background absolute ml-5 -mt-9 xl:mt-0 shadow-lg"
           >
             <ArrowLeftIcon className="h-4 w-4 mr-1.5" />
             Back
@@ -186,14 +186,11 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
           className="flex relative flex-col h-fit w-full mb-6 mx-auto p-[20px] bg-background px-[30px] max-w-[1000px] rounded-[8px]"
           style={{
             boxShadow:
-              "6px 0 15px -3px rgb(0 0 0 / 0.1), -6px 0 15px -3px rgb(0 0 0 / 0.1), 0 6px 15px -3px rgb(0 0 0 / 0.1), 0 -6px 15px -3px rgb(0 0 0 / 0.1)",
+              "6px 0 10px -3px rgb(0 0 0 / 0.1), -6px 0 10px -3px rgb(0 0 0 / 0.1), 0 6px 10px -3px rgb(0 0 0 / 0.1), 0 -6px 10px -3px rgb(0 0 0 / 0.1)",
           }}
         >
           <div
-            className={cn(
-              "flex justify-between gap-3",
-              type === "generated" && "flex-col md:flex-row"
-            )}
+            className={cn("flex justify-between gap-3", "flex-col md:flex-row")}
           >
             <Typography element="h1" as="h1" className="text-2xl md:text-4xl">
               {type === "view" ? theme.name : "Untitled"}
@@ -322,7 +319,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                         <Typography
                           element="h4"
                           as="h4"
-                          className="text-md md:text-lg"
+                          className="text-base md:text-lg"
                         >
                           {clr.name}
                         </Typography>
@@ -369,7 +366,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                       <Typography
                         element="p"
                         as="p"
-                        className="italic text-sm md:text-md"
+                        className="italic text-sm md:text-base"
                       >
                         {clr.reason ? `"${clr.reason}"` : "Not specified"}
                       </Typography>
@@ -388,7 +385,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                     <Typography
                       element="h4"
                       as="h4"
-                      className="text-md md:text-lg"
+                      className="text-base md:text-lg"
                     >
                       {key === "primary" ? "Primary Font" : "Secondary Font"}
                     </Typography>
@@ -403,7 +400,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                     className="flex flex-col gap-1 relative p-1 h-[85px] w-full font-normal text-xl md:text-3xl text-center items-center justify-center border-[0.5px] border-border"
                   >
                     {fonts[key as keyof FontObjProps].fontFamily}
-                    <p className="text-sm md:text-md">
+                    <p className="text-sm md:text-base">
                       The quick brown fox jumps over a lazy dog.
                     </p>
                   </div>
@@ -497,7 +494,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
               setOpenSure(false);
             }}
           >
-            <div className="text-md">
+            <div className="text-base">
               You have unsaved changes. are you sure want to leave?
             </div>
           </ConfirmationDialog>

@@ -11,7 +11,6 @@ import {
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import { sendPasswordResetEmail } from "@/services/user";
-import { useRouter } from "next/router";
 import { INPUT_LIMIT } from "@/constants/website";
 import { validateInput } from "@/lib/error";
 
@@ -24,7 +23,6 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
   open,
   setOpen,
 }) => {
-  const router = useRouter();
   const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -45,7 +43,6 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
             title: "Password reset email has been sent",
             type: "success",
           });
-          router.push("/themes", undefined, { shallow: true });
           setOpen(false);
         })
         .catch((error) => {
@@ -62,7 +59,6 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
       open={open}
       onOpenChange={() => {
         setOpen(false);
-        router.push("/themes", undefined, { shallow: true });
       }}
     >
       <DialogContent className="p-8 border border-border bg-white rounded-none">

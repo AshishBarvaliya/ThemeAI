@@ -46,7 +46,7 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = () => {
             ) : (
               <>
                 <AvatarImage src={session?.user.image} alt="profile image" />
-                <AvatarFallback className="bg-primary text-primary-foreground text-md">
+                <AvatarFallback className="bg-primary text-primary-foreground text-base">
                   {session?.user.name?.split(" ")[0][0]}
                 </AvatarFallback>
               </>

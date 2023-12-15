@@ -150,7 +150,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="p-5 px-7 max-w-fit border border-border bg-white rounded-none">
+        <DialogContent className="p-5 md:px-7 w-full h-full md:h-auto md:max-w-fit border border-border bg-white rounded-none overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Save Theme</DialogTitle>
             <DialogDescription>
@@ -186,7 +186,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                   label="Background Color"
                   rows={2}
                   autoComplete="off"
-                  className="w-[750px] mt-4"
+                  className="md:w-[750px] mt-4"
                   postElement={<ColorTooltip color={colors.bg} />}
                   placeholder="Creates a sleek and professional background for the website"
                   onChange={(e) =>
@@ -205,7 +205,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                   rows={2}
                   autoComplete="off"
                   postElement={<ColorTooltip color={colors.primary} />}
-                  className="w-[750px] mt-4"
+                  className="md:w-[750px] mt-4"
                   placeholder="High contrast against the background, enhancing readability."
                   onChange={(e) =>
                     setData((prev) => ({
@@ -223,7 +223,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                   postElement={<ColorTooltip color={colors.accent} />}
                   rows={2}
                   autoComplete="off"
-                  className="w-[750px] mt-4"
+                  className="md:w-[750px] mt-4"
                   placeholder="Adds vibrancy and draws attention to interactive elements."
                   onChange={(e) =>
                     setData((prev) => ({
@@ -239,7 +239,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
                   value={data.color4Reason}
                   autoComplete="off"
                   rows={2}
-                  className="w-[750px] mt-4"
+                  className="md:w-[750px] mt-4"
                   maxLength={INPUT_LIMIT.REASON_MAX}
                   postElement={<ColorTooltip color={colors.extra} />}
                   placeholder="Complementary color creates visual interest and balance."
@@ -315,7 +315,7 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
         onYes={createTheme}
         loading={loading}
       >
-        <div className="text-md">
+        <div className="text-base">
           These fields look empty. are you sure want continue?
         </div>
         <div className="flex flex-col">

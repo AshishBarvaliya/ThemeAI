@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./header";
 import { useSession } from "next-auth/react";
 import Sidebar from "./sidebar";
@@ -14,6 +14,7 @@ const Layout = ({
 }) => {
   const session = useSession();
   const router = useRouter();
+  const [isMobileView, setIsMobileView] = useState(false);
 
   const width = router.pathname === "/themes/create" ? "250px" : "200px";
 
@@ -25,18 +26,35 @@ const Layout = ({
 
   const isLandingPage = router.pathname === "/";
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return staticLoading ? null : (
     <div className="flex flex-col items-center">
       <Header />
       <main
         className={cn(
-          "flex w-full h-screen max-w-screen-2xl",
+          "flex w-full flex-col md:flex-row h-screen max-w-screen-2xl",
           isLandingPage ? "" : "pt-[54px] md:pt-[60px]"
         )}
       >
-        {sidebar ? <Sidebar width={width} /> : null}
+        {sidebar ? <Sidebar width={width} isMobileView={isMobileView} /> : null}
         {sidebar ? (
-          <div className="flex flex-1" style={{ marginLeft: width }}>
+          <div
+            className="flex flex-1"
+            style={isMobileView ? {} : { marginLeft: width }}
+          >
             {children}
           </div>
         ) : (

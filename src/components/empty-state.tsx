@@ -27,7 +27,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       >
         {icon}
       </div>
-      <Typography element="p" as="p" className="text-md mt-2">
+      <Typography element="p" as="p" className="text-base mt-2">
         {title}
       </Typography>
       {onClick && buttonText ? (

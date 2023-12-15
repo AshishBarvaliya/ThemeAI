@@ -104,7 +104,7 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="p-5 px-7 max-w-fit border border-border bg-white rounded-none">
+        <DialogContent className="p-5 px-7 w-full md:max-w-fit border border-border bg-white rounded-none">
           <DialogHeader>
             <DialogTitle>Save Theme</DialogTitle>
             <DialogDescription>Save the theme.</DialogDescription>
@@ -123,7 +123,7 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
                   errorMessage={errorMessage}
                   required
                   placeholder="Docter's apointment app theme"
-                  className="w-[750px]"
+                  className="md:w-[750px]"
                   onChange={(e) => {
                     setData((prev) => ({ ...prev, name: e.target.value }));
                     if (errorMessage) {

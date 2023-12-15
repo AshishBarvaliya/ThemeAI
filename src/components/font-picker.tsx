@@ -1,6 +1,6 @@
 import { FontProps, GOOGLE_FONTS } from "@/constants/fonts";
-import { hslToHex } from "@/lib/utils";
-import React, { useState } from "react";
+import { cn, hslToHex } from "@/lib/utils";
+import React, { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -40,6 +40,21 @@ const FontPicker: React.FC<FontPickerProps> = ({
   const [open, setOpen] = useState(false);
   const [category, setCategory] = useState("all");
   const [filteredFonts, setFilteredFonts] = useState<FontProps[]>(GOOGLE_FONTS);
+  const [isMobileView, setIsMobileView] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div className="relative" id={id}>
@@ -74,7 +89,12 @@ const FontPicker: React.FC<FontPickerProps> = ({
           />
           <div
             data-state={open ? "open" : "closed"}
-            className="absolute mt-1 flex z-20 flex-col w-[442px] bg-white border-[0.5px] border-border ml-[-130px] shadow-dropshadow data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2"
+            className={cn(
+              "absolute mt-1 flex z-20 flex-col w-[320px] md:w-[442px] bg-white border-[0.5px] border-border shadow-dropshadow data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2",
+              id === "primaryfont"
+                ? "ml-0 md:ml-[-130px]"
+                : "right-0 md:right-[-130px]"
+            )}
           >
             <div className="flex p-2">
               <SeachBar
@@ -116,7 +136,7 @@ const FontPicker: React.FC<FontPickerProps> = ({
                   .fill(1)
                   .map((_, i) => (
                     <div className="flex gap-2" key={i}>
-                      {new Array(4).fill(1).map((_, j) => {
+                      {new Array(isMobileView ? 3 : 4).fill(1).map((_, j) => {
                         if (i * 4 + j < filteredFonts.length) {
                           return (
                             <p
@@ -160,7 +180,7 @@ const FontPicker: React.FC<FontPickerProps> = ({
                   >
                     <SearchX className="h-6 w-6" />
                   </div>
-                  <Typography element="p" as="p" className="text-md mt-2">
+                  <Typography element="p" as="p" className="text-base mt-2">
                     No fonts found
                   </Typography>
                 </div>

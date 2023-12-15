@@ -8,9 +8,9 @@ export interface PrivacyPolicyProps {
 
 export const privacyPolicy: PrivacyPolicyProps[] = [
   {
-    title: "Privacy Policy for ThemeGPT",
+    title: "Privacy Policy for ThemeAI",
     description:
-      "Welcome to ThemeGPT. At ThemeGPT, we are committed to safeguarding your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, and protect your data while using our website and services. By using ThemeGPT, you agree to the practices described in this policy.",
+      "Welcome to ThemeAI. At ThemeAI, we are committed to safeguarding your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, and protect your data while using our website and services. By using ThemeAI, you agree to the practices described in this policy.",
   },
   {
     title: "Information We Collect",
@@ -34,7 +34,7 @@ export const privacyPolicy: PrivacyPolicyProps[] = [
         <Typography element={"p"} as="p" className="font-bold">
           Social Interaction Data:
         </Typography>
-        When interacting with other users on ThemeGPT, such as liking and saving
+        When interacting with other users on ThemeAI, such as liking and saving
         themes or following other users, we may collect and store these
         interactions.
         <br />
@@ -50,7 +50,7 @@ export const privacyPolicy: PrivacyPolicyProps[] = [
           Experience Points:
         </Typography>
         We collect and store information related to experience points and levels
-        you achieve on ThemeGPT.
+        you achieve on ThemeAI.
       </div>
     ),
   },
@@ -113,7 +113,7 @@ export const privacyPolicy: PrivacyPolicyProps[] = [
   {
     title: "Changes to Privacy Policy",
     description:
-      "This Privacy Policy may be updated from time to time. We will notify you of any significant changes. Continued use of ThemeGPT after these changes implies your acceptance of the updated policy.",
+      "This Privacy Policy may be updated from time to time. We will notify you of any significant changes. Continued use of ThemeAI after these changes implies your acceptance of the updated policy.",
   },
   {
     title: "Contact Information",
@@ -123,12 +123,12 @@ export const privacyPolicy: PrivacyPolicyProps[] = [
           "Please contact us with any questions or comments about this Privacy Policy, Our Privacy Policy Toward Children, your personal information, and our third-party disclosure practices, at "
         }
         <span className="text-secondary hover:underline cursor-pointer">
-          contact@themegpt.co
+          contact@aithemes.io
         </span>
         .<br />
         <br />
         {
-          "Thank you for using ThemeGPT. We appreciate your trust in us and are committed to ensuring your privacy and data protection."
+          "Thank you for using ThemeAI. We appreciate your trust in us and are committed to ensuring your privacy and data protection."
         }
         <div className="italic mt-10">
           Last updated: {moment("2023-10-31").format("MMM D, YYYY")}
@@ -140,14 +140,14 @@ export const privacyPolicy: PrivacyPolicyProps[] = [
 
 export const TermsOfUse = [
   {
-    title: "Terms of Use for ThemeGPT",
+    title: "Terms of Use for ThemeAI",
     description:
-      "Welcome to ThemeGPT, your destination for creating captivating color themes, utilizing AI-driven prompts, and connecting with a creative community. By using ThemeGPT, you agree to abide by the following Terms of Use. Please read these terms carefully to ensure a positive experience on our platform.",
+      "Welcome to ThemeAI, your destination for creating captivating color themes, utilizing AI-driven prompts, and connecting with a creative community. By using ThemeAI, you agree to abide by the following Terms of Use. Please read these terms carefully to ensure a positive experience on our platform.",
   },
   {
     title: "Acceptance of Terms",
     description:
-      "By accessing or using ThemeGPT, you acknowledge and agree to these Terms of Use. If you do not agree to these terms, please refrain from using our platform.",
+      "By accessing or using ThemeAI, you acknowledge and agree to these Terms of Use. If you do not agree to these terms, please refrain from using our platform.",
   },
   {
     title: "Account Registration",
@@ -156,7 +156,7 @@ export const TermsOfUse = [
         <Typography element={"p"} as="p" className="font-bold">
           User Accounts:
         </Typography>
-        To access certain features of ThemeGPT, you may be required to create an
+        To access certain features of ThemeAI, you may be required to create an
         account. You are responsible for maintaining the confidentiality of your
         account information and any activities that occur under your account.
         <br />
@@ -177,14 +177,14 @@ export const TermsOfUse = [
         <Typography element={"p"} as="p" className="font-bold">
           Compliance with Laws:
         </Typography>
-        You agree to use ThemeGPT in compliance with all applicable local,
-        state, national, and international laws and regulations.
+        You agree to use ThemeAI in compliance with all applicable local, state,
+        national, and international laws and regulations.
         <br />
         <br />
         <Typography element={"p"} as="p" className="font-bold">
           Prohibited Activities:
         </Typography>
-        While using ThemeGPT, you agree not to engage in any unlawful, abusive,
+        While using ThemeAI, you agree not to engage in any unlawful, abusive,
         or harmful activities, including but not limited to:
         <ul className="list-disc !ml-4 !p-4">
           <li>Harassment or discrimination against other users. </li>
@@ -199,7 +199,7 @@ export const TermsOfUse = [
         <Typography element={"p"} as="p" className="font-bold">
           Community Guidelines:
         </Typography>
-        ThemeGPT has specific community guidelines, which must be followed to
+        ThemeAI has specific community guidelines, which must be followed to
         ensure a positive experience for all users. Violation of these
         guidelines may result in account suspension or termination.
       </div>
@@ -212,20 +212,20 @@ export const TermsOfUse = [
         <Typography element={"p"} as="p" className="font-bold">
           User-Generated Content:
         </Typography>
-        When using ThemeGPT, you retain ownership of your user-generated
-        content, including color themes and other contributions. However, by
-        submitting content, you grant ThemeGPT a non-exclusive, royalty-free
-        license to use, reproduce, and distribute your content for the purpose
-        of providing our services.
+        When using ThemeAI, you retain ownership of your user-generated content,
+        including color themes and other contributions. However, by submitting
+        content, you grant ThemeAI a non-exclusive, royalty-free license to use,
+        reproduce, and distribute your content for the purpose of providing our
+        services.
         <br />
         <br />
         <Typography element={"p"} as="p" className="font-bold">
           Intellectual Property:
         </Typography>
-        ThemeGPT and its associated logos, software, and other intellectual
+        ThemeAI and its associated logos, software, and other intellectual
         property are protected by copyright, trademark, and other intellectual
-        property laws. You may not copy, modify, or distribute any part of
-        ThemeGPT without our explicit consent.
+        property laws. You may not copy, modify, or distribute any part of AI
+        Themes without our explicit consent.
       </div>
     ),
   },
@@ -244,20 +244,20 @@ export const TermsOfUse = [
         <Typography element={"p"} as="p" className="font-bold">
           Premium Features:
         </Typography>
-        ThemeGPT may offer premium features or services that are subject to
-        their own terms and conditions.
+        ThemeAI may offer premium features or services that are subject to their
+        own terms and conditions.
       </div>
     ),
   },
   {
     title: "Termination of Services",
     description:
-      "We reserve the right to terminate, suspend, or limit access to ThemeGPT without notice, for any reason, including violation of these Terms of Use.",
+      "We reserve the right to terminate, suspend, or limit access to ThemeAI without notice, for any reason, including violation of these Terms of Use.",
   },
   {
     title: "Changes to Terms",
     description:
-      "These Terms of Use may be updated periodically. We will notify you of any significant changes. Your continued use of ThemeGPT following these updates indicates your acceptance of the revised terms.",
+      "These Terms of Use may be updated periodically. We will notify you of any significant changes. Your continued use of ThemeAI following these updates indicates your acceptance of the revised terms.",
   },
   {
     title: "Contact Information",
@@ -267,12 +267,12 @@ export const TermsOfUse = [
           "Please contact us with any questions or comments about this Privacy Policy, Our Privacy Policy Toward Children, your personal information, and our third-party disclosure practices, at "
         }
         <span className="text-secondary hover:underline cursor-pointer">
-          contact@themegpt.co
+          contact@ThemeAI.co
         </span>
         .<br />
         <br />
         {
-          "Thank you for using ThemeGPT. We appreciate your trust in us and are committed to ensuring your privacy and data protection."
+          "Thank you for using ThemeAI. We appreciate your trust in us and are committed to ensuring your privacy and data protection."
         }
         <div className="italic mt-10">
           Last updated: {moment("2023-10-31").format("MMM D, YYYY")}

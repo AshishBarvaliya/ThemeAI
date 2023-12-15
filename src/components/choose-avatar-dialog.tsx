@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { ReloadIcon } from "@radix-ui/react-icons";
@@ -19,6 +19,7 @@ export const ChooseAvatarDialog: React.FC<ResetPasswordDialogProps> = ({
   const { addToast } = useToast();
   const { data: session, update } = useSession();
   const [loading, setLoading] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
   const [generate, setGenerate] = useState(0);
   const [selectedAvatar, setSelectedAvatar] = useState<{
     config: AvatarFullConfig | null;
@@ -53,6 +54,20 @@ export const ChooseAvatarDialog: React.FC<ResetPasswordDialogProps> = ({
     }
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <Dialog
       open={open}
@@ -72,7 +87,7 @@ export const ChooseAvatarDialog: React.FC<ResetPasswordDialogProps> = ({
           <div className="flex flex-col gap-3">
             {new Array(5).fill(1).map((_, i) => (
               <div className="flex gap-4" key={i}>
-                {new Array(5).fill(1).map((_, j) => (
+                {new Array(isMobileView ? 3 : 5).fill(1).map((_, j) => (
                   <div
                     key={j + i + generate}
                     onClick={() => {
