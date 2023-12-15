@@ -78,7 +78,12 @@ const ColorPicker: React.FC<RegisterDialogProps> = ({
           />
           <div
             data-state={open === id ? "open" : "closed"}
-            className="absolute mt-1.5 ml-[-80px] z-20 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2"
+            className={cn(
+              "absolute mt-1.5 z-20 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2",
+              id === "complementarycolor" || id === "accentcolor"
+                ? "right-0 md:right-[-80px]"
+                : "right-[-80px]"
+            )}
           >
             <ChromePicker
               color={color}

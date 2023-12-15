@@ -236,13 +236,13 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="p-8 border max-w-fit border-border bg-white rounded-none">
-        <div className="flex flex-col items-center w-[480px]">
+      <DialogContent className="p-6 md:p-8 border md:max-w-fit border-border bg-white rounded-none">
+        <div className="flex flex-col items-center w-full md:w-[480px]">
           <Typography element="h3" as="h3">
             Export Theme
           </Typography>
           <div className="flex flex-1 mt-3">
-            <Tabs defaultValue="colors" className="w-[480px]">
+            <Tabs defaultValue="colors" className="w-full md:w-[480px]">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="colors">Colors</TabsTrigger>
                 <TabsTrigger value="fonts">Fonts</TabsTrigger>
@@ -298,7 +298,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                     {Object.keys(colors).map((color, index) => (
                       <div
                         key={index}
-                        className="flex text-md"
+                        className="flex text-base"
                         style={{ fontFamily: "IBM Plex Mono" }}
                       >
                         {generatecolorVariable(color as keyof ColorsProps)}
@@ -343,7 +343,11 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                       className="flex border-[0.5px] border-border p-2 flex-col gap-3"
                     >
                       <div className="flex gap-2.5 items-center justify-between">
-                        <Typography element="h4" as="h4">
+                        <Typography
+                          element="h4"
+                          as="h4"
+                          className="text-lg md:text-xl truncate w-full"
+                        >
                           {key === "primary"
                             ? "Primary Font"
                             : "Secondary Font"}
@@ -389,7 +393,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                         className="flex flex-col gap-1 relative p-1 h-[85px] w-full font-normal text-3xl text-center items-center justify-center border-[0.5px] border-border"
                       >
                         {fonts[key as keyof FontObjProps].fontFamily}
-                        <p className="text-lg">
+                        <p className="text-base md:text-lg">
                           The quick brown fox jumps over a lazy dog.
                         </p>
                       </div>

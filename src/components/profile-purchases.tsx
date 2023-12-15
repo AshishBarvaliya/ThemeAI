@@ -22,7 +22,7 @@ export default function ProfilePurchases() {
   return (
     <div className="flex w-full xl:w-[55%] h-full flex-col py-4 gap-4 overflow-y-auto px-4 min-h-[300px] min-w-[650px]">
       <div className="flex items-center lg:justify-between">
-        <p className="text-md">
+        <p className="text-base">
           Available prompts:
           <span className="font-bold px-1">{user?.pupa || 0}</span>
         </p>
@@ -49,7 +49,7 @@ export default function ProfilePurchases() {
       ) : (
         purchases?.map((e) => (
           <div
-            className="flex items-center text-md border-[0.5px] border-border p-3 px-4 bg-white"
+            className="flex items-center text-base border-[0.5px] border-border p-3 px-4 bg-white"
             key={e.id}
           >
             A purchase of

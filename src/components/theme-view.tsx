@@ -322,7 +322,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                         <Typography
                           element="h4"
                           as="h4"
-                          className="text-md md:text-lg"
+                          className="text-base md:text-lg"
                         >
                           {clr.name}
                         </Typography>
@@ -369,7 +369,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                       <Typography
                         element="p"
                         as="p"
-                        className="italic text-sm md:text-md"
+                        className="italic text-sm md:text-base"
                       >
                         {clr.reason ? `"${clr.reason}"` : "Not specified"}
                       </Typography>
@@ -388,7 +388,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                     <Typography
                       element="h4"
                       as="h4"
-                      className="text-md md:text-lg"
+                      className="text-base md:text-lg"
                     >
                       {key === "primary" ? "Primary Font" : "Secondary Font"}
                     </Typography>
@@ -403,7 +403,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                     className="flex flex-col gap-1 relative p-1 h-[85px] w-full font-normal text-xl md:text-3xl text-center items-center justify-center border-[0.5px] border-border"
                   >
                     {fonts[key as keyof FontObjProps].fontFamily}
-                    <p className="text-sm md:text-md">
+                    <p className="text-sm md:text-base">
                       The quick brown fox jumps over a lazy dog.
                     </p>
                   </div>
@@ -497,7 +497,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
               setOpenSure(false);
             }}
           >
-            <div className="text-md">
+            <div className="text-base">
               You have unsaved changes. are you sure want to leave?
             </div>
           </ConfirmationDialog>

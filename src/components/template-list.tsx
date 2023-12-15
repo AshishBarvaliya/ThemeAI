@@ -9,33 +9,34 @@ import { TemplateType } from "@/interfaces/templates";
 import { cn } from "@/lib/utils";
 import { useHelpers } from "@/hooks/useHelpers";
 
+export const templates: { name: TemplateType; component: JSX.Element }[] = [
+  {
+    name: "Learning",
+    component: <LearningTemplate {...DEAFULT_THEMES.Learning} />,
+  },
+  {
+    name: "Marketing",
+    component: <MarketingTemplate {...DEAFULT_THEMES.Marketing} />,
+  },
+  {
+    name: "Dashboard",
+    component: <DashboardTemplate {...DEAFULT_THEMES.Dashboard} />,
+  },
+  {
+    name: "Editor",
+    component: <EditorTemplate {...DEAFULT_THEMES.Editor} />,
+  },
+  {
+    name: "Foodie",
+    component: <FoodieTemplate {...DEAFULT_THEMES.Foodie} />,
+  },
+];
+
 export const TemplateList = () => {
   const { setTemplate, template } = useHelpers();
-  const templates: { name: TemplateType; component: JSX.Element }[] = [
-    {
-      name: "Learning",
-      component: <LearningTemplate {...DEAFULT_THEMES.Learning} />,
-    },
-    {
-      name: "Marketing",
-      component: <MarketingTemplate {...DEAFULT_THEMES.Marketing} />,
-    },
-    {
-      name: "Dashboard",
-      component: <DashboardTemplate {...DEAFULT_THEMES.Dashboard} />,
-    },
-    {
-      name: "Editor",
-      component: <EditorTemplate {...DEAFULT_THEMES.Editor} />,
-    },
-    {
-      name: "Foodie",
-      component: <FoodieTemplate {...DEAFULT_THEMES.Foodie} />,
-    },
-  ];
 
   return (
-    <div className="flex flex-col items-center pt-4 h-full">
+    <div className="md:flex flex-col hidden items-center pt-4 h-full">
       <Typography element="h3" as="h3">
         Templates
       </Typography>
@@ -50,7 +51,7 @@ export const TemplateList = () => {
             onClick={() => setTemplate(item.name)}
           >
             {item.component}
-            <div className="text-md text-center bg-primary text-primary-foreground border-border border-t-[0.5px]">
+            <div className="text-base text-center bg-primary text-primary-foreground border-border border-t-[0.5px]">
               {item.name}
             </div>
           </div>
