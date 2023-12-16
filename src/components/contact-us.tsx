@@ -108,7 +108,7 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="p-8 max-w-fit border border-border bg-white rounded-none">
+      <DialogContent className="p-8 w-full md:max-w-fit border border-border bg-white rounded-none">
         <DialogHeader>
           <DialogTitle>Contact us</DialogTitle>
           <DialogDescription>
@@ -123,7 +123,7 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
                 name="name"
                 label="Name"
                 autoComplete="off"
-                className="w-[650px]"
+                className="md:w-[650px]"
                 maxLength={INPUT_LIMIT.NAME_MAX}
                 errorMessage={errorMessage.name}
                 value={data.name}
@@ -143,7 +143,7 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
                 autoComplete="email"
                 label="Email"
                 maxLength={INPUT_LIMIT.EMAIL_MAX}
-                className="w-[650px] mt-4"
+                className="md:w-[650px] mt-4"
                 value={data.email}
                 placeholder="Email"
                 errorMessage={errorMessage.email}
@@ -165,7 +165,7 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
                   setData((prev) => ({ ...prev, topic: value }))
                 }
               >
-                <SelectTrigger className="w-[650px] h-9 text-sm">
+                <SelectTrigger className="md:w-[650px] h-9 text-sm">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent>
@@ -184,7 +184,7 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
                 id="description"
                 name="description"
                 label="Description"
-                className="w-[650px] mt-4"
+                className="md:w-[650px] mt-4"
                 autoComplete="off"
                 value={data.description}
                 placeholder="Description"

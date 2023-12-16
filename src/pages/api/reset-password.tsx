@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import db from "@/db";
 import { resetPasswords, users as usersSchema } from "@/db/schema";
 import { createId } from "@paralleldrive/cuid2";
+import { sendEmail } from "@/config/mailgun";
 
 const FORGOT_PASSWORD_MAIL_LIMIT = parseInt(
   process.env.FORGOT_PASSWORD_MAIL_LIMIT || "0"
@@ -21,6 +22,7 @@ export default async function handler(
         where: eq(usersSchema.email, email),
         columns: {
           id: true,
+          name: true,
           isActived: true,
         },
         with: {
@@ -43,15 +45,19 @@ export default async function handler(
       }
 
       try {
+        const newToken = `${randomUUID()}${randomUUID()}`.replace(/-/g, "");
         await db.insert(resetPasswords).values({
           id: createId(),
           userId: user.id,
-          token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
+          token: newToken,
           expiresAt: new Date(new Date().getTime() + 60000 * EMAIL_LINK_EXPIRY),
         });
 
-        // TODO: sending mail logic
-
+        await sendEmail("reset-password", {
+          email,
+          token: newToken,
+          name: user.name,
+        });
         return res
           .status(201)
           .json({ messsage: "Reset password mail has been sent" });
