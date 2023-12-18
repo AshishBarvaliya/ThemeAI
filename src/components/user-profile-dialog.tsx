@@ -49,7 +49,14 @@ export const UserProfileDialog: React.FC<UserProfileDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        if (!loading) {
+          setOpen(val);
+        }
+      }}
+    >
       <DialogContent className="p-8 max-w-[450px] border border-border bg-white rounded-none">
         <DialogHeader>
           <DialogTitle>Update your profile</DialogTitle>

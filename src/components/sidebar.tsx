@@ -1,3 +1,4 @@
+import { useSession } from "next-auth/react";
 import { useHelpers } from "@/hooks/useHelpers";
 import { cn } from "@/lib/utils";
 import { BarChart4, PartyPopper, ZapIcon } from "lucide-react";
@@ -14,6 +15,7 @@ const Sidebar = ({
   isMobileView: boolean;
 }) => {
   const router = useRouter();
+  const { status } = useSession();
   const { themeType, setThemeType } = useHelpers();
 
   const tabs = [
@@ -22,11 +24,15 @@ const Sidebar = ({
       label: "Explore",
       icon: <ZapIcon className="w-5 h-5" />,
     },
-    {
-      id: "foryou",
-      label: "For you",
-      icon: <PartyPopper className="w-5 h-5" />,
-    },
+    ...(status === "authenticated"
+      ? [
+          {
+            id: "foryou",
+            label: "For you",
+            icon: <PartyPopper className="w-5 h-5" />,
+          },
+        ]
+      : []),
     {
       id: "popular",
       label: "Popular",

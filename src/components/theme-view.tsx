@@ -272,12 +272,6 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                 </Typography>
               ) : null}
               <Carousel autoSlide={false} bgColor={colors.bg}>
-                <EditorTemplate
-                  id="editor"
-                  colors={colors}
-                  shades={shades}
-                  fonts={fonts}
-                />
                 <MarketingTemplate
                   id="marketing"
                   colors={colors}
@@ -298,6 +292,12 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                 />
                 <FoodieTemplate
                   id="foodie"
+                  colors={colors}
+                  shades={shades}
+                  fonts={fonts}
+                />
+                <EditorTemplate
+                  id="editor"
                   colors={colors}
                   shades={shades}
                   fonts={fonts}
