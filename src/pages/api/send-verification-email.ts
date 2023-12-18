@@ -6,6 +6,7 @@ import db from "@/db";
 import { users as usersSchema, verificationTokens } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { createId } from "@paralleldrive/cuid2";
+import { sendEmail } from "@/config/mailgun";
 
 const VERIFICATION_MAIL_LIMIT = parseInt(
   process.env.VERIFICATION_MAIL_LIMIT || "0"
@@ -22,6 +23,8 @@ export default async function handler(
       const user = await db.query.users.findFirst({
         where: eq(usersSchema.id, session?.user.id),
         columns: {
+          email: true,
+          name: true,
           isActived: true,
         },
         with: {
@@ -29,6 +32,9 @@ export default async function handler(
         },
       });
 
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
       if (user?.isActived) {
         return res.status(404).json({ error: "User is already verified" });
       }
@@ -40,14 +46,19 @@ export default async function handler(
       }
 
       try {
+        const newToken = `${randomUUID()}${randomUUID()}`.replace(/-/g, "");
         await db.insert(verificationTokens).values({
           id: createId(),
           userId: session?.user.id,
-          token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
+          token: newToken,
           expiresAt: new Date(new Date().getTime() + 60000 * EMAIL_LINK_EXPIRY),
         });
 
-        // TODO: sending mail logic
+        await sendEmail("activation", {
+          email: user?.email,
+          name: user?.name,
+          token: newToken,
+        });
 
         return res
           .status(201)

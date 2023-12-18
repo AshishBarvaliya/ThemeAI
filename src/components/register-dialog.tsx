@@ -87,7 +87,14 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        if (!loading) {
+          setOpen(val);
+        }
+      }}
+    >
       <DialogContent className="p-8 border border-border bg-white rounded-none">
         <DialogHeader>
           <DialogTitle>Register for an account</DialogTitle>

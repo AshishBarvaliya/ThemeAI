@@ -183,7 +183,7 @@ describe("Update Password API Endpoint", () => {
       password: "new-password",
     };
     let date = new Date();
-    date.setDate(date.getDate() - 1);
+    date.setDate(date.getDate() - 5);
     (db.query.resetPasswords.findFirst as jest.Mock).mockResolvedValue({
       expiresAt: date,
     });

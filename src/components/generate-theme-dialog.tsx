@@ -104,9 +104,11 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
     <Dialog
       open={open}
       onOpenChange={(val) => {
-        setOpen(val);
-        setGenerateDialogDefaultValues(undefined);
-        setIsPromptError(false);
+        if (!loading) {
+          setOpen(val);
+          setGenerateDialogDefaultValues(undefined);
+          setIsPromptError(false);
+        }
       }}
     >
       <DialogContent className="p-[1px] w-full md:max-w-fit bg-white border-none rounded-none">
@@ -190,6 +192,7 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
                 <Button
                   variant="link"
                   type="button"
+                  disabled={loading}
                   onClick={() => {
                     setOpen(false);
                     router.push("/themes/create");

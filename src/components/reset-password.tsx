@@ -57,8 +57,10 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
   return (
     <Dialog
       open={open}
-      onOpenChange={() => {
-        setOpen(false);
+      onOpenChange={(val) => {
+        if (!loading) {
+          setOpen(val);
+        }
       }}
     >
       <DialogContent className="p-8 border border-border bg-white rounded-none">

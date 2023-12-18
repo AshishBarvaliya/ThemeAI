@@ -10,7 +10,7 @@ export const getPrompt = ({
 - Ensure color combinations comply with WCAG 2 Level AAA standards for contrast.
 - Design for ${isDark ? "Dark" : "Light"} theme mode.
 - Represent colors in HEX code format (ex. #FFFFFF).
-- Reason should at least 10 words and not have more than 20 words.
+- Reason should at least 20 words and not have more than 30 words.
 
 Description: ${description}
 

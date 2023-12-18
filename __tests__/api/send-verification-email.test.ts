@@ -1,3 +1,4 @@
+import { sendEmail } from "@/config/mailgun";
 import db from "@/db";
 import handler from "@/pages/api/send-verification-email";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -25,6 +26,10 @@ jest.mock("@/db", () => ({
   },
   insert: jest.fn().mockReturnThis(),
   values: jest.fn().mockReturnThis(),
+}));
+
+jest.mock("@/config/mailgun", () => ({
+  sendEmail: jest.fn(),
 }));
 
 describe("Send Verification Email API Endpoint", () => {
@@ -103,6 +108,10 @@ describe("Send Verification Email API Endpoint", () => {
       verificationTokens: {
         length: 1,
       },
+    });
+    (sendEmail as jest.Mock).mockResolvedValue({
+      id: "message-id",
+      message: "Verification mail has been sent",
     });
 
     await handler(req, res);

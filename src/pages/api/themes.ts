@@ -72,6 +72,7 @@ export default async function handler(
             isAIGenerated: true,
             prompt: true,
             isPrivate: true,
+            popularity: true,
           },
           with: {
             user: {
@@ -137,6 +138,12 @@ export default async function handler(
                   themeId,
                   userIp: ip,
                 });
+                await db
+                  .update(themesSchema)
+                  .set({
+                    popularity: Number(theme?.popularity || 0) + 1,
+                  })
+                  .where(eq(themesSchema.id, themeId));
               }
             }, 0);
             return;

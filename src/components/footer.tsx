@@ -11,22 +11,25 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
   return (
     <div className={cn("flex p-5 flex-col", className)}>
       <div className="flex flex-1 gap-2 justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-[100px] md:w-[200px]">
           <Image src="/logo.svg" alt="logo" width={200} height={40} />
         </div>
         <div className="flex items-center gap-3">
-          <div className="text-sm cursor-pointer" onClick={() => setOpen(true)}>
+          <div
+            className="text-xs md:text-sm cursor-pointer"
+            onClick={() => setOpen(true)}
+          >
             Contact Us
           </div>
-          <Link href="/privacy" className="text-sm hover:underline">
+          <Link href="/privacy" className="text-xs md:text-sm hover:underline">
             Privacy Policy
           </Link>
-          <Link href="/terms" className="text-sm hover:underline">
+          <Link href="/terms" className="text-xs md:text-sm hover:underline">
             Terms of Use
           </Link>
         </div>
       </div>
-      <Typography element="p" as="p" className="text-sm">
+      <Typography element="p" as="p" className="text-[10px] md:text-sm">
         Copyright © 2024 ThemeAI. All rights reserved.
       </Typography>
       <ContactUsDialog open={open} setOpen={setOpen} />

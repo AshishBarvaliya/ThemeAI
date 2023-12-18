@@ -103,7 +103,14 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
 
   return (
     <>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog
+        open={open}
+        onOpenChange={(val) => {
+          if (!loading) {
+            setOpen(val);
+          }
+        }}
+      >
         <DialogContent className="p-5 px-7 w-full md:max-w-fit border border-border bg-white rounded-none">
           <DialogHeader>
             <DialogTitle>Save Theme</DialogTitle>

@@ -1,3 +1,4 @@
+import { sendEmail } from "@/config/mailgun";
 import db from "@/db";
 import handler from "@/pages/api/reset-password";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -10,6 +11,10 @@ jest.mock("@/db", () => ({
   },
   insert: jest.fn().mockReturnThis(),
   values: jest.fn().mockReturnThis(),
+}));
+
+jest.mock("@/config/mailgun", () => ({
+  sendEmail: jest.fn(),
 }));
 
 describe("Reset Password API Endpoint", () => {
@@ -46,7 +51,10 @@ describe("Reset Password API Endpoint", () => {
   it("should return 201 if asscociated user is NOT found", async () => {
     req.body = { email: "invalid@user.com" };
     (db.query.users.findFirst as jest.Mock).mockResolvedValue(null);
-
+    (sendEmail as jest.Mock).mockResolvedValue({
+      id: "message-id",
+      message: "Verification mail has been sent",
+    });
     await handler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(201);

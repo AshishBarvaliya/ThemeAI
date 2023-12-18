@@ -9,13 +9,13 @@ export const authorisedMenu = [
   },
 ];
 
-export const landingMenu = [
-  {
-    path: "",
-    label: "Tools",
-  },
-  {
-    path: "about-us",
-    label: "About Us",
-  },
+export const landingMenu: { path: string; label: string }[] = [
+  // {
+  //   path: "",
+  //   label: "Tools",
+  // },
+  // {
+  //   path: "about-us",
+  //   label: "About Us",
+  // },
 ];
