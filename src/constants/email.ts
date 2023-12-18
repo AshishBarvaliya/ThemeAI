@@ -1,7 +1,7 @@
 const web_url = process.env.NEXTAUTH_URL;
 
 export const getEmailHtml = (
-  type: "reset-password" | "activation",
+  type: "reset-password" | "activation" | "welcome",
   { token, name }: { token: string; name: string }
 ) => {
   let data: {
@@ -15,9 +15,9 @@ export const getEmailHtml = (
     head: "Welcome",
     title: "Welcome to ThemeAI, " + name,
     description:
-      "Thank you for joining ThemeAI. We're thrilled to have you on board.",
-    url: `${web_url}/themes?newuser=1&token=${token}`,
-    button: "Activate",
+      "Thank you for joining ThemeAI. We're thrilled to have you on board. Please click the button below to verify your email address.",
+    url: `${web_url}/api/token-verification?token=${token}`,
+    button: "Verify Email",
     note: "(If you did not create an account, you may ignore this email.)",
   };
   if (type === "reset-password") {
@@ -30,7 +30,18 @@ export const getEmailHtml = (
       button: "Reset Password",
       note: "(If you did not request a password reset, you may ignore this email.)",
     };
+  } else if (type === "activation") {
+    data = {
+      head: "Verify Account",
+      title: "Verify your ThemeAI Account",
+      description:
+        "We're excited to have you on board. Please click the button below to verify your email address.",
+      url: `${web_url}/api/token-verification?token=${token}`,
+      button: "Verify Account",
+      note: "(If you did not request an account verification, you may ignore this email.)",
+    };
   }
+
   return `
     <!DOCTYPE html>
     <html lang="en">

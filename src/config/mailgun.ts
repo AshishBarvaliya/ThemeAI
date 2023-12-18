@@ -17,18 +17,17 @@ const client = mailgun.client({
 });
 
 export const sendEmail = (
-  type: "reset-password" | "activation",
+  type: "reset-password" | "activation" | "welcome",
   { email, token, name }: { email: string; token: string; name: string }
 ) => {
-  if (type === "reset-password") {
-    const data = {
-      from: "ThemeAI.io <contact@themeai.io>",
-      to: email,
-      subject: "Reset your password",
-      html: getEmailHtml("reset-password", { token, name }),
-    };
-    return client.messages.create(domain, data);
-  }
-
-  return new Error("Not implemented");
+  const data = {
+    from: "ThemeAI.io <contact@themeai.io>",
+    to: email,
+    subject:
+      type === "reset-password"
+        ? "Reset your password"
+        : "Verify your ThemeAI account",
+    html: getEmailHtml(type, { token, name }),
+  };
+  return client.messages.create(domain, data);
 };
