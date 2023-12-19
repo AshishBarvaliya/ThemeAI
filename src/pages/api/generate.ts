@@ -57,8 +57,7 @@ export default async function handler(
 
     try {
       const gptResponse = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo-1106",
-        // model: "gpt-4-1106-preview",
+        model: pupa > 25 ? "gpt-4-1106-preview" : "gpt-3.5-turbo-1106",
         messages: [
           {
             role: "user",

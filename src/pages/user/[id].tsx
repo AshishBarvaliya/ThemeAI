@@ -356,7 +356,7 @@ export default function User() {
       </div>
       <div className="flex flex-col w-full lg:ml-[300px] bg-black/5 flex-1 lg:flex-auto">
         <div className="flex justify-between flex-col border-b-[0.5px] px-6 py-3 pb-1.5 border-border lg:fixed bg-background z-10 shadow-md w-full lg:max-w-[calc(1536px-300px)] lg:w-[calc(100vw-300px)]">
-          <div className="flex w-full overflow-x-auto overflow-y-hidden">
+          <div className="flex w-full overflow-x-auto md:overflow-x-visible">
             <div className="flex gap-2">
               {navigations.map((tab, index) => (
                 <Label
