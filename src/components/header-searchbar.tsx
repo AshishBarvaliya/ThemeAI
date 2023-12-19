@@ -8,7 +8,7 @@ import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { INPUT_LIMIT } from "@/constants/website";
 
-const HeaderSearchBar = () => {
+const HeaderSearchBar = ({ forMobile = false }: { forMobile?: boolean }) => {
   const {
     setThemeSearchQuery,
     filterTags,
@@ -28,8 +28,8 @@ const HeaderSearchBar = () => {
   return (
     <>
       <SeachBar
-        id="font-search"
-        name="font-search"
+        id={forMobile ? "mobile-search" : "main-search"}
+        name={forMobile ? "mobile-search" : "main-search"}
         placeholder="Search by font, theme, user, or description"
         autoComplete="off"
         maxLength={INPUT_LIMIT.NAME_MAX}

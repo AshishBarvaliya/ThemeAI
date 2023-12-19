@@ -57,9 +57,9 @@ export default function User() {
   );
   const { data: notificationStatus } = useQuery(
     ["user", "notification", "new"],
-    () => getHasNewNotifications(session?.user?.id),
+    () => getHasNewNotifications(),
     {
-      enabled: !!router.query.id,
+      enabled: !!router.query.id && !!session,
     }
   );
   const { mutate: mutateUserFollow, isLoading: isLoadingFollow } = useMutation({
@@ -221,11 +221,11 @@ export default function User() {
   ];
 
   const renderStats = () => (
-    <div className="flex flex-col w-full py-4 border-t border-border/20">
+    <div className="flex flex-col w-full py-3 border-t border-border/20">
       <Typography
         element="p"
         as="p"
-        className="text-primary-foreground/90 font-bold mb-2"
+        className="text-primary-foreground/90 font-bold mb-1"
       >
         Community Stats
       </Typography>
@@ -307,7 +307,7 @@ export default function User() {
               {user?.name || "-"}
             </Typography>
             {user && user.level !== undefined ? (
-              <div className="flex items-center">
+              <div className="flex items-center justify-center">
                 <Typography
                   element="p"
                   as="p"
@@ -328,7 +328,7 @@ export default function User() {
               />
             )}
           {renderButton(session, user)}
-          <div className="flex flex-col py-3 w-full px-4 text-sm">
+          <div className="flex flex-col py-2 w-full px-4 text-sm">
             <Typography
               element="p"
               as="p"
@@ -393,7 +393,7 @@ export default function User() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col lg:mt-[56px] overflow-y-auto flex-1">
+        <div className="flex flex-col lg:mt-[56px] overflow-y-auto flex-1 mb-2">
           {navigations.find((tab) => tab.title === selectedNav)?.component}
         </div>
       </div>

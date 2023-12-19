@@ -190,6 +190,8 @@ export default async function handler(
                 LEFT JOIN 
                     tag ON tag.id = themes_to_tags."tagId"
                 WHERE 
+                    theme."isPrivate" = false
+                  AND
                     theme."userId" = ${userId}
                 GROUP BY 
                     theme.id, "user".id
@@ -314,8 +316,7 @@ export default async function handler(
               LEFT JOIN 
                   tag ON tag.id = themes_to_tags."tagId"
               WHERE 
-                  theme."isPrivate" = false
-                  AND users_to_liked_themes."userId" = ${userId}
+                  users_to_liked_themes."userId" = ${userId}
               GROUP BY 
                   theme.id, "user".id
               ORDER BY 

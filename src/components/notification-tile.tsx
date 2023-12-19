@@ -5,9 +5,9 @@ import Typography from "./ui/typography";
 import moment from "moment";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import LearningTemplate from "@/assets/templates/learning/learning-mini";
 import { generateAllShades } from "@/lib/utils";
 import { useRouter } from "next/router";
+import { getMiniTemplate } from "@/lib/templates";
 
 interface INotificationTileProps {
   notification: INotification;
@@ -62,6 +62,15 @@ export const NotificationTile: React.FC<INotificationTileProps> = ({
 }) => {
   const router = useRouter();
 
+  const colors = notification.theme
+    ? {
+        bg: notification?.theme?.color_1,
+        primary: notification?.theme?.color_2,
+        accent: notification?.theme?.color_3,
+        extra: notification?.theme?.color_4,
+      }
+    : null;
+
   return (
     <div
       key={notification.id}
@@ -110,31 +119,23 @@ export const NotificationTile: React.FC<INotificationTileProps> = ({
           </div>
         ) : (
           <div className="w-20 mr-2">
-            <LearningTemplate
-              id={`notification-${notification?.theme?.id}`}
-              colors={{
-                bg: "#ffffff",
-                primary: "#000000",
-                accent: "#eb4034",
-                extra: "#4334eb",
-              }}
-              shades={generateAllShades({
-                bg: "#ffffff",
-                primary: "#000000",
-                accent: "#eb4034",
-                extra: "#4334eb",
-              })}
-              fonts={{
-                primary: {
-                  fontFamily: "Poppins",
-                  weights: [],
-                },
-                secondary: {
-                  fontFamily: "Advent Pro",
-                  weights: [],
-                },
-              }}
-            />
+            {notification.theme && colors
+              ? getMiniTemplate(notification.theme.template, {
+                  id: `notification-${notification?.theme?.id}`,
+                  colors: colors,
+                  shades: generateAllShades(colors),
+                  fonts: {
+                    primary: {
+                      fontFamily: "Roboto",
+                      weights: [],
+                    },
+                    secondary: {
+                      fontFamily: "Poppins",
+                      weights: [],
+                    },
+                  },
+                })
+              : null}
           </div>
         )}
       </div>

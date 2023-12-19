@@ -22,21 +22,30 @@ const Sidebar = ({
     {
       id: "explore",
       label: "Explore",
-      icon: <ZapIcon className="w-5 h-5" />,
+      getIcon: (isActive: boolean) => (
+        <ZapIcon className="w-4 h-4" strokeWidth={isActive ? 2.5 : 2} />
+      ),
     },
     ...(status === "authenticated"
       ? [
           {
             id: "foryou",
             label: "For you",
-            icon: <PartyPopper className="w-5 h-5" />,
+            getIcon: (isActive: boolean) => (
+              <PartyPopper
+                className="w-4 h-4"
+                strokeWidth={isActive ? 2.5 : 2}
+              />
+            ),
           },
         ]
       : []),
     {
       id: "popular",
       label: "Popular",
-      icon: <BarChart4 className="w-5 h-5" />,
+      getIcon: (isActive: boolean) => (
+        <BarChart4 className="w-4 h-4" strokeWidth={isActive ? 2.5 : 2} />
+      ),
     },
   ];
 
@@ -56,7 +65,7 @@ const Sidebar = ({
       ) : (
         <>
           <div className="flex md:hidden px-2 gap-1 py-1 pt-2">
-            <HeaderSearchBar />
+            <HeaderSearchBar forMobile />
           </div>
           <div className="flex overflow-y-auto md:flex-col flex-1 gap-2 py-2 md:py-4">
             {tabs.map((tab) => (
@@ -66,12 +75,12 @@ const Sidebar = ({
                   setThemeType(tab.id as "explore" | "foryou" | "popular")
                 }
                 className={cn(
-                  "flex gap-2.5 items-center py-2 px-2 md:px-8 mx-3 text-lg cursor-pointer hover:bg-primary/20",
+                  "flex gap-2.5 items-center py-2 px-2 md:px-9 mx-3 text-base cursor-pointer hover:bg-primary/20",
                   themeType === tab.id &&
-                    "bg-primary/60 shadow-md hover:bg-primary/60"
+                    "bg-primary/60 shadow-inset hover:bg-primary/60 font-[500]"
                 )}
               >
-                {tab.icon}
+                {tab.getIcon(themeType === tab.id)}
                 {tab.label}
               </div>
             ))}
