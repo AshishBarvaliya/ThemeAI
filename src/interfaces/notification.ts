@@ -1,3 +1,5 @@
+import { TemplateType } from "./templates";
+
 export interface INotification {
   id: string;
   createdAt: Date;
@@ -7,6 +9,11 @@ export interface INotification {
   theme?: {
     id: string;
     name: string;
+    template: TemplateType;
+    color_1: string;
+    color_2: string;
+    color_3: string;
+    color_4: string;
   };
   notifier: {
     id: string;
