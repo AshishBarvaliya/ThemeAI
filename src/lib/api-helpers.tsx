@@ -40,7 +40,10 @@ export const sendLikeSaveNotification = async ({
       const experience = Number(currentTheme?.user.experience || 0) + 15;
       const level = Number(currentTheme?.user.level || 0);
 
-      if (level < 5 && USER_LEVELS[level].requiredExperience <= experience) {
+      if (
+        level < 5 &&
+        USER_LEVELS[level + 1].requiredExperience <= experience
+      ) {
         await db
           .update(usersSchema)
           .set({
