@@ -11,8 +11,11 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
-    className="w-full h-auto"
-    style={{ backgroundColor: colors.bg }}
+    className="w-full h-auto svg-transition"
+    style={{
+      backgroundColor: colors.bg,
+      transition: "background-color 1s ease",
+    }}
     viewBox="0 0 1440 880"
     {...props}
   >

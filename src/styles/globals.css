@@ -298,3 +298,7 @@ textarea::placeholder {
 .divWithDotsBackground {
   animation: moveBackground 50s linear infinite;
 }
+
+.svg-transition * {
+  transition: fill 1s ease, stroke 1s ease;
+}
