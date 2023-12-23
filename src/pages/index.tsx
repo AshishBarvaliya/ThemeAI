@@ -40,11 +40,13 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>ThemeAI - Coming Soon</title>
+        <title property="og:title">ThemeAI - Coming Soon</title>
         <meta
           name="description"
+          property="og:description"
           content="Select AI-Enhanced Meaningful Themes for Your Web Design"
         />
+        <meta property="og:image" content="/og/home.png" />
         <script type="application/ld+json">
           {`
             {
