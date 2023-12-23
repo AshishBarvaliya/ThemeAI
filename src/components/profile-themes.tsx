@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTags, getThemesByUserAndType } from "@/services/theme";
-import { GetThemeTileProps, TagProps } from "@/interfaces/theme";
+import { GetThemeTileProps } from "@/interfaces/theme";
 import { ThemeTile } from "@/components/theme-tile";
 import { useSession } from "next-auth/react";
 import { useHelpers } from "@/hooks/useHelpers";

@@ -52,6 +52,11 @@ export default async function handler(
             columns: {
               id: true,
               name: true,
+              template: true,
+              color_1: true,
+              color_2: true,
+              color_3: true,
+              color_4: true,
             },
           },
           notifier: {
