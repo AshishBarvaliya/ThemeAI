@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Nosifer&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,7 +9,7 @@
   }
 
   :root {
-    --background: 25 100% 97%;
+    --background: #FAF8ED;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -297,4 +296,31 @@ textarea::placeholder {
 
 .divWithDotsBackground {
   animation: moveBackground 50s linear infinite;
+}
+
+.svg-transition * {
+  transition: fill 1s ease, stroke 1s ease;
+}
+
+@font-face {
+  font-family: "Recoleta";
+  src: url("/fonts/Recoleta-Regular.otf");
+}
+
+
+.animated-gradient {
+  background-image: -webkit-linear-gradient(125deg, #ba1003, #b8a003, #4fa904);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-animation: hue 10s infinite linear;
+}
+
+@keyframes hue {
+  from {
+    -webkit-filter: hue-rotate(0deg);
+  }
+
+  to {
+    -webkit-filter: hue-rotate(-360deg);
+  }
 }

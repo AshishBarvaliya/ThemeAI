@@ -1,5 +1,5 @@
 {
-  "name": "butterfly",
+  "name": "themeai",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -54,6 +54,7 @@
     "postgres": "^3.3.5",
     "react": "18.2.0",
     "react-color": "^2.19.3",
+    "react-countdown": "^2.3.5",
     "react-dom": "18.2.0",
     "react-nice-avatar": "^1.4.1",
     "react-transition-group": "^4.4.5",
