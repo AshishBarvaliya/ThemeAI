@@ -17,17 +17,19 @@ export default function Home() {
       { val: seconds, label: "Seconds" },
     ];
     if (completed) {
-      return <div className="flex gap-4">Complete</div>;
+      return <div className="flex">Complete</div>;
     } else {
       return (
-        <div aria-live="assertive" className="flex gap-4">
+        <div aria-live="assertive" className="flex gap-3 pt-4">
           {data.map((item, index) => (
             <div
-              className="flex flex-col justify-center items-center p-4 border border-border bg-white rounded-[10px]"
+              className="flex flex-col justify-center items-center p-2 border border-border/20 bg-white/60 w-[80px]"
               key={index}
             >
-              <p className="font-bold text-center text-4xl">{item.val}</p>
-              <p className="text-base font-medium text-center">{item.label}</p>
+              <p className="font-bold text-center text-xl">{item.val}</p>
+              <p className="text-xs font-medium text-center uppercase">
+                {item.label}
+              </p>
             </div>
           ))}
         </div>
@@ -96,18 +98,29 @@ export default function Home() {
                   Transform your website into a purposeful masterpiece. Join us
                   in redefining web design. Elevate your digital presence today!
                 </p>
-                <div>
+                <div className="flex flex-col">
+                  <div className="flex py-2">
+                    <p className="text-3xl font-[500]">Coming soon!</p>
+                  </div>
                   <Countdown date={+moment("2024-01-10")} renderer={renderer} />
                 </div>
               </div>
             </div>
-            <div className="flex flex-col py-1 flex-1 pr-10">
+            <div className="flex flex-col flex-1 mr-10 bg-[#383838] shadow-xl rounded-[8px] relative">
+              <div className="flex flex-1 gap-1 my-0.5 px-1.5 mt-1">
+                <div className="h-1.5 w-1.5 rounded-full bg-[#FE5E57]" />
+                <div className="h-1.5 w-1.5 rounded-full bg-[#FEBC32]" />
+                <div className="h-1.5 w-1.5 rounded-full bg-[#02CD4B]" />
+                <div className="absolute top-0.5 left-0 right-0 text-white text-[6px] text-center">
+                  ThemeAI
+                </div>
+              </div>
               <video
                 autoPlay
                 muted
                 loop
                 aria-label="ThemeAI Product Demo"
-                className="border-none border-[#fff] rounded-[8px] shadow-xl"
+                className="rounded-[8px] p-0.5 pt-0.5"
               >
                 <source
                   src="/videos/product-demo.mp4"
