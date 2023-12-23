@@ -7,7 +7,7 @@ import Image from "next/image";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <div className="flex flex-col items-center">
-      <div
+      <header
         className={cn(
           "fixed max-w-screen-2xl flex w-full justify-between py-1 md:py-2 px-3 md:px-6 h-[54px] md:h-[60px] z-40"
         )}
@@ -19,7 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
             </Link>
           </div>
         </div>
-      </div>
+      </header>
       <main
         className={cn(
           "flex w-full flex-col md:flex-row h-screen max-w-screen-2xl"
