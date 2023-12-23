@@ -17,10 +17,15 @@ export default function Home() {
       { val: seconds, label: "Seconds" },
     ];
     if (completed) {
-      return <div className="flex">Complete</div>;
+      return (
+        <div className="flex  justify-center lg:justify-start">Complete</div>
+      );
     } else {
       return (
-        <div aria-live="assertive" className="flex gap-3 pt-4">
+        <div
+          aria-live="assertive"
+          className="flex gap-3 pt-4  justify-center lg:justify-start"
+        >
           {data.map((item, index) => (
             <div
               className="flex flex-col justify-center items-center p-2 border border-border/20 bg-white/60 w-[80px]"
@@ -62,12 +67,12 @@ export default function Home() {
         </script>
       </Head>
       <div className="flex flex-1 flex-col overflow-y-auto">
-        <div className="flex relative flex-1 md:min-h-screen overflow-x-hidden">
-          <div className="flex backdrop-blur-3xl py-10 w-full z-10 items-center flex-col md:flex-row pt-[100px] gap-8 md:gap-0">
-            <div className="md:w-[55%] md:pr-10">
-              <div className="flex flex-col gap-2 md:gap-7 md:ml-7 justify-center md:justify-start -mt-10">
+        <div className="flex relative flex-1 lg:min-h-screen overflow-x-hidden">
+          <div className="flex backdrop-blur-3xl py-10 px-4 md:px-10 lg:px-0 w-full z-10 items-center flex-col lg:flex-row pt-[100px] gap-8 lg:gap-0">
+            <div className="lg:w-[55%] lg:pr-10 pt-10 md:pt-20 lg:pt-0">
+              <div className="flex flex-col gap-2 md:gap-7 lg:ml-7 justify-center lg:justify-start -mt-10">
                 <h1
-                  className="font-[Recoleta] text-[60px] leading-[68px] text-center md:text-left"
+                  className="font-[Recoleta] text-[50px] xl:text-[60px] leading-[56px] xl:leading-[68px] text-center lg:text-left"
                   aria-label="Select AI-Enhanced Meaningful Themes for Your Web Design"
                 >
                   Select AI-Enhanced{" "}
@@ -80,7 +85,7 @@ export default function Home() {
                   Themes for Your Web Design
                 </h1>
                 <p
-                  className="text-center md:text-left text-sm"
+                  className="text-center lg:text-left text-sm"
                   aria-label="Welcome to ThemeAI — where creativity meets artificial intelligence. Choose GPT4-powered, meaningful themes effortlessly, all for free. Explore our extensive theme library, curate your collection, and manage your profile with ease. Transform your website into a purposeful masterpiece. Join us in redefining web design. Elevate your digital presence today!"
                 >
                   Welcome to ThemeAI — where creativity meets artificial
@@ -101,36 +106,38 @@ export default function Home() {
                   in redefining web design. Elevate your digital presence today!
                 </p>
                 <div className="flex flex-col">
-                  <div className="flex py-2">
+                  <div className="flex py-2 justify-center lg:justify-start">
                     <p className="text-3xl font-[500]">Coming soon!</p>
                   </div>
                   <Countdown date={+moment("2024-01-10")} renderer={renderer} />
                 </div>
               </div>
             </div>
-            <div className="flex flex-col flex-1 mr-10 bg-[#383838] shadow-xl rounded-[8px] relative">
-              <div className="flex flex-1 gap-1 my-0.5 px-1.5 mt-1">
-                <div className="h-1.5 w-1.5 rounded-full bg-[#FE5E57]" />
-                <div className="h-1.5 w-1.5 rounded-full bg-[#FEBC32]" />
-                <div className="h-1.5 w-1.5 rounded-full bg-[#02CD4B]" />
-                <div className="absolute top-0.5 left-0 right-0 text-white text-[6px] text-center">
-                  ThemeAI
+            <div className="flex flex-col flex-1 pb-4 md:pb-10 lg:pb-0">
+              <div className="flex flex-col flex-1 mr-0 lg:mr-6 xl:mr-10 bg-[#383838] shadow-xl rounded-[8px] relative mt-2 md:mt-6 lg:mt-0">
+                <div className="flex flex-1 gap-1 my-0.5 px-1.5 mt-1">
+                  <div className="h-1.5 w-1.5 rounded-full bg-[#FE5E57]" />
+                  <div className="h-1.5 w-1.5 rounded-full bg-[#FEBC32]" />
+                  <div className="h-1.5 w-1.5 rounded-full bg-[#02CD4B]" />
+                  <div className="absolute top-0.5 left-0 right-0 text-white text-[6px] text-center">
+                    ThemeAI
+                  </div>
                 </div>
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  aria-label="ThemeAI Product Demo"
+                  className="rounded-[8px] p-0.5 pt-0.5"
+                >
+                  <source
+                    src="/videos/product-demo.mp4"
+                    type="video/mp4"
+                    className="w-full h-full"
+                  />
+                  Your browser does not support the video tag.
+                </video>
               </div>
-              <video
-                autoPlay
-                muted
-                loop
-                aria-label="ThemeAI Product Demo"
-                className="rounded-[8px] p-0.5 pt-0.5"
-              >
-                <source
-                  src="/videos/product-demo.mp4"
-                  type="video/mp4"
-                  className="w-full h-full"
-                />
-                Your browser does not support the video tag.
-              </video>
             </div>
           </div>
           <div className="absolute top-0 left-0 right-0 bottom-0 z-0">

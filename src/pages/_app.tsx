@@ -9,7 +9,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <div className="flex flex-col items-center">
       <header
         className={cn(
-          "fixed max-w-screen-2xl flex w-full justify-between py-1 md:py-2 px-3 md:px-6 h-[54px] md:h-[60px] z-40"
+          "fixed max-w-screen-2xl flex w-full justify-between py-1 md:py-2 px-3 md:px-6 h-[54px] md:h-[60px] z-40 backdrop-blur-sm"
         )}
       >
         <div className="flex items-center flex-1 pr-6">

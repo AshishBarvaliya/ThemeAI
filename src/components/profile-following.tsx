@@ -118,13 +118,13 @@ export const UserTile = ({
         <div className="flex flex-col ml-3 justify-between">
           <div className="flex items-center gap-2">
             {user.name}
-            {user?.level && (
+            {user?.level ? (
               <AwardIcon
                 className="h-3 w-3"
                 level={user.level}
                 info={USER_LEVELS[user.level].name}
               />
-            )}
+            ) : null}
           </div>
           <div className="flex items-center gap-2">
             <Typography element={"p"} as="p" className="text-xs">

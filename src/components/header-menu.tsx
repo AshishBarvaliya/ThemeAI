@@ -27,7 +27,10 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = () => {
 
   const { data: notificationStatus } = useQuery(
     ["user", "notification", "new"],
-    () => getHasNewNotifications(session?.user.id)
+    () => getHasNewNotifications(),
+    {
+      enabled: !!router.query.id && !!session,
+    }
   );
   return (
     <DropdownMenu>
