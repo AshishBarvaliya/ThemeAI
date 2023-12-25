@@ -106,8 +106,20 @@ export default function Home() {
                   in redefining web design. Elevate your digital presence today!
                 </p>
                 <div className="flex flex-col">
-                  <div className="flex py-2 justify-center lg:justify-start">
+                  <div className="flex py-2 justify-center lg:justify-start gap-6 items-center">
                     <p className="text-3xl font-[500]">Coming soon!</p>
+                    <a
+                      href="https://www.producthunt.com/posts/theme-ai?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-theme&#0045;ai"
+                      target="_blank"
+                    >
+                      <img
+                        src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=431314&theme=light"
+                        alt="Theme&#0032;AI - Select&#0032;AI&#0045;Enhanced&#0032;Meaningful&#0032;Themes&#0032;for&#0032;Your&#0032;Web&#0032;Design | Product Hunt"
+                        style={{ width: "250px", height: "54px" }}
+                        width="250"
+                        height="54"
+                      />
+                    </a>
                   </div>
                   <Countdown date={+moment("2024-01-10")} renderer={renderer} />
                 </div>
