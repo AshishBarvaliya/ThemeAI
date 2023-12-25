@@ -13,6 +13,13 @@ export default function Document() {
           rel="stylesheet"
           href={`https://fonts.googleapis.com/css2?family=${googleFontLink2}`}
         />
+        <link
+          rel="preload"
+          href="/fonts/Recoleta-Regular.otf"
+          as="font"
+          type="font/otf"
+          crossOrigin="anonymous"
+        />
       </Head>
       <body className="bg-background min-h-screen">
         <Main />
