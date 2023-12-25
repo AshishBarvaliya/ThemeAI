@@ -3,6 +3,11 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Link from "next/link";
 import Image from "next/image";
+import ReactGA from "react-ga4";
+
+const TRACKING_ID = process.env.NEXT_PUBLIC_TRACKING_ID;
+
+ReactGA.initialize(TRACKING_ID || "");
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
