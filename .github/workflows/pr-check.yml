@@ -35,6 +35,7 @@ jobs:
           echo "FORGOT_PASSWORD_MAIL_LIMIT=${{ secrets.FORGOT_PASSWORD_MAIL_LIMIT }}" >> .env
           echo "EMAIL_LINK_EXPIRY=${{ secrets.EMAIL_LINK_EXPIRY }}" >> .env
           echo "THEMES_PER_PAGE=${{ secrets.THEMES_PER_PAGE }}" >> .env
+          echo "NEXT_PUBLIC_TRACKING_ID=${{ secrets.TRACKING_ID }}" >> .env
 
       - name: Build
         run: npm run build
