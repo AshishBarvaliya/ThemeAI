@@ -84,13 +84,13 @@ export const privacyPolicy: PrivacyPolicyProps[] = [
         <Typography element={"p"} as="p" className="font-bold">
           Prompts Management:
         </Typography>
-        To keep track of the number of prompts used and purchased.
+        To keep track of the number of credits used and purchased.
         <br />
         <br />
         <Typography element={"p"} as="p" className="font-bold">
           Experience Points and Levels:
         </Typography>
-        To track your progress and grant you free prompts as you reach new
+        To track your progress and grant you free credits as you reach new
         levels.
       </div>
     ),
@@ -230,14 +230,14 @@ export const TermsOfUse = [
     ),
   },
   {
-    title: "Prompts and Premium Features",
+    title: "Credits and Premium Features",
     description: (
       <div className="flex flex-col">
         <Typography element={"p"} as="p" className="font-bold">
           Prompt Usage:
         </Typography>
-        Users are provided with a limited number of free prompts. Additional
-        prompts may be purchased, and their use is subject to the terms of any
+        Users are provided with a limited number of free credits. Additional
+        credits may be purchased, and their use is subject to the terms of any
         relevant purchase agreement.
         <br />
         <br />

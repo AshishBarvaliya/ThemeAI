@@ -23,7 +23,7 @@ export const users = pgTable("user", {
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   isActived: boolean("isActive").default(true),
   stripeCustomerId: text("stripeCustomerId"),
-  pupa: integer("pupa").default(0),
+  pupa: integer("pupa").default(15),
   experience: integer("experience").default(0),
   level: integer("level").default(0),
   avatar: text("avatar"),

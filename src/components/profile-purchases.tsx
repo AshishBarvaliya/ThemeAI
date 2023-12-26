@@ -23,7 +23,7 @@ export default function ProfilePurchases() {
     <div className="flex w-full xl:w-[55%] h-full flex-col py-4 gap-4 overflow-y-auto px-4 min-h-[300px] min-w-[650px]">
       <div className="flex items-center lg:justify-between">
         <p className="text-base">
-          Available prompts:
+          Available Credits:
           <span className="font-bold px-1">{user?.pupa || 0}</span>
         </p>
         <Button

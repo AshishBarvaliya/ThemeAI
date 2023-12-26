@@ -72,7 +72,7 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = () => {
         <DropdownMenuLabel className="font-normal">
           <div className="flex items-center justify-between">
             <p className="text-xs">
-              Available prompts:
+              Available Credits:
               <span className="font-bold px-1">{user?.pupa || 0}</span>
             </p>
             <Button

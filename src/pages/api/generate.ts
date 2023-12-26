@@ -42,7 +42,7 @@ export default async function handler(
     if (pupa < 1) {
       return res.status(400).json({
         error:
-          "You don't have enough prompt to generate colors. please purchase prompts!",
+          "You don't have enough prompt to generate colors. please purchase credits!",
       });
     }
 
@@ -57,7 +57,7 @@ export default async function handler(
 
     try {
       const gptResponse = await openai.chat.completions.create({
-        model: pupa > 25 ? "gpt-4-1106-preview" : "gpt-3.5-turbo-1106",
+        model: pupa > 10 ? "gpt-4-1106-preview" : "gpt-3.5-turbo-1106",
         messages: [
           {
             role: "user",

@@ -49,14 +49,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
           type: "error",
         });
       }
-
-      if (callback?.ok && !callback?.error) {
-        setOpen(false);
-        addToast({
-          title: "Logged in successfully!",
-          type: "success",
-        });
-      }
+      setOpen(false);
       setLoading(false);
     });
   };
