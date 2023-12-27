@@ -24,7 +24,7 @@ export const sendEmail = (
 ) => {
   const inlineImage = {
     filename: "logo.png",
-    data: fs.createReadStream(path.join(__dirname, "public", "logo.png")),
+    data: fs.createReadStream(path.join(process.cwd(), "public", "logo.png")),
     cid: "logo.png",
   };
 
