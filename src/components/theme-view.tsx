@@ -271,7 +271,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                   {theme.prompt}
                 </Typography>
               ) : null}
-              <Carousel autoSlide={false} bgColor={colors.bg}>
+              <Carousel autoSlide={true} bgColor={colors.bg}>
                 <MarketingTemplate
                   id="marketing"
                   colors={colors}

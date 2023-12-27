@@ -114,7 +114,7 @@ const Header = () => {
       className={cn(
         "fixed max-w-screen-2xl flex w-full justify-between py-1 md:py-2 px-3 md:px-6 h-[54px] md:h-[60px] z-40",
         isLandingPage
-          ? "bg-background/40"
+          ? "backdrop-blur-sm"
           : "bg-background border-b-[0.5px] border-border "
       )}
     >
@@ -131,7 +131,7 @@ const Header = () => {
         ) : null}
       </div>
 
-      <ul className="flex items-center gap-8">
+      <div className="flex items-center gap-8">
         {router.pathname === "/" && (
           <>
             {landingMenu.map((item, index) => (
@@ -144,9 +144,9 @@ const Header = () => {
                 </Link>
               </li>
             ))}
-            <Button className="" onClick={() => router.push("/themes")}>
+            {/* <Button className="" onClick={() => router.push("/themes")}>
               Launch
-            </Button>
+            </Button> */}
           </>
         )}
         {status !== "loading" && router.pathname !== "/" ? (
@@ -175,7 +175,7 @@ const Header = () => {
             )}
           </div>
         ) : null}
-      </ul>
+      </div>
       <LoginDialog
         open={loginOpen}
         setOpen={setLoginOpen}

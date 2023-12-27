@@ -75,12 +75,12 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
           isDark: data.isDark,
           prompt: data.prompt,
         });
-        setLoading(false);
         setOpen(false);
-        setData({ prompt: "", isDark: false });
         setGenerateDialogDefaultValues(undefined);
         setIsPromptError(false);
         router.push("/themes/generated");
+        setLoading(false);
+        setData({ prompt: "", isDark: false });
       })
       .catch((error) => {
         addToast({ title: error.response.data.error, type: "error" });

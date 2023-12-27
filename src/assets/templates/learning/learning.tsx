@@ -1,5 +1,6 @@
 import { TemplateProps } from "@/interfaces/templates";
 import * as React from "react";
+import Image from "next/image";
 
 const LearningTemplate: React.FC<TemplateProps> = ({
   id,
@@ -363,7 +364,12 @@ const LearningTemplate: React.FC<TemplateProps> = ({
     />
     <foreignObject x="134" y="1440" width="487.213" height="573">
       <div className="h-full items-end flex justify-center">
-        <img src="/learning-img-2.png" width={570} alt="stock-img-1" />
+        <Image
+          src="/learning-img-2.png"
+          width={570}
+          alt="stock-img-1"
+          height={573}
+        />
       </div>
     </foreignObject>
     <path fill={shades.bgDark} d="M0 904h1440v448H0z" />
@@ -662,7 +668,12 @@ const LearningTemplate: React.FC<TemplateProps> = ({
     />
     <foreignObject x="797" y="160" width="586.213" height="656">
       <div className="h-full items-end flex justify-center">
-        <img src="/learning-img-1.png" width={470} alt="stock-img-1" />
+        <Image
+          src="/learning-img-1.png"
+          width={470}
+          alt="stock-img-1"
+          height={656}
+        />
       </div>
     </foreignObject>
     <path fill={colors.accent} d="M120 40h80.768v43.137H120z" />

@@ -1,5 +1,6 @@
 import { TemplateProps } from "@/interfaces/templates";
 import * as React from "react";
+import Image from "next/image";
 
 const EditorTemplate: React.FC<TemplateProps> = ({
   id,
@@ -188,7 +189,12 @@ const EditorTemplate: React.FC<TemplateProps> = ({
       </g>
       <foreignObject x="160" y="801" width="1200" height="620">
         <div>
-          <img src="/editor-img-1.png" alt="editor-img-1" />
+          <Image
+            src="/editor-img-1.png"
+            alt="editor-img-1"
+            height={620}
+            width={1120}
+          />
         </div>
       </foreignObject>
       <path fill={colors.bg} d="M0 1537h1440v371H0z" />
@@ -319,7 +325,12 @@ const EditorTemplate: React.FC<TemplateProps> = ({
       </foreignObject>
       <foreignObject x="800" y="1930" width="600" height="400">
         <div>
-          <img src="/editor-img-2.png" alt="editor-img-1" />
+          <Image
+            src="/editor-img-2.png"
+            alt="editor-img-1"
+            width={600}
+            height={400}
+          />
         </div>
       </foreignObject>
       <g clipPath={`url(#k${id})`}>
@@ -365,7 +376,12 @@ const EditorTemplate: React.FC<TemplateProps> = ({
       </foreignObject>
       <foreignObject x="100" y="2360" width="600" height="400">
         <div>
-          <img src="/editor-img-3.png" alt="editor-img-1" />
+          <Image
+            src="/editor-img-3.png"
+            alt="editor-img-1"
+            width={600}
+            height={400}
+          />
         </div>
       </foreignObject>
       <path fill={colors.bg} d="M0 2778h1440v118H0z" />

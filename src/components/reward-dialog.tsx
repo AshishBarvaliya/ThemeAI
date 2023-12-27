@@ -99,7 +99,7 @@ export const RewardDialog: React.FC<ExportThemeDialogProps> = ({
                     {USER_LEVELS[Number(level)].requiredExperience + " exp"}
                   </div>
                   <div className="text-xs">
-                    {"+" + USER_LEVELS[Number(level)].prompts + " prompts"}
+                    {"+" + USER_LEVELS[Number(level)].prompts + " credits"}
                   </div>
                   {Number(level) !== 5 ? (
                     <>

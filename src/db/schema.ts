@@ -23,7 +23,7 @@ export const users = pgTable("user", {
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   isActived: boolean("isActive").default(true),
   stripeCustomerId: text("stripeCustomerId"),
-  pupa: integer("pupa").default(0),
+  pupa: integer("pupa").default(15),
   experience: integer("experience").default(0),
   level: integer("level").default(0),
   avatar: text("avatar"),
@@ -45,6 +45,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   }),
   verificationTokens: many(verificationTokens),
   resetPasswords: many(resetPasswords),
+  views: many(userViews),
 }));
 
 export const usersToFollows = pgTable(
@@ -140,7 +141,7 @@ export const themesRelations = relations(themes, ({ one, many }) => ({
   inappropriateBy: many(usersToInappropriateThemes),
   tags: many(themesToTags),
   activities: many(usersTonotifications),
-  views: many(views),
+  views: many(themeViews),
 }));
 
 export const statusEnum = pgEnum("like_save_status", ["F", "P", "N"]);
@@ -398,7 +399,7 @@ export const feedbackTheme = pgTable("feedback_theme", {
     .references(() => users.id),
 });
 
-export const views = pgTable("views", {
+export const themeViews = pgTable("theme_views", {
   id: text("id").notNull().primaryKey(),
   themeId: text("themeId")
     .notNull()
@@ -407,9 +408,25 @@ export const views = pgTable("views", {
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });
 
-export const viewsRelations = relations(views, ({ one }) => ({
+export const themeViewsRelations = relations(themeViews, ({ one }) => ({
   theme: one(themes, {
-    fields: [views.themeId],
+    fields: [themeViews.themeId],
     references: [themes.id],
+  }),
+}));
+
+export const userViews = pgTable("user_views", {
+  id: text("id").notNull().primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id),
+  userIp: text("userIp").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+});
+
+export const userViewsRelations = relations(userViews, ({ one }) => ({
+  theme: one(users, {
+    fields: [userViews.userId],
+    references: [users.id],
   }),
 }));

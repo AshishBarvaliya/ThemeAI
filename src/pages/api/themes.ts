@@ -12,7 +12,7 @@ import {
   users as usersSchema,
   usersToLikedThemes,
   usersToSavedThemes,
-  views as viewsSchema,
+  themeViews as themeViewsSchema,
 } from "@/db/schema";
 import db from "@/db";
 import { USER_LEVELS } from "@/constants/user";
@@ -123,17 +123,17 @@ export default async function handler(
             res.status(200).json(theme);
 
             setTimeout(async () => {
-              const view = await db.query.views.findFirst({
+              const view = await db.query.themeViews.findFirst({
                 where: and(
-                  eq(viewsSchema.themeId, themeId),
-                  eq(viewsSchema.userIp, ip)
+                  eq(themeViewsSchema.themeId, themeId),
+                  eq(themeViewsSchema.userIp, ip)
                 ),
                 columns: {
                   id: true,
                 },
               });
               if (!view) {
-                await db.insert(viewsSchema).values({
+                await db.insert(themeViewsSchema).values({
                   id: createId(),
                   themeId,
                   userIp: ip,
@@ -395,7 +395,7 @@ export default async function handler(
                   SELECT "themeId" 
                   FROM themes_to_tags
                   INNER JOIN tag ON tag.id = themes_to_tags."tagId"
-                  WHERE tag.id = ANY (${`{${tags}}`})
+                  WHERE tag.name = ANY (${`{${tags}}`})
               )`
                 : sql``
             }

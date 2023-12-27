@@ -6,7 +6,6 @@ interface CarouselProps {
   autoSlide?: boolean;
   interval?: number;
   bgColor?: string;
-  hideArrows?: boolean;
 }
 
 const Carousel: React.FC<CarouselProps> = ({
@@ -14,7 +13,6 @@ const Carousel: React.FC<CarouselProps> = ({
   autoSlide = true,
   interval = 4000,
   bgColor,
-  hideArrows = false,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<"left" | "right">("right");
@@ -44,14 +42,12 @@ const Carousel: React.FC<CarouselProps> = ({
       className="flex relative items-center justify-center overflow-hidden shadow-md"
       style={{ backgroundColor: bgColor || "transparent" }}
     >
-      {hideArrows ? null : (
-        <div
-          onClick={prevItem}
-          className="px-3 flex items-center h-full absolute left-0 cursor-pointer bg-black/5 hover:bg-black/10 z-10"
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </div>
-      )}
+      <div
+        onClick={prevItem}
+        className="px-3 flex items-center h-full absolute left-0 cursor-pointer bg-black/5 hover:bg-black/10 z-10"
+      >
+        <ChevronLeft className="h-5 w-5" />
+      </div>
 
       <div className="flex flex-1">
         {childrenArray.map((child, index) => (
@@ -68,14 +64,12 @@ const Carousel: React.FC<CarouselProps> = ({
         ))}
       </div>
 
-      {hideArrows ? null : (
-        <div
-          onClick={nextItem}
-          className="flex px-3 h-full items-center absolute right-0 cursor-pointer bg-black/5 hover:bg-black/10 z-10"
-        >
-          <ChevronRight className="h-5 w-5" />
-        </div>
-      )}
+      <div
+        onClick={nextItem}
+        className="flex px-3 h-full items-center absolute right-0 cursor-pointer bg-black/5 hover:bg-black/10 z-10"
+      >
+        <ChevronRight className="h-5 w-5" />
+      </div>
     </div>
   );
 };

@@ -1,0 +1,1 @@
+ALTER TABLE "theme" DROP COLUMN IF EXISTS "template";

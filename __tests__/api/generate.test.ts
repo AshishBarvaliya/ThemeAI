@@ -115,7 +115,7 @@ describe("Generate API Endpoint", () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       error:
-        "You don't have enough prompt to generate colors. please purchase prompts!",
+        "You don't have enough prompt to generate colors. please purchase credits!",
     });
   });
 

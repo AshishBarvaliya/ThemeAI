@@ -68,7 +68,6 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({
       axios
         .post("/api/user", data)
         .then(() => {
-          addToast({ title: "New user has been registered!", type: "success" });
           signIn("credentials", {
             email: data.email,
             password: data.password,

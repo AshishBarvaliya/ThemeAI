@@ -1,8 +1,6 @@
 import axios from "axios";
 
 export const setMarkAsInappropriate = async (themeId: string) => {
-  if (!themeId) return new Promise((_, reject) => reject());
-
   const response = await axios.post("/api/theme/inappropriate", {
     themeId,
   });
@@ -10,8 +8,6 @@ export const setMarkAsInappropriate = async (themeId: string) => {
 };
 
 export const themeLike = async (themeId: string) => {
-  if (!themeId) return new Promise((_, reject) => reject());
-
   const response = await axios.post("/api/theme/like", {
     themeId,
   });
@@ -19,8 +15,6 @@ export const themeLike = async (themeId: string) => {
 };
 
 export const themeDislike = async (themeId: string) => {
-  if (!themeId) return new Promise((_, reject) => reject());
-
   const response = await axios.post("/api/theme/dislike", {
     themeId,
   });
@@ -28,8 +22,6 @@ export const themeDislike = async (themeId: string) => {
 };
 
 export const themeSave = async (themeId: string) => {
-  if (!themeId) return new Promise((_, reject) => reject());
-
   const response = await axios.post("/api/theme/save", {
     themeId,
   });
@@ -37,8 +29,6 @@ export const themeSave = async (themeId: string) => {
 };
 
 export const themeUnsave = async (themeId: string) => {
-  if (!themeId) return new Promise((_, reject) => reject());
-
   const response = await axios.post("/api/theme/unsave", {
     themeId,
   });

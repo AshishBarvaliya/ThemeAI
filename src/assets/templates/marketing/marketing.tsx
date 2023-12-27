@@ -1,5 +1,6 @@
 import { TemplateProps } from "@/interfaces/templates";
 import * as React from "react";
+import Image from "next/image";
 
 const MarketingTemplate: React.FC<TemplateProps> = ({
   id,
@@ -716,7 +717,12 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
       />
       <foreignObject x="160" y="1936" width="60" height="100">
         <div>
-          <img src="/marketing-img-1.png" alt="marketing-img-1" />
+          <Image
+            src="/marketing-img-1.png"
+            alt="marketing-img-1"
+            width={60}
+            height={100}
+          />
         </div>
       </foreignObject>
       <circle cx="435" cy="1939" r="17" fill={colors.primary} />
@@ -802,7 +808,12 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
       />
       <foreignObject x="582" y="1940" width="70" height="100">
         <div>
-          <img src="/marketing-img-2.png" alt="marketing-img-1" />
+          <Image
+            src="/marketing-img-2.png"
+            alt="marketing-img-1"
+            width={70}
+            height={100}
+          />
         </div>
       </foreignObject>
       <circle cx="862" cy="1939" r="17" fill={colors.primary} />

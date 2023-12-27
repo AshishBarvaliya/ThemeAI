@@ -128,7 +128,7 @@ export const getEmailHtml = (
     <body>
         <div class="main">
             <header>
-                <img src="logo.svg" alt="ThemeAI logo" />
+                <img src="cid:logo.png" alt="ThemeAI logo" />
             </header>
             <div class="container">
                 <h1>${data.title}</h1>

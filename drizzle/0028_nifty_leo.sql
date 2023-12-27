@@ -1,0 +1,1 @@
+ALTER TABLE "theme" ADD COLUMN "template" "theme_template" NOT NULL;
