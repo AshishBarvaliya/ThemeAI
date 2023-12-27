@@ -57,7 +57,7 @@ export default async function handler(
           email,
           token: newToken,
           name: user.name,
-        }).catch((error) => {
+        }).catch((error: any) => {
           console.error(error);
         });
         return res
