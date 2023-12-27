@@ -123,7 +123,7 @@ export const privacyPolicy: PrivacyPolicyProps[] = [
           "Please contact us with any questions or comments about this Privacy Policy, Our Privacy Policy Toward Children, your personal information, and our third-party disclosure practices, at "
         }
         <span className="text-secondary hover:underline cursor-pointer">
-          contact@aithemes.io
+          contact@themeai.io
         </span>
         .<br />
         <br />

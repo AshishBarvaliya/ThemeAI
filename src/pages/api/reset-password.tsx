@@ -57,12 +57,15 @@ export default async function handler(
           email,
           token: newToken,
           name: user.name,
-        }).catch((error: any) => {
-          return res.status(400).json({ error: error.message });
-        });
-        return res
-          .status(201)
-          .json({ messsage: "Reset password mail has been sent" });
+        })
+          .then(() => {
+            return res
+              .status(201)
+              .json({ messsage: "Reset password mail has been sent" });
+          })
+          .catch((error: any) => {
+            return res.status(400).json({ error: error.message });
+          });
       } catch (error) {
         res.status(500).json({ error: "Failed to send reset password mail" });
       }
