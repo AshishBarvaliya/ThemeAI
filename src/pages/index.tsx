@@ -1,4 +1,5 @@
 import GlowingBoxes from "@/components/growing-dots";
+import useAnalytics from "@/hooks/useAnalytics";
 import moment from "moment";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -9,6 +10,8 @@ const Countdown = dynamic(() => import("react-countdown"), {
 });
 
 export default function Home() {
+  const gTrigger = useAnalytics("Home - coming soon");
+
   const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
     const data = [
       { val: days, label: "Days" },
@@ -111,6 +114,7 @@ export default function Home() {
                     <a
                       href="https://www.producthunt.com/posts/theme-ai?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-theme&#0045;ai"
                       target="_blank"
+                      onClickCapture={() => gTrigger("ProductHunt", "Click")}
                     >
                       <img
                         src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=431314&theme=light"
