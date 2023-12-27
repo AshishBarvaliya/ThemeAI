@@ -2,6 +2,7 @@ import Mailgun from "mailgun.js";
 import FormData from "form-data";
 import { getEmailHtml } from "@/constants/email";
 import fs from "fs";
+import path from "path";
 
 const mailgun: any = new Mailgun(FormData as any);
 
@@ -23,7 +24,7 @@ export const sendEmail = (
 ) => {
   const inlineImage = {
     filename: "logo.png",
-    data: fs.createReadStream("public/logo.png"),
+    data: fs.createReadStream(path.join(__dirname, "public", "logo.png")),
     cid: "logo.png",
   };
 
