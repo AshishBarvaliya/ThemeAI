@@ -58,7 +58,7 @@ export default async function handler(
           token: newToken,
           name: user.name,
         }).catch((error: any) => {
-          console.error(error);
+          return res.status(201).json({ messsage: error.message });
         });
         return res
           .status(201)
