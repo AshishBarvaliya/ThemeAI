@@ -161,6 +161,7 @@ export default function ProfileThemes() {
                 id="privateOnly"
                 name="privateOnly"
                 className="border border-border cursor-pointer h-4 w-7"
+                aria-label="Private only"
                 // @ts-ignore
                 thumbClassName="h-3.5 w-3.5 data-[state=checked]:translate-x-3"
                 checked={privateOnly}
@@ -170,6 +171,7 @@ export default function ProfileThemes() {
           ) : null}
           {tags && (
             <FiterTags
+              id="filter-tags-profile"
               tags={tags}
               setSelected={(selected) =>
                 setFilters({ ...filters, [selectedTab]: selected })
@@ -180,7 +182,7 @@ export default function ProfileThemes() {
           <SortThemes setSortItem={setSortItem} />
         </div>
       </div>
-      <div className="flex gap-4 px-4 h-full flex-col md:flex-row md:flex-wrap pb-4 min-h-[300px] md:justify-start">
+      <div className="flex gap-4 px-4 h-full lg:h-auto flex-col md:flex-row md:flex-wrap pb-4 min-h-[300px] md:justify-start">
         {tabs.find((tab) => tab.id === selectedTab)?.getThemes()}
       </div>
     </>

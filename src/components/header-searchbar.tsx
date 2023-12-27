@@ -43,6 +43,7 @@ const HeaderSearchBar = ({ forMobile = false }: { forMobile?: boolean }) => {
         }}
       />
       <FiterTags
+        id={forMobile ? "mobile-filter-tags" : "main-filter-tags"}
         tags={tags || []}
         selected={filterTags}
         setSelected={setFilterTags}
@@ -50,9 +51,10 @@ const HeaderSearchBar = ({ forMobile = false }: { forMobile?: boolean }) => {
       />
       <div className="flex items-center">
         <Switch
-          id="isAIOnly"
-          name="isAIOnly"
+          id={forMobile ? "isAIOnly-mobile" : "isAIOnly"}
+          name={forMobile ? "isAIOnly-mobile" : "isAIOnly"}
           className="border border-border cursor-pointer h-5 w-8"
+          aria-label="Toggle AI Mode"
           // @ts-ignore
           thumbClassName="h-[18px] w-[18px] data-[state=checked]:translate-x-3"
           checked={isAIOnly}

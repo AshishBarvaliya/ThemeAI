@@ -16,6 +16,7 @@ import {
   useQueryClient,
   useInfiniteQuery,
 } from "@tanstack/react-query";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 
@@ -187,60 +188,71 @@ export default function Themes() {
   };
 
   return (
-    <div className="flex bg-black/5 w-full">
-      {isLoading ? null : themes?.pages[0]?.length ? (
-        <div
-          className="flex flex-col md:flex-row h-full md:flex-wrap p-5 overflow-y-auto lg:px-10 gap-6 w-full items-center md:items-start"
-          onScroll={handleScroll}
-        >
-          {themes?.pages?.map((page, index) =>
-            page.length ? (
-              <Fragment key={index}>
-                {page.map((theme) => (
-                  <ThemeTile
-                    key={theme.id}
-                    theme={theme}
-                    mutateLikeTheme={mutateLikeTheme}
-                    mutateSaveTheme={mutateSaveTheme}
-                    mutateDislikeTheme={mutateDislikeTheme}
-                    mutateUnsaveTheme={mutateUnsaveTheme}
-                    mutateMarkAsInappropriateTheme={
-                      mutateMarkAsInappropriateTheme
-                    }
-                    setLikeLoading={setLikeLoading}
-                    loading={
-                      likeLoading === theme.id &&
-                      (isLoadingDislikeTheme || isLoadingLikeTheme)
-                    }
-                  />
-                ))}
-              </Fragment>
-            ) : null
-          )}
-        </div>
-      ) : (
-        <div className="flex w-full flex-1 flex-col justify-center items-center">
-          <Typography
-            as={"p"}
-            element="p"
-          >{`No themes found by searching "${themeSearchQuery}"`}</Typography>
-          <Button
-            className="mt-4"
-            onClick={() => {
-              router.push("/themes/create");
-              queryClient.invalidateQueries([
-                "home",
-                "themes",
-                themeSearchQuery,
-              ]);
-              setThemeSearchQuery("");
-              setFilterTags([]);
-            }}
+    <>
+      <Head>
+        <title property="og:title">Themes - ThemeAI</title>
+        <meta
+          name="description"
+          property="og:description"
+          content="Explore the themes that are trending on ThemeAI."
+        />
+        <meta property="og:image" content="/og/themes.png" />
+      </Head>
+      <div className="flex bg-black/5 w-full">
+        {isLoading ? null : themes?.pages[0]?.length ? (
+          <div
+            className="flex flex-col md:flex-row h-full md:flex-wrap p-5 overflow-y-auto lg:px-10 gap-6 w-full items-center md:items-start"
+            onScroll={handleScroll}
           >
-            Create a theme
-          </Button>
-        </div>
-      )}
-    </div>
+            {themes?.pages?.map((page, index) =>
+              page.length ? (
+                <Fragment key={index}>
+                  {page.map((theme) => (
+                    <ThemeTile
+                      key={theme.id}
+                      theme={theme}
+                      mutateLikeTheme={mutateLikeTheme}
+                      mutateSaveTheme={mutateSaveTheme}
+                      mutateDislikeTheme={mutateDislikeTheme}
+                      mutateUnsaveTheme={mutateUnsaveTheme}
+                      mutateMarkAsInappropriateTheme={
+                        mutateMarkAsInappropriateTheme
+                      }
+                      setLikeLoading={setLikeLoading}
+                      loading={
+                        likeLoading === theme.id &&
+                        (isLoadingDislikeTheme || isLoadingLikeTheme)
+                      }
+                    />
+                  ))}
+                </Fragment>
+              ) : null
+            )}
+          </div>
+        ) : (
+          <div className="flex w-full flex-1 flex-col justify-center items-center">
+            <Typography
+              as={"p"}
+              element="p"
+            >{`No themes found by searching "${themeSearchQuery}"`}</Typography>
+            <Button
+              className="mt-4"
+              onClick={() => {
+                router.push("/themes/create");
+                queryClient.invalidateQueries([
+                  "home",
+                  "themes",
+                  themeSearchQuery,
+                ]);
+                setThemeSearchQuery("");
+                setFilterTags([]);
+              }}
+            >
+              Create a theme
+            </Button>
+          </div>
+        )}
+      </div>
+    </>
   );
 }

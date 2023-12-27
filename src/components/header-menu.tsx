@@ -39,6 +39,7 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = () => {
           variant="ghost"
           className="relative h-8 w-8 rounded-full"
           size="icon"
+          aria-label="Account"
         >
           <Avatar className="h-8 w-8 border-[0.5px] border-border">
             {session?.user?.avatar ? (

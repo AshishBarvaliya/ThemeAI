@@ -1,5 +1,6 @@
 import { TemplateProps } from "@/interfaces/templates";
 import * as React from "react";
+import Image from "next/image";
 
 const FoodieTemplate: React.FC<TemplateProps> = ({
   colors,
@@ -93,12 +94,22 @@ const FoodieTemplate: React.FC<TemplateProps> = ({
     <ellipse cx={903} cy={462.443} fill={colors.accent} rx={271} ry={263.836} />
     <foreignObject x="600" y="260" width="600" height="600">
       <div>
-        <img src="/foodie-img-1.png" alt="foodie-img-1" />
+        <Image
+          src="/foodie-img-1.png"
+          alt="foodie-img-1"
+          width={600}
+          height={600}
+        />
       </div>
     </foreignObject>
     <foreignObject x="1000" y="240" width="500" height="500">
       <div>
-        <img src="/foodie-img-2.png" alt="foodie-img-2" />
+        <Image
+          src="/foodie-img-2.png"
+          alt="foodie-img-2"
+          width={500}
+          height={500}
+        />
       </div>
     </foreignObject>
     <foreignObject width={900} height={400} x={150} y={230}>

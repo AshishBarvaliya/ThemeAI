@@ -43,7 +43,7 @@ export const SortThemes: React.FC<SortThemesProps> = ({ setSortItem }) => {
         setSortItem(value as SortByThemesProps["sortBy"])
       }
     >
-      <SelectTrigger className="w-fit h-8 text-xs">
+      <SelectTrigger className="w-fit h-8 text-xs" aria-label="Sort" id="sort">
         <SelectValue placeholder="Sort" />
       </SelectTrigger>
       <SelectContent>

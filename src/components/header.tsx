@@ -131,7 +131,7 @@ const Header = () => {
         ) : null}
       </div>
 
-      <ul className="flex items-center gap-8">
+      <div className="flex items-center gap-8">
         {router.pathname === "/" && (
           <>
             {landingMenu.map((item, index) => (
@@ -175,7 +175,7 @@ const Header = () => {
             )}
           </div>
         ) : null}
-      </ul>
+      </div>
       <LoginDialog
         open={loginOpen}
         setOpen={setLoginOpen}

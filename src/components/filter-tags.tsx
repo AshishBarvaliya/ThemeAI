@@ -10,6 +10,7 @@ import { GetTagProps } from "@/interfaces/theme";
 import { cn } from "@/lib/utils";
 
 interface FilterTagsProps {
+  id: string;
   tags: GetTagProps[];
   selected: string[];
   setSelected: (selected: string[]) => void;
@@ -17,6 +18,7 @@ interface FilterTagsProps {
 }
 
 export const FiterTags: React.FC<FilterTagsProps> = ({
+  id,
   tags,
   selected,
   setSelected,
@@ -30,6 +32,9 @@ export const FiterTags: React.FC<FilterTagsProps> = ({
             "flex items-center cursor-pointer px-3 text-xs bg-white border-[0.5px] border-border min-w-[90px] md:min-w-[130px]",
             isHeader ? "py-1.5" : "h-8"
           )}
+          aria-label="Select Tags"
+          role="button"
+          id={id}
         >
           <p className="hidden flex-1 md:flex">
             Filter by tags{selected.length ? ` [${selected.length}]` : ""}

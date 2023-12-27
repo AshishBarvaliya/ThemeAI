@@ -14,6 +14,7 @@ import { cn, generateAllShades } from "@/lib/utils";
 import { ArrowLeftIcon, DownloadIcon } from "@radix-ui/react-icons";
 import { ChevronDownIcon, ChevronUpIcon, RotateCcw } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -125,157 +126,126 @@ const CreateTheme = () => {
   }, []);
 
   return (
-    <div className="flex flex-1 flex-col">
-      <div
-        className="flex fixed flex-col md:flex-row justify-between border-b-[0.5px] border-border bg-background gap-4 p-3 px-5 items-center z-40 shadow-md md:shadow-md"
-        style={{
-          maxWidth: "calc(1536px - 250px)",
-          width: isMobileView ? "100%" : "calc(100vw - 250px)",
-        }}
-      >
-        <div className="flex gap-2.5 md:gap-3.5">
-          <div className="flex gap-2.5 md:gap-3.5 items-center w-[140px]">
-            <Button
-              onClick={() => {
-                if (isDirty) {
-                  setOpenSure(true);
-                } else {
-                  history.back();
-                }
-              }}
-              variant="circle"
-              size={"circle"}
-            >
-              <ArrowLeftIcon className="h-4 w-4" />
-            </Button>
-            {isDirty ? (
+    <>
+      <Head>
+        <title property="og:title">Create theme - ThemeAI</title>
+        <meta
+          name="description"
+          property="og:description"
+          content="Create your theme with ThemeAI"
+        />
+        <meta property="og:image" content="/og/create.png" />
+      </Head>
+      <div className="flex flex-1 flex-col">
+        <div
+          className="flex fixed flex-col md:flex-row justify-between border-b-[0.5px] border-border bg-background gap-4 p-3 px-5 items-center z-40 shadow-md md:shadow-md"
+          style={{
+            maxWidth: "calc(1536px - 250px)",
+            width: isMobileView ? "100%" : "calc(100vw - 250px)",
+          }}
+        >
+          <div className="flex gap-2.5 md:gap-3.5">
+            <div className="flex gap-2.5 md:gap-3.5 items-center w-[140px]">
               <Button
                 onClick={() => {
-                  setColors({
-                    bg: isLocked.bg ? colors.bg : defaultColors.bg,
-                    primary: isLocked.primary
-                      ? colors.primary
-                      : defaultColors.primary,
-                    accent: isLocked.accent
-                      ? colors.accent
-                      : defaultColors.accent,
-                    extra: isLocked.extra ? colors.extra : defaultColors.extra,
-                  });
-                  setIsDirty(false);
+                  if (isDirty) {
+                    setOpenSure(true);
+                  } else {
+                    history.back();
+                  }
                 }}
-                size={"md"}
+                variant="circle"
+                size={"circle"}
+                aria-label="Go back"
               >
-                <RotateCcw className="h-3 w-3 mr-1.5" />
-                Reset
+                <ArrowLeftIcon className="h-4 w-4" />
               </Button>
-            ) : null}
-          </div>
-          <div className="flex gap-2.5 md:gap-3.5">
-            <ColorPicker
-              id="bgcolor"
-              name="Background Color"
-              color={colors.bg}
-              setColor={(color) => setColors({ ...colors, bg: color })}
-              open={openColorPicker}
-              setOpen={setOpenColorPicker}
-              isLocked={isLocked.bg}
-              setIsLocked={(val) => setIsLocked({ ...isLocked, bg: val })}
-            />
-            <ColorPicker
-              id="primarycolor"
-              name="Font Color"
-              color={colors.primary}
-              setColor={(color) => setColors({ ...colors, primary: color })}
-              open={openColorPicker}
-              setOpen={setOpenColorPicker}
-              isLocked={isLocked.primary}
-              setIsLocked={(val) => setIsLocked({ ...isLocked, primary: val })}
-            />
-            <ColorPicker
-              id="accentcolor"
-              name="Accent Color"
-              color={colors.accent}
-              setColor={(color) => setColors({ ...colors, accent: color })}
-              open={openColorPicker}
-              setOpen={setOpenColorPicker}
-              isLocked={isLocked.accent}
-              setIsLocked={(val) => setIsLocked({ ...isLocked, accent: val })}
-            />
-            <ColorPicker
-              id="complementarycolor"
-              name="Complementry Color"
-              color={colors.extra}
-              setColor={(color) => setColors({ ...colors, extra: color })}
-              open={openColorPicker}
-              setOpen={setOpenColorPicker}
-              isLocked={isLocked.extra}
-              setIsLocked={(val) => setIsLocked({ ...isLocked, extra: val })}
-            />
-          </div>
-        </div>
-        <div className="flex flex-1 gap-2.5 md:gap-3.5 md:ml-5">
-          <FontPicker
-            id="primaryfont"
-            name="Primary Font"
-            selectedFont={fonts.primary}
-            setSelectedFont={(font) => setFonts({ ...fonts, primary: font })}
-          />
-          <FontPicker
-            id="secondaryfont"
-            name="Secondary Font"
-            selectedFont={fonts.secondary}
-            setSelectedFont={(font) => setFonts({ ...fonts, secondary: font })}
-          />
-        </div>
-        <div className="hidden md:flex gap-4">
-          <Button
-            variant={"outline"}
-            onClick={() => setOpenExportThemeDialog(true)}
-          >
-            <DownloadIcon className="h-4 w-4 mr-1.5" /> Export
-          </Button>
-          <Button
-            onClick={() => {
-              runIfLoggedInElseOpenLoginDialog(() =>
-                setOpenSaveThemeDialog(true)
-              );
-            }}
-          >
-            Save
-          </Button>
-        </div>
-        <div className="flex md:hidden items-center gap-4 bottom-0 fixed bg-background w-full justify-between py-3 border-border border-t-[0.5px]">
-          {openTemplates ? (
-            <div className="flex bg-background absolute -mt-[190px] w-full flex-row gap-4 px-4 py-3 border-t-[0.5px] border-border flex-1 overflow-y-auto">
-              {templates.map((item) => (
-                <div
-                  key={item.name}
-                  className={cn(
-                    "min-w-[150px] border-border border-[0.5px] shadow-md cursor-pointer hover:ring-1",
-                    item.name === template ? "ring-1 ring-primary" : ""
-                  )}
-                  onClick={() => setTemplate(item.name)}
+              {isDirty ? (
+                <Button
+                  onClick={() => {
+                    setColors({
+                      bg: isLocked.bg ? colors.bg : defaultColors.bg,
+                      primary: isLocked.primary
+                        ? colors.primary
+                        : defaultColors.primary,
+                      accent: isLocked.accent
+                        ? colors.accent
+                        : defaultColors.accent,
+                      extra: isLocked.extra
+                        ? colors.extra
+                        : defaultColors.extra,
+                    });
+                    setIsDirty(false);
+                  }}
+                  size={"md"}
                 >
-                  {item.component}
-                  <div className="text-base text-center bg-primary text-primary-foreground border-border border-t-[0.5px]">
-                    {item.name}
-                  </div>
-                </div>
-              ))}
+                  <RotateCcw className="h-3 w-3 mr-1.5" />
+                  Reset
+                </Button>
+              ) : null}
             </div>
-          ) : null}
-          <div
-            className="flex ml-4 text-sm items-center text-primary-foreground bg-white px-2 py-1 border-[0.5px] border-border shadow-sm"
-            onClick={() => setOpenTemplates(!openTemplates)}
-          >
-            Templates
-            {openTemplates ? (
-              <ChevronUpIcon className="h-4 w-4 ml-1.5" />
-            ) : (
-              <ChevronDownIcon className="h-4 w-4 ml-1.5" />
-            )}
+            <div className="flex gap-2.5 md:gap-3.5">
+              <ColorPicker
+                id="bgcolor"
+                name="Background Color"
+                color={colors.bg}
+                setColor={(color) => setColors({ ...colors, bg: color })}
+                open={openColorPicker}
+                setOpen={setOpenColorPicker}
+                isLocked={isLocked.bg}
+                setIsLocked={(val) => setIsLocked({ ...isLocked, bg: val })}
+              />
+              <ColorPicker
+                id="primarycolor"
+                name="Font Color"
+                color={colors.primary}
+                setColor={(color) => setColors({ ...colors, primary: color })}
+                open={openColorPicker}
+                setOpen={setOpenColorPicker}
+                isLocked={isLocked.primary}
+                setIsLocked={(val) =>
+                  setIsLocked({ ...isLocked, primary: val })
+                }
+              />
+              <ColorPicker
+                id="accentcolor"
+                name="Accent Color"
+                color={colors.accent}
+                setColor={(color) => setColors({ ...colors, accent: color })}
+                open={openColorPicker}
+                setOpen={setOpenColorPicker}
+                isLocked={isLocked.accent}
+                setIsLocked={(val) => setIsLocked({ ...isLocked, accent: val })}
+              />
+              <ColorPicker
+                id="complementarycolor"
+                name="Complementry Color"
+                color={colors.extra}
+                setColor={(color) => setColors({ ...colors, extra: color })}
+                open={openColorPicker}
+                setOpen={setOpenColorPicker}
+                isLocked={isLocked.extra}
+                setIsLocked={(val) => setIsLocked({ ...isLocked, extra: val })}
+              />
+            </div>
           </div>
-          <div className="flex gap-4 pr-4">
+          <div className="flex flex-1 gap-2.5 md:gap-3.5 md:ml-5">
+            <FontPicker
+              id="primaryfont"
+              name="Primary Font"
+              selectedFont={fonts.primary}
+              setSelectedFont={(font) => setFonts({ ...fonts, primary: font })}
+            />
+            <FontPicker
+              id="secondaryfont"
+              name="Secondary Font"
+              selectedFont={fonts.secondary}
+              setSelectedFont={(font) =>
+                setFonts({ ...fonts, secondary: font })
+              }
+            />
+          </div>
+          <div className="hidden md:flex gap-4">
             <Button
               variant={"outline"}
               onClick={() => setOpenExportThemeDialog(true)}
@@ -292,54 +262,103 @@ const CreateTheme = () => {
               Save
             </Button>
           </div>
+          <div className="flex md:hidden items-center gap-4 bottom-0 fixed bg-background w-full justify-between py-3 border-border border-t-[0.5px]">
+            {openTemplates ? (
+              <div className="flex bg-background absolute -mt-[190px] w-full flex-row gap-4 px-4 py-3 border-t-[0.5px] border-border flex-1 overflow-y-auto">
+                {templates.map((item) => (
+                  <div
+                    key={item.name}
+                    className={cn(
+                      "min-w-[150px] border-border border-[0.5px] shadow-md cursor-pointer hover:ring-1",
+                      item.name === template ? "ring-1 ring-primary" : ""
+                    )}
+                    onClick={() => setTemplate(item.name)}
+                  >
+                    {item.component}
+                    <div className="text-base text-center bg-primary text-primary-foreground border-border border-t-[0.5px]">
+                      {item.name}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+            <div
+              className="flex ml-4 text-sm items-center text-primary-foreground bg-white px-2 py-1 border-[0.5px] border-border shadow-sm"
+              onClick={() => setOpenTemplates(!openTemplates)}
+            >
+              Templates
+              {openTemplates ? (
+                <ChevronUpIcon className="h-4 w-4 ml-1.5" />
+              ) : (
+                <ChevronDownIcon className="h-4 w-4 ml-1.5" />
+              )}
+            </div>
+            <div className="flex gap-4 pr-4">
+              <Button
+                variant={"outline"}
+                onClick={() => setOpenExportThemeDialog(true)}
+              >
+                <DownloadIcon className="h-4 w-4 mr-1.5" /> Export
+              </Button>
+              <Button
+                onClick={() => {
+                  runIfLoggedInElseOpenLoginDialog(() =>
+                    setOpenSaveThemeDialog(true)
+                  );
+                }}
+              >
+                Save
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="flex mt-[135px] md:mt-[72px] mb-[55px] md:mb-0">
-        {getTemplate(template, {
-          id: template + "-create",
-          fonts,
-          colors,
-          shades: generateAllShades(colors),
-        })}
-      </div>
-      <SaveThemeDialog
-        open={openSaveThemeDialog}
-        fonts={fonts}
-        colors={colors}
-        setOpen={setOpenSaveThemeDialog}
-        isDirty={isDirty}
-        defaultData={
-          isGenerated
-            ? {
-                color_1_reason: generatedTheme?.color_1_reason,
-                color_2_reason: generatedTheme?.color_2_reason,
-                color_3_reason: generatedTheme?.color_3_reason,
-                color_4_reason: generatedTheme?.color_4_reason,
-                isDark: generatedTheme?.isDark,
-                prompt: generatedTheme?.prompt,
-              }
-            : undefined
-        }
-      />
-      <ConfirmationDialog
-        open={openSure}
-        setOpen={setOpenSure}
-        onYes={() => {
-          history.back();
-          setOpenSure(false);
-        }}
-      >
-        <div className="text-base">
-          You have unsaved changes. are you sure want to leave?
+        <div className="flex mt-[135px] md:mt-[72px] mb-[55px] md:mb-0">
+          {getTemplate(template, {
+            id: template + "-create",
+            fonts,
+            colors,
+            shades: generateAllShades(colors),
+          })}
         </div>
-      </ConfirmationDialog>
-      <ExportThemeDialog
-        open={openExportThemeDialog}
-        setOpen={setOpenExportThemeDialog}
-        fonts={fonts}
-        colors={colors}
-      />
-    </div>
+        <SaveThemeDialog
+          open={openSaveThemeDialog}
+          fonts={fonts}
+          colors={colors}
+          setOpen={setOpenSaveThemeDialog}
+          isDirty={isDirty}
+          defaultData={
+            isGenerated
+              ? {
+                  color_1_reason: generatedTheme?.color_1_reason,
+                  color_2_reason: generatedTheme?.color_2_reason,
+                  color_3_reason: generatedTheme?.color_3_reason,
+                  color_4_reason: generatedTheme?.color_4_reason,
+                  isDark: generatedTheme?.isDark,
+                  prompt: generatedTheme?.prompt,
+                }
+              : undefined
+          }
+        />
+        <ConfirmationDialog
+          open={openSure}
+          setOpen={setOpenSure}
+          onYes={() => {
+            history.back();
+            setOpenSure(false);
+          }}
+        >
+          <div className="text-base">
+            You have unsaved changes. are you sure want to leave?
+          </div>
+        </ConfirmationDialog>
+        <ExportThemeDialog
+          open={openExportThemeDialog}
+          setOpen={setOpenExportThemeDialog}
+          fonts={fonts}
+          colors={colors}
+        />
+      </div>
+    </>
   );
 };
 

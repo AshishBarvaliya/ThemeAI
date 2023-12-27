@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { ThemeView } from "@/components/theme-view";
 import { RestrictedPage } from "@/components/restricted-page";
+import Head from "next/head";
 
 export default function Theme() {
   const router = useRouter();
@@ -20,7 +21,18 @@ export default function Theme() {
   );
 
   return theme ? (
-    <ThemeView theme={theme} />
+    <>
+      <Head>
+        <title property="og:title">{theme.name} - ThemeAI</title>
+        <meta
+          name="description"
+          property="og:description"
+          content="Create your theme with ThemeAI"
+        />
+        <meta property="og:image" content="/og/hero.png" />
+      </Head>
+      <ThemeView theme={theme} />
+    </>
   ) : isError && error ? (
     <RestrictedPage
       title={

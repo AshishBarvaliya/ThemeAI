@@ -1,5 +1,6 @@
 import { TemplateProps } from "@/interfaces/templates";
 import * as React from "react";
+import Image from "next/image";
 
 const EditorTemplate: React.FC<TemplateProps> = ({
   id,
@@ -174,7 +175,12 @@ const EditorTemplate: React.FC<TemplateProps> = ({
     />
     <foreignObject x="160" y="802" width="1200" height="620">
       <div>
-        <img src="/editor-img-1-mini.png" alt="editor-img-1" />
+        <Image
+          src="/editor-img-1-mini.png"
+          alt="editor-img-1"
+          height={620}
+          width={1120}
+        />
       </div>
     </foreignObject>
     <defs>
