@@ -2,9 +2,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { randomUUID } from "crypto";
 import { eq } from "drizzle-orm";
 import db from "@/db";
-import { resetPasswords, users as usersSchema } from "@/db/schema";
+import {
+  accounts as accountsSchema,
+  resetPasswords,
+  users as usersSchema,
+} from "@/db/schema";
 import { createId } from "@paralleldrive/cuid2";
-import { sendEmail } from "@/config/mailgun";
+import { sendEmail } from "@/config/mail";
 
 const FORGOT_PASSWORD_MAIL_LIMIT = parseInt(
   process.env.FORGOT_PASSWORD_MAIL_LIMIT || "0"
@@ -23,7 +27,6 @@ export default async function handler(
         columns: {
           id: true,
           name: true,
-          isActived: true,
         },
         with: {
           resetPasswords: true,
@@ -36,8 +39,17 @@ export default async function handler(
           .json({ messsage: "Reset password mail has been sent" });
       }
 
-      if (!user?.isActived) {
-        return res.status(404).json({ error: "User is not verified" });
+      const googleUser = await db.query.accounts.findFirst({
+        where: eq(accountsSchema.userId, user.id),
+        columns: {
+          provider: true,
+        },
+      });
+
+      if (googleUser?.provider === "google") {
+        return res
+          .status(404)
+          .json({ error: "Reset password with Google account is not allowed" });
       }
 
       if (user?.resetPasswords.length === FORGOT_PASSWORD_MAIL_LIMIT) {
@@ -53,14 +65,23 @@ export default async function handler(
           expiresAt: new Date(new Date().getTime() + 60000 * EMAIL_LINK_EXPIRY),
         });
 
-        await sendEmail("reset-password", {
+        sendEmail("reset-password", {
           email,
           token: newToken,
           name: user.name,
-        });
-        return res
-          .status(201)
-          .json({ messsage: "Reset password mail has been sent" });
+        })
+          .then(() => {
+            return res.status(201).json({
+              messsage:
+                "Reset password mail has been sent. The reset password link is valid for 60 minutes.",
+            });
+          })
+          .catch((erre) => {
+            console.error(erre);
+            return res
+              .status(500)
+              .json({ error: "Failed to send reset password mail" });
+          });
       } catch (error) {
         res.status(500).json({ error: "Failed to send reset password mail" });
       }

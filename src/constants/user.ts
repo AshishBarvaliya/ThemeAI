@@ -19,7 +19,7 @@ export const USER_LEVELS: Record<
     borderColor: "border-border",
     bgColor: "#303030",
     requiredExperience: 0,
-    prompts: 10,
+    prompts: 15,
   },
   1: {
     id: "bronze",

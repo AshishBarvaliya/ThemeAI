@@ -1,4 +1,4 @@
-import { sendEmail } from "@/config/mailgun";
+import { sendEmail } from "@/config/mail";
 import db from "@/db";
 import handler from "@/pages/api/send-verification-email";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -28,7 +28,7 @@ jest.mock("@/db", () => ({
   values: jest.fn().mockReturnThis(),
 }));
 
-jest.mock("@/config/mailgun", () => ({
+jest.mock("@/config/mail", () => ({
   sendEmail: jest.fn(),
 }));
 
@@ -111,7 +111,8 @@ describe("Send Verification Email API Endpoint", () => {
     });
     (sendEmail as jest.Mock).mockResolvedValue({
       id: "message-id",
-      message: "Verification mail has been sent",
+      message:
+        "Verification mail has been sent. The verification link is valid for 60 minutes.",
     });
 
     await handler(req, res);
@@ -120,7 +121,8 @@ describe("Send Verification Email API Endpoint", () => {
     expect((db.insert as jest.Mock)().values).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
-      messsage: "Verification mail has been sent",
+      messsage:
+        "Verification mail has been sent. The verification link is valid for 60 minutes.",
     });
   });
 

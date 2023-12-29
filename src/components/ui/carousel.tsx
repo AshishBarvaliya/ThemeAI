@@ -1,3 +1,4 @@
+import { cn, getLuminance } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useState, useEffect, Children, cloneElement } from "react";
 
@@ -37,6 +38,8 @@ const Carousel: React.FC<CarouselProps> = ({
     }
   }, [currentIndex, autoSlide, interval]);
 
+  const { color, shade } = getLuminance(bgColor || "#FFFFFF");
+
   return (
     <div
       className="flex relative items-center justify-center overflow-hidden shadow-md"
@@ -44,7 +47,10 @@ const Carousel: React.FC<CarouselProps> = ({
     >
       <div
         onClick={prevItem}
-        className="px-3 flex items-center h-full absolute left-0 cursor-pointer bg-black/5 hover:bg-black/10 z-10"
+        className="px-3 flex items-center h-full absolute left-0 cursor-pointer z-10"
+        style={{
+          backgroundColor: shade,
+        }}
       >
         <ChevronLeft className="h-5 w-5" />
       </div>
@@ -66,7 +72,10 @@ const Carousel: React.FC<CarouselProps> = ({
 
       <div
         onClick={nextItem}
-        className="flex px-3 h-full items-center absolute right-0 cursor-pointer bg-black/5 hover:bg-black/10 z-10"
+        className="flex px-3 h-full items-center absolute right-0 cursor-pointer z-10"
+        style={{
+          backgroundColor: shade,
+        }}
       >
         <ChevronRight className="h-5 w-5" />
       </div>

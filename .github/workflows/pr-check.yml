@@ -36,6 +36,11 @@ jobs:
           echo "EMAIL_LINK_EXPIRY=${{ secrets.EMAIL_LINK_EXPIRY }}" >> .env
           echo "THEMES_PER_PAGE=${{ secrets.THEMES_PER_PAGE }}" >> .env
           echo "NEXT_PUBLIC_TRACKING_ID=${{ secrets.TRACKING_ID }}" >> .env
+          echo "THEMEAI_ACCOUNT_ID=${{ secrets.THEMEAI_ACCOUNT_ID }}" >> .env
+          echo "MAIL_SMTP_HOST=${{ secrets.MAIL_SMTP_HOST }}" >> .env
+          echo "MAIL_SMTP_PORT=${{ secrets.MAIL_SMTP_PORT }}" >> .env
+          echo "MAIL_SMTP_USER=${{ secrets.MAIL_SMTP_USER }}" >> .env
+          echo "MAIL_SMTP_PASS=${{ secrets.MAIL_SMTP_PASS }}" >> .env
 
       - name: Build
         run: npm run build

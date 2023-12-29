@@ -1,4 +1,4 @@
-import { sendEmail } from "@/config/mailgun";
+import { sendEmail } from "@/config/mail";
 import db from "@/db";
 import handler from "@/pages/api/reset-password";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -13,7 +13,7 @@ jest.mock("@/db", () => ({
   values: jest.fn().mockReturnThis(),
 }));
 
-jest.mock("@/config/mailgun", () => ({
+jest.mock("@/config/mail", () => ({
   sendEmail: jest.fn(),
 }));
 
@@ -53,13 +53,15 @@ describe("Reset Password API Endpoint", () => {
     (db.query.users.findFirst as jest.Mock).mockResolvedValue(null);
     (sendEmail as jest.Mock).mockResolvedValue({
       id: "message-id",
-      message: "Verification mail has been sent",
+      message:
+        "Reset password mail has been sent. The reset password link is valid for 60 minutes.",
     });
     await handler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
-      messsage: "Reset password mail has been sent",
+      messsage:
+        "Reset password mail has been sent. The reset password link is valid for 60 minutes.",
     });
   });
 
@@ -112,7 +114,8 @@ describe("Reset Password API Endpoint", () => {
     expect((db.insert as jest.Mock)().values).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
-      messsage: "Reset password mail has been sent",
+      messsage:
+        "Reset password mail has been sent. The reset password link is valid for 60 minutes.",
     });
   });
 
