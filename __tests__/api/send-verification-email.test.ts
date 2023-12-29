@@ -28,7 +28,7 @@ jest.mock("@/db", () => ({
   values: jest.fn().mockReturnThis(),
 }));
 
-jest.mock("@/config/mailgun", () => ({
+jest.mock("@/config/mail", () => ({
   sendEmail: jest.fn(),
 }));
 

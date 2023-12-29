@@ -73,7 +73,6 @@ export default async function handler(
         user: {
           columns: {
             id: true,
-            isActived: true,
           },
         },
       },
@@ -85,10 +84,6 @@ export default async function handler(
 
     if (resetPasswordToken.expiresAt < new Date()) {
       return res.status(400).json({ error: "Token expired" });
-    }
-
-    if (!resetPasswordToken.user.isActived) {
-      return res.status(400).json({ error: "User is not verified" });
     }
 
     try {
