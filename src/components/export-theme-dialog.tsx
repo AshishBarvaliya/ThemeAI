@@ -353,7 +353,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                             : "Secondary Font"}
                         </Typography>
                         <div className="flex gap-2 items-center">
-                          <Button
+                          {/* <Button
                             onClick={() =>
                               window.open(
                                 `http://fonts.google.com/download?family=${
@@ -365,7 +365,7 @@ export const ExportThemeDialog: React.FC<ExportThemeDialogProps> = ({
                             size={"md"}
                           >
                             <Download className="mr-1.5 h-3 w-3" /> Download
-                          </Button>
+                          </Button> */}
                           <Button
                             onClick={() =>
                               window.open(

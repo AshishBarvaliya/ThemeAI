@@ -6,7 +6,7 @@ import db from "@/db";
 import { users as usersSchema, verificationTokens } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { createId } from "@paralleldrive/cuid2";
-import { sendEmail } from "@/config/mailgun";
+import { sendEmail } from "@/config/mail";
 
 const VERIFICATION_MAIL_LIMIT = parseInt(
   process.env.VERIFICATION_MAIL_LIMIT || "0"
@@ -54,15 +54,25 @@ export default async function handler(
           expiresAt: new Date(new Date().getTime() + 60000 * EMAIL_LINK_EXPIRY),
         });
 
-        await sendEmail("activation", {
+        sendEmail("activation", {
           email: user?.email,
           name: user?.name,
           token: newToken,
-        });
-
-        return res
-          .status(201)
-          .json({ messsage: "Verification mail has been sent" });
+        })
+          .then(() => {
+            return res
+              .status(201)
+              .json({
+                messsage:
+                  "Verification mail has been sent. The verification link is valid for 60 minutes.",
+              });
+          })
+          .catch((erre) => {
+            console.error(erre);
+            return res
+              .status(500)
+              .json({ error: "Failed to send reset password mail" });
+          });
       } catch (error) {
         res.status(500).json({ error: "Failed to send verification mail" });
       }

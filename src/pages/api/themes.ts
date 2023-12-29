@@ -353,7 +353,7 @@ export default async function handler(
               "user" ON "user"."id" = theme."userId"
           ${
             type === "foryou"
-              ? sql`INNER JOIN
+              ? sql`LEFT JOIN
               users_to_follows ON users_to_follows."followingId" = theme."userId"`
               : sql``
           }
@@ -384,7 +384,7 @@ export default async function handler(
                 OR tag.name ILIKE ${`%${query}%`})
             ${
               type === "foryou"
-                ? sql`AND users_to_follows."followerId" = ${session?.user.id}`
+                ? sql`AND (users_to_follows."followerId" = ${session?.user.id} OR theme."userId" = ${process.env.THEMEAI_ACCOUNT_ID})`
                 : sql``
             }
             ${aiOnly === "true" ? sql`AND theme."isAIGenerated" = true` : sql``}

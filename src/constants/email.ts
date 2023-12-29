@@ -1,4 +1,4 @@
-const web_url = "https://www.themeai.io";
+const web_url = process.env.NEXTAUTH_URL;
 
 export const getEmailHtml = (
   type: "reset-password" | "activation" | "welcome",
