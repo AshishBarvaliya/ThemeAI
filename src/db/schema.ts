@@ -128,7 +128,7 @@ export const themes = pgTable("theme", {
   popularity: integer("popularity").default(0),
   userId: text("userId")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
 });
 
 export const themesRelations = relations(themes, ({ one, many }) => ({
@@ -151,7 +151,7 @@ export const usersToLikedThemes = pgTable(
   {
     userId: text("userId")
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: "cascade" }),
     themeId: text("themeId")
       .notNull()
       .references(() => themes.id),
@@ -182,7 +182,7 @@ export const usersToSavedThemes = pgTable(
   {
     userId: text("userId")
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: "cascade" }),
     themeId: text("themeId")
       .notNull()
       .references(() => themes.id),
@@ -213,7 +213,7 @@ export const usersToInappropriateThemes = pgTable(
   {
     userId: text("userId")
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: "cascade" }),
     themeId: text("themeId")
       .notNull()
       .references(() => themes.id),
@@ -276,7 +276,7 @@ export const purchases = pgTable("purchase", {
   id: text("id").notNull().primaryKey(),
   userId: text("userId")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   stripeSessionId: text("stripeSessionId").notNull().unique(),
   pupa: integer("pupa").default(0),
   stripeCustomerId: text("stripeCustomerId").notNull(),
@@ -304,10 +304,10 @@ export const usersTonotifications = pgTable("users_to_notifications", {
   pupa: integer("pupa").default(0),
   recipientId: text("recipientId")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   notifierId: text("notifierId")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   themeId: text("themeId").references(() => themes.id),
 });
 
@@ -336,7 +336,7 @@ export const verificationTokens = pgTable("verification_token", {
   token: text("token").notNull().unique(),
   userId: text("userId")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   expiresAt: timestamp("expiresAt", { mode: "date" }).notNull(),
 });
 
@@ -355,7 +355,7 @@ export const resetPasswords = pgTable("reset_password", {
   token: text("token").notNull().unique(),
   userId: text("userId")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   expiresAt: timestamp("expiresAt", { mode: "date" }).notNull(),
 });
 
@@ -396,7 +396,7 @@ export const feedbackTheme = pgTable("feedback_theme", {
   feedbackType: feedbackThemeEnum("feedbackType").notNull(),
   userId: text("userId")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
 });
 
 export const themeViews = pgTable("theme_views", {
@@ -419,7 +419,7 @@ export const userViews = pgTable("user_views", {
   id: text("id").notNull().primaryKey(),
   userId: text("userId")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   userIp: text("userIp").notNull(),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });

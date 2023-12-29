@@ -8,6 +8,7 @@ import { UserProps } from "@/interfaces/user";
 import { useState } from "react";
 import { EmptyState } from "./empty-state";
 import { User2 } from "lucide-react";
+import { useToast } from "@/hooks/useToast";
 
 interface ProfileFollowersProps {
   user: UserProps | undefined;
@@ -15,6 +16,7 @@ interface ProfileFollowersProps {
 
 const ProfileFollowers: React.FC<ProfileFollowersProps> = ({ user }) => {
   const queryClient = useQueryClient();
+  const { addToast } = useToast();
   const router = useRouter();
   const { data: session } = useSession();
   const [loadingUser, setLoadingUser] = useState<string | null>(null);
@@ -23,6 +25,13 @@ const ProfileFollowers: React.FC<ProfileFollowersProps> = ({ user }) => {
     () => getAllFollowers(router.query.id as string),
     {
       enabled: !!router.query.id,
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
     }
   );
   const { data: followings } = useQuery(
@@ -30,6 +39,13 @@ const ProfileFollowers: React.FC<ProfileFollowersProps> = ({ user }) => {
     () => getAllFollowings(router.query.id as string),
     {
       enabled: !!router.query.id,
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
     }
   );
 
@@ -46,6 +62,13 @@ const ProfileFollowers: React.FC<ProfileFollowersProps> = ({ user }) => {
             following: [...user.following, { followingId }],
           });
         }
+      },
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
       },
     });
 

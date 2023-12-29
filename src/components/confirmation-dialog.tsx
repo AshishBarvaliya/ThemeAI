@@ -23,7 +23,14 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   loading = false,
 }) => {
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        if (!loading) {
+          setOpen(false);
+        }
+      }}
+    >
       <DialogContent className="p-8 w-[350px] md:max-w-fit border border-border bg-white rounded-none">
         <DialogHeader>
           <DialogTitle>Are you sure?</DialogTitle>

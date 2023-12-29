@@ -7,13 +7,24 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { EmptyState } from "./empty-state";
 import { ShoppingBag } from "lucide-react";
+import { useToast } from "@/hooks/useToast";
 
 export default function ProfilePurchases() {
   const router = useRouter();
+  const { addToast } = useToast();
   const { data: session } = useSession();
   const { data: purchases, isLoading: isLoadingPurchases } = useQuery(
     ["user", "purchase-history"],
-    getPurchaseHistory
+    getPurchaseHistory,
+    {
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
+    }
   );
   const { data: user } = useQuery(["user", session?.user.id], () =>
     getUser(session?.user.id as string)
@@ -29,9 +40,17 @@ export default function ProfilePurchases() {
         <Button
           size={"md"}
           onClick={() => {
-            buyPupa().then(({ url }) => {
-              router.push(url);
-            });
+            buyPupa()
+              .then(({ url }) => {
+                router.push(url);
+              })
+              .catch((error) => {
+                addToast({
+                  title: error.response.data.error,
+                  type: "error",
+                  errorCode: error.response.status,
+                });
+              });
           }}
         >
           Buy more

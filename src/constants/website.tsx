@@ -122,7 +122,10 @@ export const privacyPolicy: PrivacyPolicyProps[] = [
         {
           "Please contact us with any questions or comments about this Privacy Policy, Our Privacy Policy Toward Children, your personal information, and our third-party disclosure practices, at "
         }
-        <span className="text-secondary hover:underline cursor-pointer">
+        <span
+          className="text-secondary hover:underline cursor-pointer"
+          onClick={() => window.open("mailto:contact@themeai.io")}
+        >
           contact@themeai.io
         </span>
         .<br />

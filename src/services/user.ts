@@ -33,13 +33,7 @@ export const unfollowUser = async (userId?: string) => {
 export const sendVerificationEmail = async () => {
   const apiUrl = `/api/send-verification-email`;
 
-  try {
-    const response = await axios.post(apiUrl);
-
-    console.log(response);
-  } catch (error) {
-    console.log("Failed to send verification email");
-  }
+  return await axios.post(apiUrl);
 };
 
 export const sendPasswordResetEmail = async (email: string) => {

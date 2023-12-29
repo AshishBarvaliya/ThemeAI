@@ -53,26 +53,22 @@ export default async function handler(
           token: newToken,
           expiresAt: new Date(new Date().getTime() + 60000 * EMAIL_LINK_EXPIRY),
         });
-
-        sendEmail("activation", {
-          email: user?.email,
-          name: user?.name,
-          token: newToken,
-        })
-          .then(() => {
-            return res
-              .status(201)
-              .json({
-                messsage:
-                  "Verification mail has been sent. The verification link is valid for 60 minutes.",
-              });
-          })
-          .catch((erre) => {
-            console.error(erre);
-            return res
-              .status(500)
-              .json({ error: "Failed to send reset password mail" });
+        try {
+          await sendEmail("activation", {
+            email: user?.email,
+            name: user?.name,
+            token: newToken,
           });
+
+          return res.status(201).json({
+            messsage:
+              "Verification mail has been sent. The verification link is valid for 60 minutes.",
+          });
+        } catch {
+          return res
+            .status(500)
+            .json({ error: "Failed to send verification mail" });
+        }
       } catch (error) {
         res.status(500).json({ error: "Failed to send verification mail" });
       }

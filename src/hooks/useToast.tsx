@@ -5,6 +5,7 @@ interface ToastProps {
   title: string;
   description?: string;
   type?: "success" | "warning" | "error";
+  errorCode?: number;
 }
 
 type Context = {

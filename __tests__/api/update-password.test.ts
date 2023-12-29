@@ -97,6 +97,26 @@ describe("Update Password API Endpoint", () => {
     });
   });
 
+  it("should return 400 if method is password based and hashedpassword is missing", async () => {
+    req.body = {
+      password: "new-password",
+      currentpassword: "current-password",
+    };
+    (db.query.users.findFirst as jest.Mock).mockResolvedValue({
+      id: "user-id",
+      hashedPassword: false,
+    });
+    (bcrypt.compare as jest.Mock).mockResolvedValue(false);
+
+    await handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error:
+        "You can not update your password as your account is connected with Google.",
+    });
+  });
+
   it("should return 400 if method is password based and current password is incorrect", async () => {
     req.body = {
       password: "new-password",
@@ -104,6 +124,7 @@ describe("Update Password API Endpoint", () => {
     };
     (db.query.users.findFirst as jest.Mock).mockResolvedValue({
       id: "user-id",
+      hashedPassword: true,
     });
     (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
@@ -122,6 +143,7 @@ describe("Update Password API Endpoint", () => {
     };
     (db.query.users.findFirst as jest.Mock).mockResolvedValue({
       id: "user-id",
+      hashedPassword: true,
     });
     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
@@ -144,6 +166,7 @@ describe("Update Password API Endpoint", () => {
     };
     (db.query.users.findFirst as jest.Mock).mockResolvedValue({
       id: "user-id",
+      hashedPassword: true,
     });
     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
     (
@@ -196,7 +219,7 @@ describe("Update Password API Endpoint", () => {
     });
   });
 
-  it("should return 400 if method is token based and user is not verified", async () => {
+  it("should return 400 if method is token based and hashedpassword is missing", async () => {
     req.query = {
       token: "token",
     };
@@ -207,6 +230,7 @@ describe("Update Password API Endpoint", () => {
       expiresAt: new Date(),
       user: {
         isActived: false,
+        hashedPassword: false,
       },
     });
 
@@ -214,7 +238,8 @@ describe("Update Password API Endpoint", () => {
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      error: "User is not verified",
+      error:
+        "You can not update your password as your account is connected with Google.",
     });
   });
 
@@ -232,6 +257,7 @@ describe("Update Password API Endpoint", () => {
       user: {
         id: "user-id",
         isActived: true,
+        hashedPassword: true,
       },
     });
     (
@@ -264,6 +290,7 @@ describe("Update Password API Endpoint", () => {
       user: {
         id: "user-id",
         isActived: true,
+        hashedPassword: true,
       },
     });
     (

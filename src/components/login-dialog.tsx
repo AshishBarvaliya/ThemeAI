@@ -48,8 +48,9 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
           title: callback.error,
           type: "error",
         });
+      } else {
+        setOpen(false);
       }
-      setOpen(false);
       setLoading(false);
     });
   };

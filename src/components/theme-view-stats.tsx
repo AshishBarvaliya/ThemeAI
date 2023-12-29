@@ -14,12 +14,14 @@ import { useHelpers } from "@/hooks/useHelpers";
 import { EyeIcon, StarIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/router";
+import { useToast } from "@/hooks/useToast";
 
 export const ThemeViewStats: React.FC<{ theme: ThemeVeiwProps["theme"] }> = ({
   theme,
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { addToast } = useToast();
   const { data: session } = useSession();
   const { runIfLoggedInElseOpenLoginDialog } = useHelpers();
 
@@ -29,12 +31,26 @@ export const ThemeViewStats: React.FC<{ theme: ThemeVeiwProps["theme"] }> = ({
       onSuccess: (data) => {
         queryClient.invalidateQueries(["theme", data.themeId]);
       },
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
     });
   const { mutate: mutateDislikeTheme, isLoading: isLoadingDislikeTheme } =
     useMutation({
       mutationFn: (themeId: string) => themeDislike(themeId),
       onSuccess: (data) => {
         queryClient.invalidateQueries(["theme", data.themeId]);
+      },
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
       },
     });
   const { mutate: mutateSaveTheme, isLoading: isLoadingSaveTheme } =
@@ -43,12 +59,26 @@ export const ThemeViewStats: React.FC<{ theme: ThemeVeiwProps["theme"] }> = ({
       onSuccess: (data) => {
         queryClient.invalidateQueries(["theme", data.themeId]);
       },
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
     });
   const { mutate: mutateUnsaveTheme, isLoading: isLoadingUnsaveTheme } =
     useMutation({
       mutationFn: (themeId: string) => themeUnsave(themeId),
       onSuccess: (data) => {
         queryClient.invalidateQueries(["theme", data.themeId]);
+      },
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
       },
     });
 

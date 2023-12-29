@@ -101,7 +101,14 @@ export const NewPasswordDialog: React.FC<RegisterDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => close()}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        if (!loading) {
+          close();
+        }
+      }}
+    >
       <DialogContent className="p-8 border border-border bg-white rounded-none">
         <DialogHeader>
           <DialogTitle className="mb-1">Create New Password</DialogTitle>

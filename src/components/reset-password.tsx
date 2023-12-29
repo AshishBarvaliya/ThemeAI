@@ -46,7 +46,11 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
           setOpen(false);
         })
         .catch((error) => {
-          addToast({ title: error.response.data.error, type: "error" });
+          addToast({
+            title: error.response.data.error,
+            type: "error",
+            errorCode: error.response.status,
+          });
         })
         .finally(() => {
           setLoading(false);

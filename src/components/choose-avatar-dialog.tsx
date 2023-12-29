@@ -72,11 +72,13 @@ export const ChooseAvatarDialog: React.FC<ResetPasswordDialogProps> = ({
     <Dialog
       open={open}
       onOpenChange={() => {
-        setOpen(!open);
-        setSelectedAvatar({
-          config: null,
-          index: "00",
-        });
+        if (!loading) {
+          setOpen(!open);
+          setSelectedAvatar({
+            config: null,
+            index: "00",
+          });
+        }
       }}
     >
       <DialogContent className="p-8 max-w-fit border border-border bg-white rounded-none">

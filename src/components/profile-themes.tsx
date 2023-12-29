@@ -53,6 +53,13 @@ export default function ProfileThemes() {
         type: "success",
       });
     },
+    onError: ({ response }) => {
+      addToast({
+        title: response.data?.error || "Something went wrong",
+        type: "error",
+        errorCode: response.status,
+      });
+    },
   });
   const [selectedTab, setSelectedTab] =
     useState<TabsProps["id"]>("createdThemes");
@@ -202,6 +209,7 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
   filters,
   privateOnly,
 }) => {
+  const { addToast } = useToast();
   const queryClient = useQueryClient();
   const { data: session } = useSession();
   const router = useRouter();
@@ -211,6 +219,13 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
     () => getThemesByUserAndType(router.query.id as string, "created"),
     {
       enabled: !!router.query.id,
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
     }
   );
   const { mutate: mutateLikeTheme, isLoading: isLoadingLikeTheme } =
@@ -233,6 +248,13 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
           );
         }
       },
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
     });
   const { mutate: mutateDislikeTheme, isLoading: isLoadingDislikeTheme } =
     useMutation({
@@ -253,6 +275,13 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
             })
           );
         }
+      },
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
       },
     });
 
@@ -275,6 +304,13 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
         );
       }
     },
+    onError: ({ response }) => {
+      addToast({
+        title: response.data?.error || "Something went wrong",
+        type: "error",
+        errorCode: response.status,
+      });
+    },
   });
   const { mutate: mutateUnsaveTheme } = useMutation({
     mutationFn: (themeId: string) => themeUnsave(themeId),
@@ -294,6 +330,13 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
           })
         );
       }
+    },
+    onError: ({ response }) => {
+      addToast({
+        title: response.data?.error || "Something went wrong",
+        type: "error",
+        errorCode: response.status,
+      });
     },
   });
 
@@ -355,6 +398,7 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
   sortItem,
   filters,
 }) => {
+  const { addToast } = useToast();
   const queryClient = useQueryClient();
   const router = useRouter();
   const { data: session } = useSession();
@@ -364,6 +408,13 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
     () => getThemesByUserAndType(router.query.id as string, "liked"),
     {
       enabled: !!router.query.id,
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
     }
   );
   const { mutate: mutateLikeTheme, isLoading: isLoadingLikeTheme } =
@@ -386,6 +437,13 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
           );
         }
       },
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
     });
   const { mutate: mutateDislikeTheme, isLoading: isLoadingDislikeTheme } =
     useMutation({
@@ -406,6 +464,13 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
             })
           );
         }
+      },
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
       },
     });
 
@@ -428,6 +493,13 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
         );
       }
     },
+    onError: ({ response }) => {
+      addToast({
+        title: response.data?.error || "Something went wrong",
+        type: "error",
+        errorCode: response.status,
+      });
+    },
   });
   const { mutate: mutateUnsaveTheme } = useMutation({
     mutationFn: (themeId: string) => themeUnsave(themeId),
@@ -447,6 +519,13 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
           })
         );
       }
+    },
+    onError: ({ response }) => {
+      addToast({
+        title: response.data?.error || "Something went wrong",
+        type: "error",
+        errorCode: response.status,
+      });
     },
   });
 
@@ -505,12 +584,20 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { addToast } = useToast();
   const [likeLoading, setLikeLoading] = useState<string | null>(null);
   const { data: savedThemes, isLoading: isLoadingSavedThemes } = useQuery(
     ["user", router.query.id, "saved"],
     () => getThemesByUserAndType(router.query.id as string, "saved"),
     {
       enabled: !!router.query.id,
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
     }
   );
   const { mutate: mutateLikeTheme, isLoading: isLoadingLikeTheme } =
@@ -533,6 +620,13 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
           );
         }
       },
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
     });
   const { mutate: mutateDislikeTheme, isLoading: isLoadingDislikeTheme } =
     useMutation({
@@ -553,6 +647,13 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
             })
           );
         }
+      },
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
       },
     });
 
@@ -575,6 +676,13 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
         );
       }
     },
+    onError: ({ response }) => {
+      addToast({
+        title: response.data?.error || "Something went wrong",
+        type: "error",
+        errorCode: response.status,
+      });
+    },
   });
   const { mutate: mutateUnsaveTheme } = useMutation({
     mutationFn: (themeId: string) => themeUnsave(themeId),
@@ -594,6 +702,13 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
           })
         );
       }
+    },
+    onError: ({ response }) => {
+      addToast({
+        title: response.data?.error || "Something went wrong",
+        type: "error",
+        errorCode: response.status,
+      });
     },
   });
 

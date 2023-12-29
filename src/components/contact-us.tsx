@@ -84,7 +84,11 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
           setOpen(false);
         })
         .catch((error) => {
-          addToast({ title: error.response.data.error, type: "error" });
+          addToast({
+            title: error.response.data.error,
+            type: "error",
+            errorCode: error.response.status,
+          });
           setLoading(false);
           setOpen(false);
         });
@@ -107,7 +111,14 @@ export const ContactUsDialog: React.FC<ContactUsDialogProps> = ({
   ];
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        if (!loading) {
+          setOpen(false);
+        }
+      }}
+    >
       <DialogContent className="p-8 w-full md:max-w-fit border border-border bg-white rounded-none">
         <DialogHeader>
           <DialogTitle>Contact us</DialogTitle>
