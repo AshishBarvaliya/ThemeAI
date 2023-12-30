@@ -25,16 +25,19 @@ const ToastComponent: React.FC<Props> = ({ toast }) => {
   }, [shouldShow]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShouldShow(false);
-      setTimeout(() => {
-        removeToast(toast.id);
-      }, 1000);
-    }, 3500);
+    const timer = setTimeout(
+      () => {
+        setShouldShow(false);
+        setTimeout(() => {
+          removeToast(toast.id);
+        }, 1000);
+      },
+      toast.type === "error" ? 6000 : 3500
+    );
     return () => {
       clearTimeout(timer);
     };
-  }, [toast.id, removeToast]);
+  }, [toast, removeToast]);
 
   const icon = () => {
     switch (toast.type) {
