@@ -37,6 +37,7 @@ describe("User API Endpoint", () => {
   beforeEach(() => {
     req = {
       method: "GET",
+      headers: { "x-forwarded-for": "127.0.0.1" },
     } as unknown as NextApiRequest;
     res = {
       status: jest.fn(() => res),

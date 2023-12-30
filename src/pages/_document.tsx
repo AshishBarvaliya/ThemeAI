@@ -20,6 +20,10 @@ export default function Document() {
           type="font/otf"
           crossOrigin="anonymous"
         />
+        <meta
+          name="google-site-verification"
+          content="3eSEM-vrEy49pJgi0qucbHCNImAS6ZHPIe04hoRy-9I"
+        />
       </Head>
       <body className="bg-background min-h-screen">
         <Main />
