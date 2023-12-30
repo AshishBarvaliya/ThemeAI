@@ -108,18 +108,7 @@ export const HelpersProvider = ({
   const [generateDialogDefaultValues, setGenerateDialogDefaultValues] =
     useState<Context["generateDialogDefaultValues"]>();
   const [generatedTheme, setGeneratedTheme] =
-    useState<GeneratedThemeProps | null>({
-      color_1: "#ffffff",
-      color_2: "#000000",
-      color_3: "#000000",
-      color_4: "#000000",
-      color_1_reason: "test",
-      color_2_reason: "test",
-      color_3_reason: "test",
-      color_4_reason: "test",
-      prompt: "test",
-      isDark: false,
-    });
+    useState<GeneratedThemeProps | null>(null);
   const [template, setTemplate] = useState<TemplateType>("Learning");
   const { data: session, status } = useSession();
 

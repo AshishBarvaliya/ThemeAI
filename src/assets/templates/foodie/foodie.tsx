@@ -135,17 +135,7 @@ const FoodieTemplate: React.FC<TemplateProps> = ({
         </p>
       </foreignObject>
       <foreignObject width={700} height={200} x={545} y={2740}>
-        <div className="flex justify-between">
-          <div
-            className="flex text-[17px]"
-            style={{
-              color: colors.primary,
-              fontFamily: fonts.primary.fontFamily,
-              fontWeight: "bold",
-            }}
-          >
-            Free Design template by TemplatesJungle.com
-          </div>
+        <div className="flex justify-end">
           <div className="flex flex-col">
             <div
               className="flex text-2xl underline"
@@ -612,6 +602,25 @@ const FoodieTemplate: React.FC<TemplateProps> = ({
         </div>
       </foreignObject>
     </g>
+    <foreignObject x="1000" y="2835" width="584" height="66">
+      <div
+        className="h-full items-center flex text-lg pl-10"
+        style={{
+          color: colors.primary,
+          fontFamily: fonts.primary.fontFamily,
+        }}
+      >
+        Template designed by{" "}
+        <a
+          target="_blank"
+          href="https://templatesjungle.com/"
+          rel="noopener noreferrer"
+          className="ml-1 underline cursor-pointer"
+        >
+          templatesjungle
+        </a>
+      </div>
+    </foreignObject>
     <defs>
       <filter
         id={`b${id}`}

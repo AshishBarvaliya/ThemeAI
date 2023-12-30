@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
-import { eq, ne } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import { createId } from "@paralleldrive/cuid2";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
@@ -10,6 +10,7 @@ import {
   users as usersSchema,
   usersToLikedThemes,
   usersToSavedThemes,
+  userViews as userViewsSchema,
 } from "@/db/schema";
 
 export default async function handler(
@@ -162,6 +163,26 @@ export default async function handler(
 
       return res.status(400).json({ error: "Invalid type" });
     } else {
+      const ip = (req.headers["x-forwarded-for"] ||
+        req.connection.remoteAddress) as string;
+      setTimeout(async () => {
+        const view = await db.query.userViews.findFirst({
+          where: and(
+            eq(userViewsSchema.userId, userId),
+            eq(userViewsSchema.userIp, ip)
+          ),
+          columns: {
+            id: true,
+          },
+        });
+        if (!view) {
+          await db.insert(userViewsSchema).values({
+            id: createId(),
+            userId,
+            userIp: ip,
+          });
+        }
+      }, 0);
       if (session) {
         if (session?.user?.id === userId) {
           try {

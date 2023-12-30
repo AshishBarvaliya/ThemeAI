@@ -1160,6 +1160,25 @@ const MarketingTemplate: React.FC<TemplateProps> = ({
         <p className="underline ml-10">Privacy Policy</p>
       </div>
     </foreignObject>
+    <foreignObject x="1000" y="2800" width="584" height="66">
+      <div
+        className="h-full items-center flex text-lg pl-10"
+        style={{
+          color: colors.bg,
+          fontFamily: fonts.primary.fontFamily,
+        }}
+      >
+        Template designed by{" "}
+        <a
+          target="_blank"
+          href="https://www.figma.com/@olgaaverchenko"
+          rel="noopener noreferrer"
+          className="ml-1 underline cursor-pointer"
+        >
+          Olga
+        </a>
+      </div>
+    </foreignObject>
     <defs>
       <filter
         id={`filter0_d_502_231${id}`}
