@@ -55,10 +55,6 @@ export default function Home() {
           content="Select AI-Enhanced Meaningful Themes for Your Web Design"
         />
         <meta property="og:image" content="/og/home.png" />
-        <meta
-          name="google-site-verification"
-          content="3eSEM-vrEy49pJgi0qucbHCNImAS6ZHPIe04hoRy-9I"
-        />
         <script type="application/ld+json">
           {`
             {
