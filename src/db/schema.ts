@@ -403,7 +403,7 @@ export const themeViews = pgTable("theme_views", {
   id: text("id").notNull().primaryKey(),
   themeId: text("themeId")
     .notNull()
-    .references(() => themes.id),
+    .references(() => themes.id, { onDelete: "cascade" }),
   userIp: text("userIp").notNull(),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });
@@ -425,7 +425,7 @@ export const userViews = pgTable("user_views", {
 });
 
 export const userViewsRelations = relations(userViews, ({ one }) => ({
-  theme: one(users, {
+  user: one(users, {
     fields: [userViews.userId],
     references: [users.id],
   }),

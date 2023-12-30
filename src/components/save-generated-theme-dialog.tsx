@@ -21,6 +21,14 @@ import { useHelpers } from "@/hooks/useHelpers";
 import { INPUT_LIMIT } from "@/constants/website";
 import { validateInput } from "@/lib/error";
 import { TEMPLATE_NAMES } from "@/constants/templates";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { TemplateType } from "@/interfaces/templates";
 
 interface RegisterDialogProps {
   open: boolean;
@@ -44,6 +52,7 @@ interface RegisterDialogProps {
 interface FormDataProps {
   name: string;
   isPrivate: boolean;
+  template: TemplateType;
 }
 
 export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
@@ -59,6 +68,7 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
   const [errorMessage, setErrorMessage] = useState("");
   const [data, setData] = useState<FormDataProps>({
     name: "",
+    template: TEMPLATE_NAMES[0] as TemplateType,
     isPrivate: false,
   });
 
@@ -82,8 +92,7 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
         color_4_reason: generatedTheme.color_4_reason,
         isPrivate: data.isPrivate,
         tags: selectedTags,
-        template:
-          TEMPLATE_NAMES[Math.floor(Math.random() * TEMPLATE_NAMES.length)],
+        template: data.template,
       })
       .then((res) => {
         if (res.data) {
@@ -142,6 +151,29 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
                     }
                   }}
                 />
+                <Label htmlFor="topic" className="mt-4 mb-2">
+                  Wallpaper Template
+                </Label>
+                <Select
+                  value={data.template}
+                  onValueChange={(value) =>
+                    setData((prev) => ({
+                      ...prev,
+                      template: value as TemplateType,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="md:w-[750px] h-9 text-sm">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TEMPLATE_NAMES.map((itm) => (
+                      <SelectItem key={itm} value={itm} className="text-sm">
+                        {itm}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <div className="mt-4">
                   <TagPicker
                     selectedTags={selectedTags}
@@ -170,7 +202,7 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
                   </Label>
                 </div>
               </div>
-              <div className="mt-1 flex justify-end">
+              <div className="mt-5 flex justify-end">
                 <Button
                   type="button"
                   disabled={loading}

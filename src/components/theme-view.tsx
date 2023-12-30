@@ -158,6 +158,69 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
     return window.removeEventListener("beforeunload", beforeUnloadHandler);
   }, []);
 
+  const templates = [
+    {
+      id: "Marketing",
+      node: (
+        <MarketingTemplate
+          key={2}
+          id="marketing"
+          colors={colors}
+          shades={shades}
+          fonts={fonts}
+        />
+      ),
+    },
+    {
+      id: "Editor",
+      node: (
+        <EditorTemplate
+          key={3}
+          id="editor"
+          colors={colors}
+          shades={shades}
+          fonts={fonts}
+        />
+      ),
+    },
+    {
+      id: "Foodie",
+      node: (
+        <FoodieTemplate
+          key={4}
+          id="foodie"
+          colors={colors}
+          shades={shades}
+          fonts={fonts}
+        />
+      ),
+    },
+    {
+      id: "Learning",
+      node: (
+        <LearningTemplate
+          key={5}
+          id="learning"
+          colors={colors}
+          shades={shades}
+          fonts={fonts}
+        />
+      ),
+    },
+    {
+      id: "Dashboard",
+      node: (
+        <DashboardTemplate
+          key={6}
+          id="dashboard"
+          colors={colors}
+          shades={shades}
+          fonts={fonts}
+        />
+      ),
+    },
+  ];
+
   return theme ? (
     <div
       className="divWithDotsBackground flex w-full bg-white/50"
@@ -272,36 +335,10 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                 </Typography>
               ) : null}
               <Carousel autoSlide={true} bgColor={colors.bg}>
-                <MarketingTemplate
-                  id="marketing"
-                  colors={colors}
-                  shades={shades}
-                  fonts={fonts}
-                />
-                <LearningTemplate
-                  id="learning"
-                  colors={colors}
-                  shades={shades}
-                  fonts={fonts}
-                />
-                <DashboardTemplate
-                  id="dashboard"
-                  colors={colors}
-                  shades={shades}
-                  fonts={fonts}
-                />
-                <FoodieTemplate
-                  id="foodie"
-                  colors={colors}
-                  shades={shades}
-                  fonts={fonts}
-                />
-                <EditorTemplate
-                  id="editor"
-                  colors={colors}
-                  shades={shades}
-                  fonts={fonts}
-                />
+                {templates.find((t) => t.id === theme?.template)?.node}
+                {templates
+                  .filter((t) => t.id !== theme?.template)
+                  .map((t) => t.node)}
               </Carousel>
               {type === "view" ? <ThemeViewStats theme={theme} /> : null}
             </div>

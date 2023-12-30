@@ -12,7 +12,7 @@ interface CarouselProps {
 const Carousel: React.FC<CarouselProps> = ({
   children,
   autoSlide = true,
-  interval = 4000,
+  interval = 6000,
   bgColor,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -38,7 +38,7 @@ const Carousel: React.FC<CarouselProps> = ({
     }
   }, [currentIndex, autoSlide, interval]);
 
-  const { color, shade } = getLuminance(bgColor || "#FFFFFF");
+  const { shade } = getLuminance(bgColor || "#FFFFFF");
 
   return (
     <div

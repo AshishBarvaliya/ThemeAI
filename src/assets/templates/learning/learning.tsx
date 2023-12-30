@@ -740,6 +740,25 @@ const LearningTemplate: React.FC<TemplateProps> = ({
         </p>
       </div>
     </foreignObject>
+    <foreignObject x="1000" y="2835" width="584" height="66">
+      <div
+        className="h-full items-center flex text-lg pl-10"
+        style={{
+          color: colors.bg,
+          fontFamily: fonts.primary.fontFamily,
+        }}
+      >
+        Template designed by{" "}
+        <a
+          target="_blank"
+          href="https://www.figma.com/@reskyfrnd"
+          rel="noopener noreferrer"
+          className="ml-1 underline cursor-pointer"
+        >
+          Resky Fernanda
+        </a>
+      </div>
+    </foreignObject>
     <rect
       width={106}
       height={47}
