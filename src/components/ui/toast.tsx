@@ -7,6 +7,7 @@ export interface IToast {
   title: string;
   description?: string;
   type?: "success" | "warning" | "error";
+  errorCode?: number;
 }
 
 interface Props {
@@ -24,16 +25,19 @@ const ToastComponent: React.FC<Props> = ({ toast }) => {
   }, [shouldShow]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShouldShow(false);
-      setTimeout(() => {
-        removeToast(toast.id);
-      }, 1000);
-    }, 3500);
+    const timer = setTimeout(
+      () => {
+        setShouldShow(false);
+        setTimeout(() => {
+          removeToast(toast.id);
+        }, 1000);
+      },
+      toast.type === "error" ? 6000 : 3500
+    );
     return () => {
       clearTimeout(timer);
     };
-  }, [toast.id, removeToast]);
+  }, [toast, removeToast]);
 
   const icon = () => {
     switch (toast.type) {
@@ -129,7 +133,21 @@ const ToastComponent: React.FC<Props> = ({ toast }) => {
                     {toast.title}
                   </p>
                   <p className="mt-1 text-sm leading-5 text-gray-500">
-                    {toast.description}
+                    {toast.errorCode === 500 ? (
+                      <>
+                        Please try again or contact support at{" "}
+                        <span
+                          className="text-indigo-400 hover:underline cursor-pointer"
+                          onClick={() =>
+                            window.open("mailto:contact@themeai.io")
+                          }
+                        >
+                          contact@themeai.io
+                        </span>
+                      </>
+                    ) : (
+                      toast.description
+                    )}
                   </p>
                 </div>
               </div>

@@ -5,13 +5,15 @@ import FontPicker from "@/components/font-picker";
 import { SaveThemeDialog } from "@/components/save-theme-dialog";
 import { templates } from "@/components/template-list";
 import { Button } from "@/components/ui/button";
-import { GOOGLE_FONTS } from "@/constants/fonts";
+import { FontProps, GOOGLE_FONTS } from "@/constants/fonts";
 import { DEAFULT_THEMES } from "@/constants/templates";
 import { useHelpers } from "@/hooks/useHelpers";
 import { ColorsProps, FontObjProps } from "@/interfaces/theme";
 import { getTemplate } from "@/lib/templates";
 import { cn, generateAllShades } from "@/lib/utils";
+import { getThemeById } from "@/services/theme";
 import { ArrowLeftIcon, DownloadIcon } from "@radix-ui/react-icons";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronDownIcon, ChevronUpIcon, RotateCcw } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
@@ -61,8 +63,16 @@ const CreateTheme = () => {
   const [isMobileView, setIsMobileView] = useState(false);
   const [openTemplates, setOpenTemplates] = useState(false);
 
+  const { data: theme } = useQuery(
+    ["theme", router.query.theme],
+    () => getThemeById(router.query.theme as string),
+    {
+      enabled: !!router.query.theme,
+    }
+  );
+
   useEffect(() => {
-    if (router.query.generated !== "1") {
+    if (router.query.generated !== "1" && !theme) {
       if (!isDirty) {
         setColors(DEAFULT_THEMES[template].colors);
       }
@@ -88,6 +98,7 @@ const CreateTheme = () => {
       } else {
         router.push("/themes/create", undefined, { shallow: true });
       }
+    } else if (router.query.theme) {
     } else {
       setDefaultColors(templatesDefaultColors);
     }
@@ -99,6 +110,32 @@ const CreateTheme = () => {
     });
     setIsDirty(false);
   }, [router]);
+
+  useEffect(() => {
+    if (theme) {
+      setColors({
+        bg: theme.color_1,
+        primary: theme.color_2,
+        accent: theme.color_3,
+        extra: theme.color_4,
+      });
+      setFonts({
+        primary: GOOGLE_FONTS.find(
+          (font) => font.fontFamily === theme?.font_1
+        ) as FontProps,
+        secondary: GOOGLE_FONTS.find(
+          (font) => font.fontFamily === theme?.font_2
+        ) as FontProps,
+      });
+      setDefaultColors({
+        bg: theme.color_1,
+        primary: theme.color_2,
+        accent: theme.color_3,
+        extra: theme.color_4,
+      });
+      setIsDirty(true);
+    }
+  }, [theme]);
 
   useEffect(() => {
     setIsDirty(

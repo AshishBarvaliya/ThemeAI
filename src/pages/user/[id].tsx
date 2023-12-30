@@ -34,9 +34,11 @@ import { LevelProgress } from "@/components/level-progress";
 import { RewardDialog } from "@/components/reward-dialog";
 import { RestrictedPage } from "@/components/restricted-page";
 import Head from "next/head";
+import { useToast } from "@/hooks/useToast";
 
 export default function User() {
   const queryClient = useQueryClient();
+  const { addToast } = useToast();
   const router = useRouter();
   const { runIfLoggedInElseOpenLoginDialog, setLoginOpen } = useHelpers();
   const { data: session } = useSession();
@@ -47,6 +49,13 @@ export default function User() {
     () => getUser(router.query.id as string),
     {
       enabled: !!router.query.id,
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
     }
   );
   const { data: statsData } = useQuery(
@@ -81,6 +90,13 @@ export default function User() {
         }
       }
     },
+    onError: ({ response }) => {
+      addToast({
+        title: response.data?.error || "Something went wrong",
+        type: "error",
+        errorCode: response.status,
+      });
+    },
   });
   const { mutate: mutateUserUnfollow, isLoading: isLoadingUnfollow } =
     useMutation({
@@ -104,6 +120,13 @@ export default function User() {
             });
           }
         }
+      },
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
       },
     });
   const [selectedNav, setSelectedNav] = useState("Themes");

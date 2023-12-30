@@ -19,15 +19,26 @@ import {
 import { INotification } from "@/interfaces/notification";
 import { EmptyState } from "./empty-state";
 import { BellIcon } from "@radix-ui/react-icons";
+import { useToast } from "@/hooks/useToast";
 
 export default function ProfileNotifications() {
   const queryClient = useQueryClient();
+  const { addToast } = useToast();
   const { data: session } = useSession();
   const [filter, setFilter] = useState("All");
   const [loadingUser, setLoadingUser] = useState<string | null>(null);
   const { data: notifications, isLoading: isLoadingNotifications } = useQuery(
     ["user", "notifications"],
-    getNotifications
+    getNotifications,
+    {
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
+    }
   );
   const { data: followings } = useQuery(["following", session?.user.id], () =>
     getAllFollowings(session?.user.id as string)
@@ -55,12 +66,26 @@ export default function ProfileNotifications() {
           );
         }
       },
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
     });
 
   const { mutate: mutateUserFollow, isLoading: isLoadingFollow } = useMutation({
     mutationFn: (userId: string) => followUser(userId),
     onSuccess: () => {
       queryClient.invalidateQueries(["following", session?.user.id]);
+    },
+    onError: ({ response }) => {
+      addToast({
+        title: response.data?.error || "Something went wrong",
+        type: "error",
+        errorCode: response.status,
+      });
     },
   });
 

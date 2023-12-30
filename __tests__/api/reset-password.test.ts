@@ -8,6 +8,9 @@ jest.mock("@/db", () => ({
     users: {
       findFirst: jest.fn(),
     },
+    accounts: {
+      findFirst: jest.fn(),
+    },
   },
   insert: jest.fn().mockReturnThis(),
   values: jest.fn().mockReturnThis(),
@@ -51,11 +54,6 @@ describe("Reset Password API Endpoint", () => {
   it("should return 201 if asscociated user is NOT found", async () => {
     req.body = { email: "invalid@user.com" };
     (db.query.users.findFirst as jest.Mock).mockResolvedValue(null);
-    (sendEmail as jest.Mock).mockResolvedValue({
-      id: "message-id",
-      message:
-        "Reset password mail has been sent. The reset password link is valid for 60 minutes.",
-    });
     await handler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(201);
@@ -65,18 +63,20 @@ describe("Reset Password API Endpoint", () => {
     });
   });
 
-  it("should return 404 if user is not verified", async () => {
+  it("should return 404 if user forgot password with Google account", async () => {
     req.body = { email: "user@example.com" };
     (db.query.users.findFirst as jest.Mock).mockResolvedValue({
       id: "user-id",
-      isActived: false,
+    });
+    (db.query.accounts.findFirst as jest.Mock).mockResolvedValue({
+      provider: "google",
     });
 
     await handler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
-      error: "User is not verified",
+      error: "Reset password with Google account is not allowed",
     });
   });
 
@@ -89,6 +89,7 @@ describe("Reset Password API Endpoint", () => {
         length: parseInt(process.env.FORGOT_PASSWORD_MAIL_LIMIT || "0"),
       },
     });
+    (db.query.accounts.findFirst as jest.Mock).mockResolvedValue(null);
 
     await handler(req, res);
 
@@ -107,6 +108,12 @@ describe("Reset Password API Endpoint", () => {
         length: 1,
       },
     });
+    (db.query.accounts.findFirst as jest.Mock).mockResolvedValue(null);
+    (sendEmail as jest.Mock).mockResolvedValue({
+      id: "message-id",
+      message:
+        "Reset password mail has been sent. The reset password link is valid for 60 minutes.",
+    });
 
     await handler(req, res);
 
@@ -119,6 +126,27 @@ describe("Reset Password API Endpoint", () => {
     });
   });
 
+  it("should return 500 if there is an error on sendEmail", async () => {
+    req.body = { email: "user@example.com" };
+    (db.query.users.findFirst as jest.Mock).mockResolvedValue({
+      id: "user-id",
+      isActived: true,
+      resetPasswords: {
+        length: 1,
+      },
+    });
+    (db.query.accounts.findFirst as jest.Mock).mockResolvedValue(null);
+    (sendEmail as jest.Mock).mockRejectedValue(
+      new Error("Failed to send reset password mail")
+    );
+    await handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Failed to send reset password mail",
+    });
+  });
+
   it("should return 500 if there is an error", async () => {
     req.body = { email: "user@example.com" };
     (db.query.users.findFirst as jest.Mock).mockResolvedValue({
@@ -128,6 +156,7 @@ describe("Reset Password API Endpoint", () => {
         length: 1,
       },
     });
+    (db.query.accounts.findFirst as jest.Mock).mockResolvedValue(null);
     ((db.insert as jest.Mock)().values as jest.Mock).mockRejectedValue(
       new Error("An error occurred")
     );

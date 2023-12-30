@@ -95,7 +95,11 @@ export const SaveGeneratedThemeDialog: React.FC<RegisterDialogProps> = ({
         setGeneratedTheme(null);
       })
       .catch((error) => {
-        addToast({ title: error.response.data.error, type: "error" });
+        addToast({
+          title: error.response.data.error,
+          type: "error",
+          errorCode: error.response.status,
+        });
         setLoading(false);
         setOpen(false);
       });

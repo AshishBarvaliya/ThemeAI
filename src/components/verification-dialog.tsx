@@ -60,10 +60,11 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
             type: "success",
           });
         })
-        .catch(() => {
+        .catch(({ response }) => {
           addToast({
-            title: "Failed to send verification email",
+            title: response.data?.error || "Something went wrong",
             type: "error",
+            errorCode: response.status,
           });
         })
         .finally(() => {
@@ -137,12 +138,14 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
     <Dialog
       open={open}
       onOpenChange={(toggle) => {
-        setVerifyDialogState((prev) => ({
-          open: toggle,
-          type: prev.type,
-          clearURL: true,
-        }));
-        clearURL && router.push("/themes", undefined, { shallow: true });
+        if (!loading) {
+          setVerifyDialogState((prev) => ({
+            open: toggle,
+            type: prev.type,
+            clearURL: true,
+          }));
+          clearURL && router.push("/themes", undefined, { shallow: true });
+        }
       }}
     >
       <DialogContent className="p-6 md:p-8 border max-w-[400px] border-border bg-white rounded-none">

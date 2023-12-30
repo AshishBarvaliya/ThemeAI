@@ -53,6 +53,13 @@ export default function Themes() {
         type: "success",
       });
     },
+    onError: ({ response }) => {
+      addToast({
+        title: response.data?.error || "Something went wrong",
+        type: "error",
+        errorCode: response.status,
+      });
+    },
   });
 
   const { mutate: mutateLikeTheme, isLoading: isLoadingLikeTheme } =

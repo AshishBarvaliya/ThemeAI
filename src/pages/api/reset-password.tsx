@@ -34,9 +34,10 @@ export default async function handler(
       });
 
       if (!user) {
-        return res
-          .status(201)
-          .json({ messsage: "Reset password mail has been sent" });
+        return res.status(201).json({
+          messsage:
+            "Reset password mail has been sent. The reset password link is valid for 60 minutes.",
+        });
       }
 
       const googleUser = await db.query.accounts.findFirst({
@@ -65,23 +66,22 @@ export default async function handler(
           expiresAt: new Date(new Date().getTime() + 60000 * EMAIL_LINK_EXPIRY),
         });
 
-        sendEmail("reset-password", {
-          email,
-          token: newToken,
-          name: user.name,
-        })
-          .then(() => {
-            return res.status(201).json({
-              messsage:
-                "Reset password mail has been sent. The reset password link is valid for 60 minutes.",
-            });
-          })
-          .catch((erre) => {
-            console.error(erre);
-            return res
-              .status(500)
-              .json({ error: "Failed to send reset password mail" });
+        try {
+          await sendEmail("reset-password", {
+            email,
+            token: newToken,
+            name: user.name,
           });
+
+          return res.status(201).json({
+            messsage:
+              "Reset password mail has been sent. The reset password link is valid for 60 minutes.",
+          });
+        } catch {
+          return res
+            .status(500)
+            .json({ error: "Failed to send reset password mail" });
+        }
       } catch (error) {
         res.status(500).json({ error: "Failed to send reset password mail" });
       }

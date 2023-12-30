@@ -78,9 +78,12 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({
           });
         })
         .catch((error) => {
-          addToast({ title: error.response.data.error, type: "error" });
+          addToast({
+            title: error.response.data.error,
+            type: "error",
+            errorCode: error.response.status,
+          });
           setLoading(false);
-          setOpen(false);
         });
     }
   };

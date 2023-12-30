@@ -15,11 +15,13 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { getHasNewNotifications, getUser } from "@/services/user";
 import { buyPupa } from "@/services/stripe";
+import { useToast } from "@/hooks/useToast";
 
 interface HeaderMenuProps {}
 
 export const HeaderMenu: React.FC<HeaderMenuProps> = () => {
   const router = useRouter();
+  const { addToast } = useToast();
   const { data: session } = useSession();
   const { data: user } = useQuery(["user", session?.user.id], () =>
     getUser(session?.user.id as string)
@@ -78,9 +80,17 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = () => {
             </p>
             <Button
               onClick={() => {
-                buyPupa().then(({ url }) => {
-                  router.push(url);
-                });
+                buyPupa()
+                  .then(({ url }) => {
+                    router.push(url);
+                  })
+                  .catch((error) => {
+                    addToast({
+                      title: error.response.data.error,
+                      type: "error",
+                      errorCode: error.response.status,
+                    });
+                  });
               }}
               size={"sm"}
             >

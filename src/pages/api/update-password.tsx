@@ -40,6 +40,13 @@ export default async function handler(
           },
         });
 
+        if (!currentuser?.hashedPassword) {
+          return res.status(400).json({
+            error:
+              "You can not update your password as your account is connected with Google.",
+          });
+        }
+
         const passwordMatch = await bcrypt.compare(
           currentpassword,
           currentuser?.hashedPassword as string
@@ -73,6 +80,7 @@ export default async function handler(
         user: {
           columns: {
             id: true,
+            hashedPassword: true,
           },
         },
       },
@@ -84,6 +92,13 @@ export default async function handler(
 
     if (resetPasswordToken.expiresAt < new Date()) {
       return res.status(400).json({ error: "Token expired" });
+    }
+
+    if (!resetPasswordToken?.user?.hashedPassword) {
+      return res.status(400).json({
+        error:
+          "You can not update your password as your account is connected with Google.",
+      });
     }
 
     try {

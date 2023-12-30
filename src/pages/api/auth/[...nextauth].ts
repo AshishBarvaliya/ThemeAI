@@ -35,7 +35,7 @@ export const authOptions: NextAuthOptions = {
           .where(eq(users.email, credentials.email));
 
         if (!user.length) {
-          throw new Error("No user found");
+          throw new Error("Incorrect password or email");
         }
 
         if (!user[0].hashedPassword) {
@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
         );
 
         if (!passwordMatch) {
-          throw new Error("Incorrect password");
+          throw new Error("Incorrect password or email");
         }
 
         return user[0];

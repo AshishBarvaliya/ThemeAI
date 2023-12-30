@@ -13,6 +13,7 @@ import { USER_LEVELS } from "@/constants/user";
 import { DotFilledIcon } from "@radix-ui/react-icons";
 import { EmptyState } from "./empty-state";
 import { User2 } from "lucide-react";
+import { useToast } from "@/hooks/useToast";
 
 interface ProfileFollowingProps {
   user: UserProps | undefined;
@@ -21,6 +22,7 @@ interface ProfileFollowingProps {
 const ProfileFollowing: React.FC<ProfileFollowingProps> = ({ user }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { addToast } = useToast();
   const { data: session } = useSession();
   const [loadingUser, setLoadingUser] = useState<string | null>(null);
   const { data: followings, isLoading: isLoadingFollwings } = useQuery(
@@ -28,6 +30,13 @@ const ProfileFollowing: React.FC<ProfileFollowingProps> = ({ user }) => {
     () => getAllFollowings(router.query.id as string),
     {
       enabled: !!router.query.id,
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
+      },
     }
   );
 
@@ -45,6 +54,13 @@ const ProfileFollowing: React.FC<ProfileFollowingProps> = ({ user }) => {
             ),
           });
         }
+      },
+      onError: ({ response }) => {
+        addToast({
+          title: response.data?.error || "Something went wrong",
+          type: "error",
+          errorCode: response.status,
+        });
       },
     });
 

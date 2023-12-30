@@ -126,6 +126,25 @@ describe("Send Verification Email API Endpoint", () => {
     });
   });
 
+  it("should return 500 if there is an error on sendEmail", async () => {
+    (db.query.users.findFirst as jest.Mock).mockResolvedValue({
+      id: "user-id",
+      isActived: false,
+      verificationTokens: {
+        length: 1,
+      },
+    });
+    (sendEmail as jest.Mock).mockRejectedValue(
+      new Error("Failed to send verification mail")
+    );
+    await handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Failed to send verification mail",
+    });
+  });
+
   it("should return 500 if there is an error", async () => {
     (db.query.users.findFirst as jest.Mock).mockResolvedValue({
       id: "user-id",
