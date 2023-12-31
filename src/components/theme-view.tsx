@@ -266,16 +266,14 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
             {type === "view" ? (
               <div className="flex gap-3 h-12 items-center">
                 {theme?.isAIGenerated ? (
-                  <TooltipProvider>
-                    <Tooltip delayDuration={100}>
-                      <TooltipTrigger asChild>
-                        <div>
-                          <MagicWand className="h-4 w-4" />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>{"AI Generated"}</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Tooltip delayDuration={100}>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <MagicWand className="h-4 w-4" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>{"AI Generated"}</TooltipContent>
+                  </Tooltip>
                 ) : null}
                 <Button
                   variant={"outline"}
@@ -287,16 +285,14 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
               </div>
             ) : (
               <div className="flex gap-3 h-12 items-center">
-                <TooltipProvider>
-                  <Tooltip delayDuration={100}>
-                    <TooltipTrigger asChild>
-                      <div>
-                        <MagicWand className="h-4 w-4" />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>{"AI Generated"}</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <Tooltip delayDuration={100}>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <MagicWand className="h-4 w-4" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>{"AI Generated"}</TooltipContent>
+                </Tooltip>
                 <Button
                   variant={"outline"}
                   size={"md"}
@@ -360,45 +356,43 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                         >
                           {clr.name}
                         </Typography>
-                        <TooltipProvider>
-                          <Tooltip delayDuration={100}>
-                            <TooltipTrigger asChild>
+                        <Tooltip delayDuration={100}>
+                          <TooltipTrigger asChild>
+                            <div
+                              className="h-8 w-24 shadow-md parent_hover"
+                              style={{ backgroundColor: clr.color }}
+                            >
                               <div
-                                className="h-8 w-24 shadow-md parent_hover"
-                                style={{ backgroundColor: clr.color }}
+                                className="m-0.5 flex items-center justify-center w-[18px] h-[18px] hidden_child cursor-pointer"
+                                style={{
+                                  backgroundColor: shade,
+                                }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  e.preventDefault();
+                                  navigator.clipboard.writeText(clr.color);
+                                  setCopied(clr.color);
+                                  setTimeout(() => {
+                                    setCopied(null);
+                                  }, 2000);
+                                }}
                               >
-                                <div
-                                  className="m-0.5 flex items-center justify-center w-[18px] h-[18px] hidden_child cursor-pointer"
-                                  style={{
-                                    backgroundColor: shade,
-                                  }}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    e.preventDefault();
-                                    navigator.clipboard.writeText(clr.color);
-                                    setCopied(clr.color);
-                                    setTimeout(() => {
-                                      setCopied(null);
-                                    }, 2000);
-                                  }}
-                                >
-                                  {copied === clr.color ? (
-                                    <CopyCheck
-                                      className="w-4 h-4"
-                                      style={{ color: lockColor }}
-                                    />
-                                  ) : (
-                                    <Copy
-                                      className="w-4 h-4"
-                                      style={{ color: lockColor }}
-                                    />
-                                  )}
-                                </div>
+                                {copied === clr.color ? (
+                                  <CopyCheck
+                                    className="w-4 h-4"
+                                    style={{ color: lockColor }}
+                                  />
+                                ) : (
+                                  <Copy
+                                    className="w-4 h-4"
+                                    style={{ color: lockColor }}
+                                  />
+                                )}
                               </div>
-                            </TooltipTrigger>
-                            <TooltipContent>{clr.color}</TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>{clr.color}</TooltipContent>
+                        </Tooltip>
                       </div>
                       <Typography
                         element="p"
@@ -467,34 +461,32 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
             {type === "view" && theme.createdAt ? (
               <Typography element="p" as="p" className="text-xs">
                 <span className="font-bold pr-1">Created at:</span>
-                {moment(theme.createdAt).format("LLL")}
+                {moment.utc(theme.createdAt).local().format("LLL")}
               </Typography>
             ) : null}
             {type === "generated" ? (
               <Feedback />
             ) : (
-              <TooltipProvider>
-                <Tooltip delayDuration={100}>
-                  <TooltipTrigger asChild>
-                    <div
-                      className="cursor-pointer p-1"
-                      onClick={() => {
-                        if (theme.id) {
-                          runIfLoggedInElseOpenLoginDialog(() => {
-                            if (theme.id)
-                              mutateMarkAsInappropriateTheme(theme.id);
-                          });
-                        }
-                      }}
-                    >
-                      <Flag className="h-3 w-3 hover:text-destructive" />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    Mark this theme as inappropriate
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Tooltip delayDuration={100}>
+                <TooltipTrigger asChild>
+                  <div
+                    className="cursor-pointer p-1"
+                    onClick={() => {
+                      if (theme.id) {
+                        runIfLoggedInElseOpenLoginDialog(() => {
+                          if (theme.id)
+                            mutateMarkAsInappropriateTheme(theme.id);
+                        });
+                      }
+                    }}
+                  >
+                    <Flag className="h-3 w-3 hover:text-destructive" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  Mark this theme as inappropriate
+                </TooltipContent>
+              </Tooltip>
             )}
           </div>
           {type === "view" && (

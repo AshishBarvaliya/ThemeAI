@@ -103,7 +103,7 @@ describe("Manage Purchases API Endpoint", () => {
     await handler(req, res);
 
     expect(res.redirect).toHaveBeenCalledWith(
-      "/themes?payment=0&error=invalid_customer"
+      "/themes?payment=0&error=invalid_session"
     );
   });
 

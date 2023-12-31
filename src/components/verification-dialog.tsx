@@ -8,6 +8,7 @@ import Typography from "./ui/typography";
 import { MailCheck, MailMinus, MailQuestion } from "lucide-react";
 import { sendVerificationEmail } from "@/services/user";
 import { useRouter } from "next/router";
+import { useHelpers } from "@/hooks/useHelpers";
 
 export interface VerificationDialogProps {
   open: boolean;
@@ -40,6 +41,7 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
 }) => {
   const router = useRouter();
   const { addToast } = useToast();
+  const { setSuccessfulMailDialog } = useHelpers();
   const { status, data: session } = useSession();
   const [loading, setLoading] = useState(false);
 
@@ -55,9 +57,9 @@ export const VerificationDialog: React.FC<VerificationDialogProps> = ({
       setLoading(true);
       sendVerificationEmail()
         .then(() => {
-          addToast({
-            title: "Verification email has been sent successfully",
-            type: "success",
+          setSuccessfulMailDialog({
+            open: true,
+            type: "verify",
           });
         })
         .catch(({ response }) => {

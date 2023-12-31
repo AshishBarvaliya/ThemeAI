@@ -2,7 +2,7 @@ import HeartIcon from "@/assets/icons/heart";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import Typography from "@/components/ui/typography";
 import { useHelpers } from "@/hooks/useHelpers";
-import { ColorsProps, GetThemeTileProps, TagProps } from "@/interfaces/theme";
+import { ColorsProps, GetThemeTileProps } from "@/interfaces/theme";
 import { getMappedTheme } from "@/lib/theme";
 import { cn, generateAllShades, getLuminance } from "@/lib/utils";
 import { AvatarFallback } from "@radix-ui/react-avatar";
@@ -17,12 +17,7 @@ import { AwardIcon } from "./award-icon";
 import { USER_LEVELS } from "@/constants/user";
 import { Button } from "./ui/button";
 import MagicWand from "@/assets/svgs/magic-wand";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { getMiniTemplate } from "@/lib/templates";
 
 interface ThemeTileProps {
@@ -101,7 +96,20 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
               </>
             )}
           </Avatar>
-          <p className="text-xs">{mappedTheme.user.name}</p>
+          <Tooltip delayDuration={100}>
+            <TooltipTrigger asChild>
+              <div>
+                <p className="max-w-[160px] text-xs truncate">
+                  {mappedTheme.user.name}
+                </p>
+              </div>
+            </TooltipTrigger>
+            {mappedTheme.user.name.length > 20 ? (
+              <TooltipContent>
+                <p className="text-xs">{mappedTheme.user.name}</p>
+              </TooltipContent>
+            ) : null}
+          </Tooltip>
           <AwardIcon
             level={mappedTheme.user.level}
             className="h-3 w-3"
@@ -110,16 +118,14 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
         </div>
         <div className="flex items-center gap-2">
           {mappedTheme.isAIGenerated ? (
-            <TooltipProvider>
-              <Tooltip delayDuration={100}>
-                <TooltipTrigger asChild>
-                  <div>
-                    <MagicWand className="h-3 w-3" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>{"AI Generated"}</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger asChild>
+                <div>
+                  <MagicWand className="h-3 w-3" />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>{"AI Generated"}</TooltipContent>
+            </Tooltip>
           ) : null}
           <div
             className="relative py-1 cursor-pointer"
@@ -192,20 +198,18 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
         className="flex flex-col border-t-[0.5px] p-1.5 gap-2 bg-white"
         style={{ borderColor: mappedTheme.colors.primary }}
       >
-        <TooltipProvider>
-          <Tooltip delayDuration={100}>
-            <TooltipTrigger asChild>
-              <div>
-                <Typography element={"p"} as="p" className="text-lg truncate">
-                  {mappedTheme.name}
-                </Typography>
-              </div>
-            </TooltipTrigger>
-            {mappedTheme.name.length > 15 ? (
-              <TooltipContent>{mappedTheme.name}</TooltipContent>
-            ) : null}
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip delayDuration={100}>
+          <TooltipTrigger asChild>
+            <div>
+              <Typography element={"p"} as="p" className="text-lg truncate">
+                {mappedTheme.name}
+              </Typography>
+            </div>
+          </TooltipTrigger>
+          {mappedTheme.name.length > 15 ? (
+            <TooltipContent>{mappedTheme.name}</TooltipContent>
+          ) : null}
+        </Tooltip>
         <div className="flex gap-2">
           {Object.keys(mappedTheme.colors).map((key) => {
             const clr = mappedTheme.colors[key as keyof ColorsProps];
@@ -274,7 +278,7 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
             )}
           </div>
           <p className="text-[10px] text-secondary-foreground">
-            {moment(mappedTheme.createdAt).fromNow()}
+            {moment.utc(mappedTheme.createdAt).local().fromNow()}
           </p>
         </div>
       </div>

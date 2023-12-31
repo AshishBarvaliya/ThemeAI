@@ -16,6 +16,7 @@ declare module "next-auth" {
       title?: string;
       organization?: string;
       avatar?: string;
+      provider?: string;
     };
     expires: string;
   }

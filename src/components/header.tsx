@@ -17,6 +17,7 @@ import { HeaderMenu } from "./header-menu";
 import MagicWand from "@/assets/svgs/magic-wand";
 import { cn } from "@/lib/utils";
 import HeaderSearchBar from "./header-searchbar";
+import { SuccessfulMailDialog } from "./successful-mail-dialog";
 
 const Header = () => {
   const router = useRouter();
@@ -27,6 +28,8 @@ const Header = () => {
     setVerifyDialogState,
     generateThemeDialog,
     setGenerateThemeDialog,
+    successfulMailDialog,
+    setSuccessfulMailDialog,
   } = useHelpers();
   const { status, data: session } = useSession();
   const [singupOpen, setSingupOpen] = useState(false);
@@ -203,6 +206,10 @@ const Header = () => {
       <GenerateThemeDialog
         open={generateThemeDialog}
         setOpen={setGenerateThemeDialog}
+      />
+      <SuccessfulMailDialog
+        data={successfulMailDialog}
+        setData={setSuccessfulMailDialog}
       />
     </div>
   );

@@ -39,7 +39,7 @@ export default async function handler(
       return res.redirect("/themes?payment=0&error=invalid_session");
     }
     if (!session.metadata?.userId) {
-      return res.redirect("/themes?payment=0&error=invalid_customer");
+      return res.redirect("/themes?payment=0&error=invalid_session");
     }
 
     await db.insert(purchasesSchema).values({

@@ -9,12 +9,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { ChevronDown, SearchX, StarIcon } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { SeachBar } from "./ui/input";
 import Typography from "./ui/typography";
 import { INPUT_LIMIT } from "@/constants/website";
@@ -58,26 +53,24 @@ const FontPicker: React.FC<FontPickerProps> = ({
 
   return (
     <div className="relative" id={id}>
-      <TooltipProvider>
-        <Tooltip delayDuration={100}>
-          <TooltipTrigger asChild>
-            <div className="flex flex-col max-w-[200px]">
-              <Typography element="p" as="p" className="text-xs">
-                {name}
-              </Typography>
-              <div
-                className="flex px-2 gap-1 items-center text-[20px] cursor-pointer border-[0.5px] border-border bg-white"
-                style={{ fontFamily: selectedFont.fontFamily }}
-                onClick={() => setOpen(true)}
-              >
-                <p className="w-[145px] truncate">{selectedFont.fontFamily}</p>
-                <ChevronDown className="h-4 w-4" />
-              </div>
+      <Tooltip delayDuration={100}>
+        <TooltipTrigger asChild>
+          <div className="flex flex-col max-w-[200px]">
+            <Typography element="p" as="p" className="text-xs">
+              {name}
+            </Typography>
+            <div
+              className="flex px-2 gap-1 items-center text-[20px] cursor-pointer border-[0.5px] border-border bg-white"
+              style={{ fontFamily: selectedFont.fontFamily }}
+              onClick={() => setOpen(true)}
+            >
+              <p className="w-[145px] truncate">{selectedFont.fontFamily}</p>
+              <ChevronDown className="h-4 w-4" />
             </div>
-          </TooltipTrigger>
-          <TooltipContent>{selectedFont.fontFamily}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>{selectedFont.fontFamily}</TooltipContent>
+      </Tooltip>
       {open ? (
         <>
           <div
@@ -156,16 +149,14 @@ const FontPicker: React.FC<FontPickerProps> = ({
                               className="parent_hover flex relative px-0.5 py-3 h-20 w-[100px] font-normal text-xl text-center items-center justify-center bg-[hsl(0, 90%, 80%)] border-[0.5px] border-border hover:shadow-normal hover:-translate-x-px hover:-translate-y-px cursor-pointer animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-1"
                             >
                               {filteredFonts[i * 4 + j].fontFamily}
-                              {/* <TooltipProvider>
-                                <Tooltip>
+                              {/* <Tooltip>
                                   <TooltipTrigger asChild>
                                     <StarIcon className="hidden_child absolute right-2 top-2 ml-2 h-4 w-4 font-['Poppins']" />
                                   </TooltipTrigger>
                                   <TooltipContent side="left">
                                     {"Save"}
                                   </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider> */}
+                                </Tooltip>*/}
                               {/* <StarFilledIcon className="absolute right-2 top-2 ml-2 h-4 w-4 font-sans" /> */}
                             </p>
                           );

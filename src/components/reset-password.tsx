@@ -13,6 +13,7 @@ import { Button } from "./ui/button";
 import { sendPasswordResetEmail } from "@/services/user";
 import { INPUT_LIMIT } from "@/constants/website";
 import { validateInput } from "@/lib/error";
+import { useHelpers } from "@/hooks/useHelpers";
 
 interface ResetPasswordDialogProps {
   open: boolean;
@@ -25,6 +26,7 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
 }) => {
   const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const { setSuccessfulMailDialog } = useHelpers();
   const [errorMessage, setErrorMessage] = useState("");
   const [data, setData] = useState({
     email: "",
@@ -39,9 +41,9 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
       setLoading(true);
       sendPasswordResetEmail(data.email)
         .then(() => {
-          addToast({
-            title: "Password reset email has been sent",
-            type: "success",
+          setSuccessfulMailDialog({
+            open: true,
+            type: "reset",
           });
           setOpen(false);
         })

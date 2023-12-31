@@ -230,23 +230,29 @@ export default function Settings() {
                 </div>
               </div>
             </div>
-            <Typography
-              element="h2"
-              as="h2"
-              className="mx-0 md:mx-10 mt-10 text-2xl"
-            >
-              Password
-            </Typography>
-          </div>
-          <div className="flex mx-0 md:mx-10 mt-5">
-            <Button
-              variant={"destructive"}
-              onClick={() =>
-                runIfLoggedInElseOpenLoginDialog(() => setNewPasswordOpen(true))
-              }
-            >
-              Reset Password
-            </Button>
+            {session?.user?.provider === "google" ? null : (
+              <>
+                <Typography
+                  element="h2"
+                  as="h2"
+                  className="mx-0 md:mx-10 mt-10 text-2xl"
+                >
+                  Password
+                </Typography>
+                <div className="flex mx-0 md:mx-10 mt-5">
+                  <Button
+                    variant={"destructive"}
+                    onClick={() =>
+                      runIfLoggedInElseOpenLoginDialog(() =>
+                        setNewPasswordOpen(true)
+                      )
+                    }
+                  >
+                    Reset Password
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
           <ChooseAvatarDialog open={openAvatar} setOpen={setOpenAvatar} />
           <NewPasswordDialog
