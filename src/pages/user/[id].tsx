@@ -337,7 +337,7 @@ export default function User() {
               <Typography
                 element="h3"
                 as="h3"
-                className="text-primary-foreground"
+                className="text-primary-foreground max-w-[250px] break-words"
               >
                 {user?.name || "-"}
               </Typography>
@@ -364,28 +364,36 @@ export default function User() {
               )}
             {renderButton(session, user)}
             <div className="flex flex-col py-2 w-full px-4 text-sm">
-              <Typography
-                element="p"
-                as="p"
-                className="flex items-center text-primary-foreground/90"
-              >
-                <User2 className="mr-2 h-4 w-4" /> {user?.title || "-"}
-              </Typography>
-              <Typography
-                element="p"
-                as="p"
-                className="flex items-center text-primary-foreground/90"
-              >
-                <Building className="mr-2 h-4 w-4" />{" "}
-                {user?.organization || "-"}
-              </Typography>
-              <Typography
-                element="p"
-                as="p"
-                className="flex items-center text-primary-foreground/90"
-              >
-                <MapPin className="mr-2 h-4 w-4" /> {user?.location || "-"}
-              </Typography>
+              <div className="flex items-center">
+                <User2 className="mr-2 h-4 w-4 flex" />
+                <Typography
+                  element="p"
+                  as="p"
+                  className="text-primary-foreground/90 break-words max-w-[180px]"
+                >
+                  {user?.title || "-"}
+                </Typography>
+              </div>
+              <div className="flex items-center">
+                <Building className="mr-2 h-4 w-4 flex" />
+                <Typography
+                  element="p"
+                  as="p"
+                  className="text-primary-foreground/90 break-words max-w-[180px]"
+                >
+                  {user?.organization || "-"}
+                </Typography>
+              </div>
+              <div className="flex items-center">
+                <MapPin className="mr-2 h-4 w-4 flex" />
+                <Typography
+                  element="p"
+                  as="p"
+                  className="text-primary-foreground/90 break-words max-w-[180px]"
+                >
+                  {user?.location || "-"}
+                </Typography>
+              </div>
             </div>
             {renderStats()}
           </div>

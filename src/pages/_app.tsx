@@ -1,4 +1,5 @@
 import Layout from "@/components/layout";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import TanstackProvider from "@/context/TanstackProvider";
 import { HelpersProvider } from "@/hooks/useHelpers";
 import { ToastProvider } from "@/hooks/useToast";
@@ -21,19 +22,21 @@ export default function App({ Component, pageProps }: AppProps) {
     <SessionProvider session={pageProps.session}>
       <TanstackProvider>
         <ToastProvider>
-          <HelpersProvider>
-            <Layout
-              sidebar={
-                router.pathname === "/themes/create" ||
-                router.pathname === "/themes"
-                  ? true
-                  : false
-              }
-            >
-              <NextNProgress color="#17ad6b" />
-              <Component {...pageProps} />
-            </Layout>
-          </HelpersProvider>
+          <TooltipProvider>
+            <HelpersProvider>
+              <Layout
+                sidebar={
+                  router.pathname === "/themes/create" ||
+                  router.pathname === "/themes"
+                    ? true
+                    : false
+                }
+              >
+                <NextNProgress color="#17ad6b" />
+                <Component {...pageProps} />
+              </Layout>
+            </HelpersProvider>
+          </TooltipProvider>
         </ToastProvider>
       </TanstackProvider>
     </SessionProvider>

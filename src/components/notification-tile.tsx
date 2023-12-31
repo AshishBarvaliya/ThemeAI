@@ -99,7 +99,7 @@ export const NotificationTile: React.FC<INotificationTileProps> = ({
         <div className="flex flex-col ml-3 justify-between">
           <div>{getMessage(notification)}</div>
           <Typography element={"p"} as="p" className="text-xs">
-            {moment(notification.createdAt).fromNow()}
+            {moment.utc(notification.createdAt).local().fromNow()}
           </Typography>
         </div>
         {notification.type === "FOLLOW" ? (

@@ -66,7 +66,7 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    jwt: async ({ token, user, session, trigger }: any) => {
+    jwt: async ({ token, user, session, trigger, account }: any) => {
       if (trigger === "update") {
         await db
           .update(users)
@@ -85,17 +85,36 @@ export const authOptions: NextAuthOptions = {
           });
       }
 
-      if (user) {
-        return {
-          ...token,
-          id: user.id,
-          pupa: user.pupa,
-          isActived: user.isActived,
-          location: user.location,
-          organization: user.organization,
-          title: user.title,
-          avatar: user.avatar,
-        };
+      if (user && account) {
+        if (account?.provider === "google") {
+          const additionalUserData = await db.query.users.findFirst({
+            where: eq(users.email, user.email),
+          });
+
+          return {
+            ...token,
+            id: additionalUserData?.id,
+            pupa: additionalUserData?.pupa,
+            isActived: additionalUserData?.isActived,
+            location: additionalUserData?.location,
+            organization: additionalUserData?.organization,
+            title: additionalUserData?.title,
+            avatar: additionalUserData?.avatar,
+            provider: account.provider,
+          };
+        } else {
+          return {
+            ...token,
+            id: user.id,
+            pupa: user.pupa,
+            isActived: user.isActived,
+            location: user.location,
+            organization: user.organization,
+            title: user.title,
+            avatar: user.avatar,
+            provider: account.provider,
+          };
+        }
       }
       return token;
     },
@@ -111,6 +130,7 @@ export const authOptions: NextAuthOptions = {
           organization: token.organization,
           title: token.title,
           avatar: token.avatar,
+          provider: token.provider,
         },
       };
     },

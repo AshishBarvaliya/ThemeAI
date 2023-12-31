@@ -1,4 +1,5 @@
 import { ThemeTile } from "@/components/theme-tile";
+import { ThemeTileSkeleton } from "@/components/theme-tile-skeloton";
 import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/typography";
 import { useHelpers } from "@/hooks/useHelpers";
@@ -206,7 +207,13 @@ export default function Themes() {
         <meta property="og:image" content="/og/themes.png" />
       </Head>
       <div className="flex bg-black/5 w-full">
-        {isLoading ? null : themes?.pages[0]?.length ? (
+        {isLoading ? (
+          <div className="flex flex-col md:flex-row h-full md:flex-wrap p-5 overflow-y-auto lg:px-10 gap-6 w-full items-center md:items-start">
+            {new Array(10).fill(0).map((_, index) => (
+              <ThemeTileSkeleton key={index} />
+            ))}
+          </div>
+        ) : themes?.pages[0]?.length ? (
           <div
             className="flex flex-col md:flex-row h-full md:flex-wrap p-5 overflow-y-auto lg:px-10 gap-6 w-full items-center md:items-start"
             onScroll={handleScroll}

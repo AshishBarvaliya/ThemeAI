@@ -1,10 +1,5 @@
 import { ChromePicker } from "react-color";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { Lock, Unlock } from "lucide-react";
 import { cn, getLuminance } from "@/lib/utils";
 
@@ -33,43 +28,41 @@ const ColorPicker: React.FC<RegisterDialogProps> = ({
 
   return (
     <div className="relative">
-      <TooltipProvider>
-        <Tooltip delayDuration={100}>
-          <TooltipTrigger asChild>
+      <Tooltip delayDuration={100}>
+        <TooltipTrigger asChild>
+          <div
+            className={cn(
+              "w-12 h-12 relative border-[0.5px] border-border z-10 rounded-md cursor-pointer hover:shadow-xl",
+              !isLocked && "parent_hover"
+            )}
+            style={{
+              backgroundColor: color,
+            }}
+            onClick={() => setOpen(open === id ? null : id)}
+          >
             <div
               className={cn(
-                "w-12 h-12 relative border-[0.5px] border-border z-10 rounded-md cursor-pointer hover:shadow-xl",
-                !isLocked && "parent_hover"
+                "m-0.5 flex items-center justify-center w-[15px] h-[15px]",
+                !isLocked && "hidden_child"
               )}
               style={{
-                backgroundColor: color,
+                backgroundColor: shade,
               }}
-              onClick={() => setOpen(open === id ? null : id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsLocked(!isLocked);
+              }}
             >
-              <div
-                className={cn(
-                  "m-0.5 flex items-center justify-center w-[15px] h-[15px]",
-                  !isLocked && "hidden_child"
-                )}
-                style={{
-                  backgroundColor: shade,
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsLocked(!isLocked);
-                }}
-              >
-                {isLocked ? (
-                  <Lock className="w-3 h-3" style={{ color: lockColor }} />
-                ) : (
-                  <Unlock className="w-3 h-3" style={{ color: lockColor }} />
-                )}
-              </div>
+              {isLocked ? (
+                <Lock className="w-3 h-3" style={{ color: lockColor }} />
+              ) : (
+                <Unlock className="w-3 h-3" style={{ color: lockColor }} />
+              )}
             </div>
-          </TooltipTrigger>
-          <TooltipContent>{name}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>{name}</TooltipContent>
+      </Tooltip>
       {open === id ? (
         <>
           <div

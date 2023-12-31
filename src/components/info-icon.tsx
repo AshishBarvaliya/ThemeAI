@@ -14,15 +14,13 @@ interface InfoIconProps {
 
 export const InfoIcon: React.FC<InfoIconProps> = ({ info, className }) => {
   return (
-    <TooltipProvider>
-      <Tooltip delayDuration={100}>
-        <TooltipTrigger asChild>
-          <div className={cn("cursor-pointer, ml-1", className)}>
-            <QuestionMarkCircledIcon className="w-4 h-4 text-border" />
-          </div>
-        </TooltipTrigger>
-        <TooltipContent>{info}</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip delayDuration={100}>
+      <TooltipTrigger asChild>
+        <div className={cn("cursor-pointer, ml-1", className)}>
+          <QuestionMarkCircledIcon className="w-4 h-4 text-border" />
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>{info}</TooltipContent>
+    </Tooltip>
   );
 };

@@ -49,6 +49,16 @@ type Context = {
   >;
   template: TemplateType;
   setTemplate: Dispatch<SetStateAction<TemplateType>>;
+  successfulMailDialog: {
+    open: boolean;
+    type: "verify" | "reset";
+  };
+  setSuccessfulMailDialog: Dispatch<
+    SetStateAction<{
+      open: boolean;
+      type: "verify" | "reset";
+    }>
+  >;
 };
 
 const HelpersContext = createContext({
@@ -82,6 +92,11 @@ const HelpersContext = createContext({
   setGenerateDialogDefaultValues: () => {},
   template: "Learning",
   setTemplate: () => {},
+  successfulMailDialog: {
+    open: false,
+    type: "verify",
+  },
+  setSuccessfulMailDialog: () => {},
 } as Context);
 
 export const HelpersProvider = ({
@@ -110,6 +125,12 @@ export const HelpersProvider = ({
   const [generatedTheme, setGeneratedTheme] =
     useState<GeneratedThemeProps | null>(null);
   const [template, setTemplate] = useState<TemplateType>("Learning");
+  const [successfulMailDialog, setSuccessfulMailDialog] = useState<
+    Context["successfulMailDialog"]
+  >({
+    open: false,
+    type: "verify",
+  });
   const { data: session, status } = useSession();
 
   const runIfLoggedInElseOpenLoginDialog = (fn: () => void) => {
@@ -154,6 +175,8 @@ export const HelpersProvider = ({
         setGenerateDialogDefaultValues,
         template,
         setTemplate,
+        successfulMailDialog,
+        setSuccessfulMailDialog,
       }}
     >
       {children}

@@ -31,6 +31,7 @@ export default function ProfileNotifications() {
     ["user", "notifications"],
     getNotifications,
     {
+      enabled: !!session,
       onError: ({ response }) => {
         addToast({
           title: response.data?.error || "Something went wrong",

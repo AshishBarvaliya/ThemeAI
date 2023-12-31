@@ -22,6 +22,7 @@ import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { EmptyState } from "./empty-state";
 import { Heart, PenTool, Star } from "lucide-react";
+import { ThemeTileSkeleton } from "./theme-tile-skeloton";
 
 interface TabsProps {
   id: "createdThemes" | "likedThemes" | "savedThemes";
@@ -352,7 +353,9 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
 
   return isLoadingCreatedThemes ? (
     <div className="flex justify-center items-center flex-1 h-full">
-      Loading...
+      {new Array(6).fill(0).map((_, index) => (
+        <ThemeTileSkeleton key={index} />
+      ))}
     </div>
   ) : createdThemes?.length === 0 ? (
     <EmptyState
@@ -536,7 +539,9 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
 
   return isLoadingLikedThemes ? (
     <div className="flex justify-center items-center flex-1 h-full">
-      Loading...
+      {new Array(6).fill(0).map((_, index) => (
+        <ThemeTileSkeleton key={index} />
+      ))}
     </div>
   ) : likedThemes?.length === 0 ? (
     <EmptyState
@@ -719,7 +724,9 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
 
   return isLoadingSavedThemes ? (
     <div className="flex justify-center items-center flex-1 h-full">
-      Loading...
+      {new Array(6).fill(0).map((_, index) => (
+        <ThemeTileSkeleton key={index} />
+      ))}
     </div>
   ) : savedThemes?.length === 0 ? (
     <EmptyState

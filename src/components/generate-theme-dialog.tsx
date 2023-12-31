@@ -204,48 +204,45 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
                 >
                   Create manually
                 </Button>
-                <TooltipProvider>
-                  <Tooltip delayDuration={100}>
-                    <TooltipTrigger asChild>
-                      <div>
-                        <Button
-                          type="button"
-                          disabled={loading || !isAuthenticatedIsActived}
-                          onClick={(e) => {
-                            runIfLoggedInElseOpenLoginDialog(() => {
-                              if (
-                                data.prompt.trim().length <
-                                  INPUT_LIMIT.PROMPT_MIN ||
-                                data.prompt.trim().length >
-                                  INPUT_LIMIT.PROMPT_MAX
-                              ) {
-                                setIsPromptError(true);
-                                return;
-                              }
-                              generateTheme(e);
-                            });
-                          }}
-                        >
-                          {loading ? (
-                            <ReloadIcon className="mr-1.5 h-4 w-4 animate-spin" />
-                          ) : (
-                            <MagicWand className="mr-1.5 h-4 w-4" />
-                          )}
-                          {loading ? "Generating..." : "Generate"}
-                        </Button>
-                      </div>
-                    </TooltipTrigger>
-                    {!isAuthenticatedIsActived ? (
-                      <TooltipContent>
-                        {status === "unauthenticated"
-                          ? "User must be logged in to generate themes"
-                          : !session?.user?.isActived
-                          ? "User must be verified"
-                          : "Generate"}
-                      </TooltipContent>
-                    ) : null}
-                  </Tooltip>
-                </TooltipProvider>
+                <Tooltip delayDuration={100}>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <Button
+                        type="button"
+                        disabled={loading || !isAuthenticatedIsActived}
+                        onClick={(e) => {
+                          runIfLoggedInElseOpenLoginDialog(() => {
+                            if (
+                              data.prompt.trim().length <
+                                INPUT_LIMIT.PROMPT_MIN ||
+                              data.prompt.trim().length > INPUT_LIMIT.PROMPT_MAX
+                            ) {
+                              setIsPromptError(true);
+                              return;
+                            }
+                            generateTheme(e);
+                          });
+                        }}
+                      >
+                        {loading ? (
+                          <ReloadIcon className="mr-1.5 h-4 w-4 animate-spin" />
+                        ) : (
+                          <MagicWand className="mr-1.5 h-4 w-4" />
+                        )}
+                        {loading ? "Generating..." : "Generate"}
+                      </Button>
+                    </div>
+                  </TooltipTrigger>
+                  {!isAuthenticatedIsActived ? (
+                    <TooltipContent>
+                      {status === "unauthenticated"
+                        ? "User must be logged in to generate themes"
+                        : !session?.user?.isActived
+                        ? "User must be verified"
+                        : "Generate"}
+                    </TooltipContent>
+                  ) : null}
+                </Tooltip>
               </div>
             </form>
           </div>

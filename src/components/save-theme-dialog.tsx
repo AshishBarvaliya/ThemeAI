@@ -344,15 +344,13 @@ export const SaveThemeDialog: React.FC<RegisterDialogProps> = ({
 };
 
 const ColorTooltip = ({ color }: { color: string }) => (
-  <TooltipProvider>
-    <Tooltip delayDuration={100}>
-      <TooltipTrigger asChild>
-        <div
-          className="absolute border-[0.5px] border-border top-0 right-0 flex h-[65px] w-14"
-          style={{ background: color }}
-        />
-      </TooltipTrigger>
-      <TooltipContent>{color}</TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
+  <Tooltip delayDuration={100}>
+    <TooltipTrigger asChild>
+      <div
+        className="absolute border-[0.5px] border-border top-0 right-0 flex h-[65px] w-14"
+        style={{ background: color }}
+      />
+    </TooltipTrigger>
+    <TooltipContent>{color}</TooltipContent>
+  </Tooltip>
 );
