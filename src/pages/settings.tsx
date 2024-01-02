@@ -91,7 +91,13 @@ export default function Settings() {
     }
   }, [status]);
 
-  return status === "authenticated" && session ? (
+  return status === "unauthenticated" ? (
+    <RestrictedPage
+      title="Sign in to access this page"
+      loginRequired
+      errorCode={403}
+    />
+  ) : (
     <>
       <Head>
         <title property="og:title">Profile Settings - ThemeAI</title>
@@ -262,11 +268,5 @@ export default function Settings() {
         </div>
       </div>
     </>
-  ) : status === "unauthenticated" ? (
-    <RestrictedPage
-      title="Sign in to access this page"
-      loginRequired
-      errorCode={403}
-    />
-  ) : null;
+  );
 }

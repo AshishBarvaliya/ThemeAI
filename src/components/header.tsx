@@ -18,6 +18,10 @@ import MagicWand from "@/assets/svgs/magic-wand";
 import { cn } from "@/lib/utils";
 import HeaderSearchBar from "./header-searchbar";
 import { SuccessfulMailDialog } from "./successful-mail-dialog";
+import {
+  PaymentStatusDialog,
+  PaymentStatusDialogProps,
+} from "./payment-status-dialog";
 
 const Header = () => {
   const router = useRouter();
@@ -36,6 +40,12 @@ const Header = () => {
   const [userProfileOpen, setUserProfileOpen] = useState(false);
   const [resetPasswordDialog, setResetPasswordDialog] = useState(false);
   const [newPasswordDialog, setNewPasswordDialog] = useState(false);
+  const [paymentStatusDialog, setPaymentStatusDialog] = useState<
+    PaymentStatusDialogProps["data"]
+  >({
+    open: false,
+    type: "invalid",
+  });
 
   const isAuthenticated = status === "authenticated";
 
@@ -93,6 +103,21 @@ const Header = () => {
       router.query.token
     ) {
       setNewPasswordDialog(true);
+    } else if (
+      router.pathname === "/themes" &&
+      (router.query.payment === "1" || router.query.payment === "0")
+    ) {
+      setPaymentStatusDialog({
+        open: true,
+        type:
+          router.query.payment === "0"
+            ? router.query.error === "session_exists"
+              ? "exists"
+              : router.query.error === "server"
+              ? "server"
+              : "invalid"
+            : "success",
+      });
     }
   }, [router, status]);
 
@@ -210,6 +235,10 @@ const Header = () => {
       <SuccessfulMailDialog
         data={successfulMailDialog}
         setData={setSuccessfulMailDialog}
+      />
+      <PaymentStatusDialog
+        data={paymentStatusDialog}
+        setData={setPaymentStatusDialog}
       />
     </div>
   );
