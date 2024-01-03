@@ -92,6 +92,7 @@ export const ChooseAvatarDialog: React.FC<ResetPasswordDialogProps> = ({
                 {new Array(isMobileView ? 3 : 5).fill(1).map((_, j) => (
                   <div
                     key={j + i + generate}
+                    data-testid={isMobileView ? "avatar-mobile" : "avatar"}
                     onClick={() => {
                       setSelectedAvatar({
                         config: genConfig(i + "" + j + generate),

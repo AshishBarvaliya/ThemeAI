@@ -26,6 +26,7 @@ const CanvasComponent: React.FC<Props> = ({ id, width, height, onDraw }) => {
       width={width}
       height={height}
       id={id}
+      role="canvas"
       className="border border-border"
     />
   );

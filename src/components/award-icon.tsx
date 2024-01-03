@@ -34,6 +34,7 @@ export const AwardIcon: React.FC<AwardIconProps> = ({
     <Tooltip delayDuration={100}>
       <TooltipTrigger asChild>
         <div
+          data-testid="zero-ring"
           className={cn(
             "w-[18px] h-[18px] drop-shadow border-2 border-border rounded-full",
             ringClassName

@@ -35,6 +35,9 @@ jest.mock("@/db", () => ({
     themesToTags: {
       findMany: jest.fn(),
     },
+    themeViews: {
+      findFirst: jest.fn(),
+    },
   },
   insert: jest.fn().mockReturnThis(),
   values: jest.fn().mockReturnThis(),

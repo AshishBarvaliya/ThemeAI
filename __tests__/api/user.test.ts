@@ -22,6 +22,9 @@ jest.mock("@/db", () => ({
     users: {
       findFirst: jest.fn(),
     },
+    userViews: {
+      findFirst: jest.fn(),
+    },
   },
   select: jest.fn().mockReturnThis(),
   from: jest.fn().mockReturnThis(),
