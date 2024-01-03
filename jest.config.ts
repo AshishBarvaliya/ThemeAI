@@ -1,12 +1,21 @@
-import type { Config } from "@jest/types";
+const frontendConfig = {
+  moduleDirectories: ["node_modules", "<rootDir>/"],
+  testEnvironment: "jest-environment-jsdom",
+  testMatch: ["<rootDir>/__tests__/frontend/**/*.[jt]s?(x)"],
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+  },
+};
 
-const config: Config.InitialOptions = {
-  preset: "ts-jest",
+const apiConfig = {
   testEnvironment: "node",
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@auth/drizzle-adapter$": "<rootDir>/node_modules/@auth/drizzle-adapter",
   },
+  testMatch: ["<rootDir>/__tests__/api/**/*.[jt]s?(x)"],
 };
 
-export default config;
+module.exports = {
+  projects: [apiConfig, frontendConfig],
+};

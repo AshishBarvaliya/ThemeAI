@@ -19,9 +19,15 @@ export const PasswordEye: React.FC<PasswordEyeProps> = ({
       }}
     >
       {!value ? (
-        <Eye className="h-5 w-5 cursor-pointer text-primary-secondary" />
+        <Eye
+          className="h-5 w-5 cursor-pointer text-primary-secondary"
+          data-testid="eye-icon"
+        />
       ) : (
-        <EyeOff className="h-5 w-5 cursor-pointer text-primary-secondary" />
+        <EyeOff
+          className="h-5 w-5 cursor-pointer text-primary-secondary"
+          data-testid="eye-off-icon"
+        />
       )}
     </div>
   );

@@ -17,10 +17,17 @@ const Input = React.forwardRef<
   return (
     <div className={cn("relative flex flex-col", className)}>
       {label ? (
-        <Label htmlFor={props.id} className="pb-2 max-h-[22px]">
+        <Label
+          htmlFor={props.id}
+          className="pb-2 max-h-[22px]"
+          data-testid="label"
+        >
           {label}
           {errorMessage && (
-            <span className="ml-2 text-destructive text-xs">
+            <span
+              className="ml-2 text-destructive text-xs"
+              data-testid="errorMessage"
+            >
               {errorMessage}
             </span>
           )}
@@ -103,6 +110,7 @@ const SeachBar = React.forwardRef<
             <div className="absolute right-9 justify-center items-center flex h-9 w-9">
               <Cross1Icon
                 className="h-3 w-3 cursor-pointer"
+                role="button"
                 onClick={() => {
                   setSearchString("");
                   onRemoveCallback();

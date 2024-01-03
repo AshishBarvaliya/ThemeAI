@@ -14,12 +14,17 @@ const Textarea = React.forwardRef<
   }
 >(({ className, errorMessage, label, postElement, ...props }, ref) => {
   return (
-    <div className={cn("relative flex flex-col", className)}>
+    <div
+      className={cn("relative flex flex-col", className)}
+      data-testid="root-textarea"
+    >
       {label ? (
-        <Label htmlFor={props.id} className="pb-2">
+        <Label htmlFor={props.id} className="pb-2" data-testid="label">
           {label}
           {errorMessage && (
-            <span className="ml-1 text-destructive">{errorMessage}</span>
+            <span className="ml-1 text-destructive" data-testid="errorMessage">
+              {errorMessage}
+            </span>
           )}
         </Label>
       ) : null}

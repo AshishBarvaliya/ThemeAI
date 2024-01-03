@@ -42,11 +42,13 @@ const Carousel: React.FC<CarouselProps> = ({
 
   return (
     <div
+      data-testid="carousel-container"
       className="flex relative items-center justify-center overflow-hidden shadow-md"
       style={{ backgroundColor: bgColor || "transparent" }}
     >
       <div
         onClick={prevItem}
+        data-testid="prev-button"
         className="px-3 flex items-center h-full absolute left-0 cursor-pointer z-10"
         style={{
           backgroundColor: shade,
@@ -72,6 +74,7 @@ const Carousel: React.FC<CarouselProps> = ({
 
       <div
         onClick={nextItem}
+        data-testid="next-button"
         className="flex px-3 h-full items-center absolute right-0 cursor-pointer z-10"
         style={{
           backgroundColor: shade,

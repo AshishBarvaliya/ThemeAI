@@ -18,6 +18,11 @@ jest.mock("next-auth", () => ({
 }));
 
 jest.mock("@/db", () => ({
+  query: {
+    usersTonotifications: {
+      findMany: jest.fn(),
+    },
+  },
   insert: jest.fn().mockReturnThis(),
   values: jest.fn(() => Promise.resolve({ id: "mock-id" })),
 }));
