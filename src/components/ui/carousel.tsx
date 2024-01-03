@@ -42,6 +42,7 @@ const Carousel: React.FC<CarouselProps> = ({
 
   return (
     <div
+      data-testid="carousel-container"
       className="flex relative items-center justify-center overflow-hidden shadow-md"
       style={{ backgroundColor: bgColor || "transparent" }}
     >

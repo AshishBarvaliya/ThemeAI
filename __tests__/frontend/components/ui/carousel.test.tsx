@@ -60,7 +60,7 @@ describe("Carousel Component", () => {
       </Carousel>
     );
 
-    const carousel = screen.getByTestId("carousel");
+    const carousel = screen.getByTestId("carousel-container");
     expect(carousel).toHaveStyle(`backgroundColor: ${bgColor}`);
   });
 
