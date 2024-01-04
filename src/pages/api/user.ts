@@ -245,7 +245,6 @@ export default async function handler(
               columns: {
                 id: true,
                 name: true,
-                email: true,
                 image: true,
                 experience: true,
                 level: true,
@@ -294,7 +293,6 @@ export default async function handler(
             columns: {
               id: true,
               name: true,
-              email: true,
               image: true,
               experience: true,
               avatar: true,
