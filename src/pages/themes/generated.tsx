@@ -38,7 +38,7 @@ export default function GeneratedTheme() {
           ...{ likedBy: [], savedBy: [], views: [], tags: [] },
         }}
         prompt={generatedTheme.prompt}
-        isDark={generatedTheme.isDark}
+        mode={generatedTheme.mode}
         type="generated"
       />
     </>

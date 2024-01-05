@@ -11,7 +11,6 @@ import {
 } from "./ui/dialog";
 import { Label } from "./ui/label";
 import { useEffect, useState } from "react";
-import { Switch } from "./ui/switch";
 import axios from "axios";
 import { Cross2Icon, ReloadIcon } from "@radix-ui/react-icons";
 import { Textarea } from "./ui/textarea";
@@ -20,13 +19,16 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/router";
 import { useHelpers } from "@/hooks/useHelpers";
 import { useSession } from "next-auth/react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { INPUT_LIMIT } from "@/constants/website";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { GeneratedThemeProps } from "@/interfaces/theme";
 
 interface GenerateThemeDialogProps {
   open: boolean;
@@ -35,7 +37,7 @@ interface GenerateThemeDialogProps {
 
 interface FormDataProps {
   prompt: string;
-  isDark: boolean;
+  mode: GeneratedThemeProps["mode"];
 }
 
 export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
@@ -55,7 +57,7 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
   const [isPromptError, setIsPromptError] = useState(false);
   const [data, setData] = useState<FormDataProps>({
     prompt: "",
-    isDark: false,
+    mode: "Default",
   });
 
   const isAuthenticatedIsActived =
@@ -66,13 +68,13 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
     e.preventDefault();
     axios
       .post("/api/generate", {
-        isDark: data.isDark,
+        mode: data.mode,
         details: data.prompt,
       })
       .then((res) => {
         setGeneratedTheme({
           ...res.data,
-          isDark: data.isDark,
+          mode: data.mode,
           prompt: data.prompt,
         });
         setOpen(false);
@@ -80,7 +82,7 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
         setIsPromptError(false);
         router.push("/themes/generated");
         setLoading(false);
-        setData({ prompt: "", isDark: false });
+        setData({ prompt: "", mode: "Default" });
       })
       .catch((error) => {
         addToast({
@@ -99,7 +101,7 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
     if (generateDialogDefaultValues) {
       setData(generateDialogDefaultValues);
     } else {
-      setData({ prompt: "", isDark: false });
+      setData({ prompt: "", mode: "Default" });
       setIsPromptError(false);
     }
   }, [generateDialogDefaultValues]);
@@ -171,26 +173,33 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
                     }
                   }}
                 />
-                <div className="flex items-center space-x-2 mt-5">
-                  <Switch
-                    id="isDark"
-                    name="isDark"
-                    className="border border-border cursor-pointer"
-                    checked={data.isDark}
-                    onCheckedChange={() =>
-                      setData((prev) => ({
-                        ...prev,
-                        isDark: !data.isDark,
-                      }))
-                    }
-                  />
-                  <Label
-                    htmlFor="isDark"
-                    className="cursor-pointer flex items-center"
-                  >
-                    Dark mode
-                  </Label>
-                </div>
+                <Label htmlFor="mode" className="mt-4 mb-2">
+                  Mode
+                </Label>
+                <Select
+                  value={data.mode}
+                  onValueChange={(value) =>
+                    setData((prev) => ({
+                      ...prev,
+                      mode: value as FormDataProps["mode"],
+                    }))
+                  }
+                >
+                  <SelectTrigger className="md:w-[150px] h-9 text-sm">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={"Default"} className="text-sm">
+                      Default
+                    </SelectItem>
+                    <SelectItem value={"Light"} className="text-sm">
+                      Light
+                    </SelectItem>
+                    <SelectItem value={"Dark"} className="text-sm">
+                      Dark
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="mt-8 flex justify-end gap-4">
                 <Button

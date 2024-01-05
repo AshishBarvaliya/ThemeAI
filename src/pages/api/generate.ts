@@ -17,7 +17,7 @@ export default async function handler(
     if (!session) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-    const { details, isDark } = req.body;
+    const { details, mode } = req.body;
     if (!details) {
       return res.status(400).json({ error: "Missing required fields" });
     }
@@ -62,12 +62,12 @@ export default async function handler(
           {
             role: "user",
             content: getPrompt({
-              isDark,
+              mode,
               description: details,
             }),
           },
         ],
-        temperature: 1,
+        temperature: 0.8,
         response_format: { type: "json_object" },
       });
       if (!gptResponse.choices[0].message.content) {

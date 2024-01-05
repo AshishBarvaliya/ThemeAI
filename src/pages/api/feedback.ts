@@ -24,7 +24,7 @@ export default async function handler(
       color_4,
       color_4_reason,
       prompt,
-      isDark,
+      isDark = false,
       feedback,
     } = req.body;
     if (

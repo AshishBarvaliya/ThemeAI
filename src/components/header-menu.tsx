@@ -67,7 +67,7 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = () => {
               {session?.user.name}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              {session?.user.email}
+              {session?.user?.email}
             </p>
           </div>
         </DropdownMenuLabel>

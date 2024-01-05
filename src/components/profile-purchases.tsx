@@ -75,7 +75,7 @@ export default function ProfilePurchases() {
             <span className="text-primary-foreground font-bold px-1">
               {e.pupa}
             </span>
-            promts was made on
+            credits was made on
             <span className="text-secondary-foreground px-1">
               {moment().format("MMMM Do YYYY, h:mm a")}
             </span>

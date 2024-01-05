@@ -85,7 +85,6 @@ describe("Feedback API Endpoint", () => {
       color_3_reason: "Reason 3",
       color_4_reason: "Reason 4",
       prompt: "Prompt",
-      isDark: false,
       feedback: "Feedback",
     };
 
@@ -109,7 +108,6 @@ describe("Feedback API Endpoint", () => {
       color_3_reason: "Reason 3",
       color_4_reason: "Reason 4",
       prompt: "Prompt",
-      isDark: false,
       feedback: "Feedback",
     };
 

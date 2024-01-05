@@ -45,7 +45,6 @@ interface RegisterDialogProps {
     primary: string;
     secondary: string;
     prompt: string;
-    isDark: boolean;
   };
 }
 

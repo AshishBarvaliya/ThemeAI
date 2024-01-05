@@ -370,7 +370,6 @@ const CreateTheme = () => {
                   color_2_reason: generatedTheme?.color_2_reason,
                   color_3_reason: generatedTheme?.color_3_reason,
                   color_4_reason: generatedTheme?.color_4_reason,
-                  isDark: generatedTheme?.isDark,
                   prompt: generatedTheme?.prompt,
                 }
               : undefined

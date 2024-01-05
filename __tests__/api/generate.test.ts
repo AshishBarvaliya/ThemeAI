@@ -75,7 +75,7 @@ describe("Generate API Endpoint", () => {
   it("should return 400 if details are missing", async () => {
     req.body = {
       details: null,
-      isDark: false,
+      mode: "Dark",
     };
 
     await handler(req, res);
@@ -89,7 +89,7 @@ describe("Generate API Endpoint", () => {
   it("should return 404 if user is not found", async () => {
     req.body = {
       details: "test details",
-      isDark: false,
+      mode: "Dark",
     };
     (db.query.users.findFirst as jest.Mock).mockResolvedValue(null);
 
@@ -104,7 +104,7 @@ describe("Generate API Endpoint", () => {
   it("should return 400 if pupa is insufficient", async () => {
     req.body = {
       details: "test details",
-      isDark: false,
+      mode: "Dark",
     };
     (db.query.users.findFirst as jest.Mock).mockResolvedValue({
       pupa: 0,
@@ -122,7 +122,7 @@ describe("Generate API Endpoint", () => {
   it("should return 400 if content is flagged by OpenAI", async () => {
     req.body = {
       details: "test details",
-      isDark: false,
+      mode: "Dark",
     };
     (db.query.users.findFirst as jest.Mock).mockResolvedValue({
       pupa: 1,
@@ -142,7 +142,7 @@ describe("Generate API Endpoint", () => {
   it("should return 500 for GPT response error", async () => {
     req.body = {
       details: "test details",
-      isDark: false,
+      mode: "Dark",
     };
     (db.query.users.findFirst as jest.Mock).mockResolvedValue({
       pupa: 1,
@@ -171,7 +171,7 @@ describe("Generate API Endpoint", () => {
   it("should return 500 for json parse error", async () => {
     req.body = {
       details: "test details",
-      isDark: false,
+      mode: "Dark",
     };
     (db.query.users.findFirst as jest.Mock).mockResolvedValue({
       pupa: 1,
@@ -200,7 +200,7 @@ describe("Generate API Endpoint", () => {
   it("should return 500 for server error", async () => {
     req.body = {
       details: "test details",
-      isDark: false,
+      mode: "Dark",
     };
     (db.query.users.findFirst as jest.Mock).mockResolvedValue({
       pupa: 1,
@@ -233,7 +233,7 @@ describe("Generate API Endpoint", () => {
     };
     req.body = {
       details: "test details",
-      isDark: false,
+      mode: "Dark",
     };
     (db.query.users.findFirst as jest.Mock).mockResolvedValue({
       pupa: 1,
