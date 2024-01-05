@@ -1,16 +1,23 @@
+import { GeneratedThemeProps } from "@/interfaces/theme";
+
 export const getPrompt = ({
-  isDark,
+  mode,
   description,
 }: {
-  isDark: boolean;
+  mode: GeneratedThemeProps["mode"];
   description: string;
 }) => `Design a color scheme for a website based on the provided description. The color choices must be justified based on relevance to the website's content and the cultural context of the color. Adhere to the following guidelines:
 
 - Follow the 60-30-10 rule for color distribution.
 - Ensure color combinations comply with WCAG 2 Level AAA standards for contrast.
-- Design for ${isDark ? "Dark" : "Light"} theme mode.
+${
+  mode === "Default"
+    ? `- Represent colors in HEX code format (ex. #FFFFFF).
+- Reason should at least 20 words and not have more than 30 words.`
+    : `- Design for ${mode === "Dark" ? "Dark" : "Light"} theme mode.
 - Represent colors in HEX code format (ex. #FFFFFF).
-- Reason should at least 20 words and not have more than 30 words.
+- Reason should at least 20 words and not have more than 30 words.`
+}
 
 Description: ${description}
 

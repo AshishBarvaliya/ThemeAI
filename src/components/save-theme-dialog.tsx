@@ -39,7 +39,6 @@ interface RegisterDialogProps {
     color_2_reason: string;
     color_3_reason: string;
     color_4_reason: string;
-    isDark: boolean;
     prompt: string;
   };
   isDirty: boolean;

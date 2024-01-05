@@ -157,7 +157,6 @@ export default async function handler(
         }
         return res.status(404).json({ error: "Theme not found" });
       } catch (error) {
-        console.log(error);
         return res.status(500).json({ error: "Failed to fetch theme" });
       }
     } else {
@@ -316,7 +315,11 @@ export default async function handler(
               LEFT JOIN 
                   tag ON tag.id = themes_to_tags."tagId"
               WHERE 
-                  users_to_liked_themes."userId" = ${userId}
+                theme.id IN (
+                      SELECT DISTINCT "themeId" 
+                      FROM users_to_liked_themes 
+                      WHERE users_to_liked_themes."userId" = ${userId} AND users_to_liked_themes.status <> 'N'
+                  )
               GROUP BY 
                   theme.id, "user".id
               ORDER BY 
@@ -422,7 +425,6 @@ export default async function handler(
           }))
         );
       } catch (error) {
-        console.log(error);
         return res.status(500).json({ error: "Failed to fetch themes" });
       }
     }
@@ -538,7 +540,6 @@ export default async function handler(
 
         return;
       } catch (error) {
-        console.log(error);
         return res.status(500).json({ error: "Failed to create theme" });
       }
     } else {

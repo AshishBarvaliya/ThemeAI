@@ -42,10 +42,12 @@ type Context = {
   setIsAIOnly: Dispatch<SetStateAction<boolean>>;
   generateDialogDefaultValues?: {
     prompt: string;
-    isDark: boolean;
+    mode: GeneratedThemeProps["mode"];
   };
   setGenerateDialogDefaultValues: Dispatch<
-    SetStateAction<{ prompt: string; isDark: boolean } | undefined>
+    SetStateAction<
+      { prompt: string; mode: GeneratedThemeProps["mode"] } | undefined
+    >
   >;
   template: TemplateType;
   setTemplate: Dispatch<SetStateAction<TemplateType>>;
@@ -87,7 +89,7 @@ const HelpersContext = createContext({
   setIsAIOnly: () => {},
   generateDialogDefaultValues: {
     prompt: "",
-    isDark: false,
+    mode: "Default",
   },
   setGenerateDialogDefaultValues: () => {},
   template: "Learning",

@@ -190,7 +190,7 @@ export default function ProfileThemes() {
           <SortThemes setSortItem={setSortItem} />
         </div>
       </div>
-      <div className="flex gap-4 px-4 h-full lg:h-auto flex-col md:flex-row md:flex-wrap pb-4 min-h-[300px] md:justify-start">
+      <div className="flex gap-4 px-4 h-full lg:h-auto flex-col md:flex-row md:flex-wrap pb-4 min-h-[300px] items-center md:justify-start">
         {tabs.find((tab) => tab.id === selectedTab)?.getThemes()}
       </div>
     </>
@@ -352,7 +352,7 @@ const CreatedTheme: React.FC<CreatedThemeProps> = ({
       : sortedThemes;
 
   return isLoadingCreatedThemes ? (
-    <div className="flex justify-center items-center flex-1 h-full">
+    <div className="flex justify-center md:justify-start items-center flex-1 h-full gap-4 flex-wrap">
       {new Array(6).fill(0).map((_, index) => (
         <ThemeTileSkeleton key={index} />
       ))}
@@ -538,7 +538,7 @@ const LikedTheme: React.FC<CreatedThemeProps> = ({
   });
 
   return isLoadingLikedThemes ? (
-    <div className="flex justify-center items-center flex-1 h-full">
+    <div className="flex justify-center md:justify-start items-center flex-1 h-full gap-4 flex-wrap">
       {new Array(6).fill(0).map((_, index) => (
         <ThemeTileSkeleton key={index} />
       ))}
@@ -723,7 +723,7 @@ const SavedTheme: React.FC<CreatedThemeProps> = ({
   });
 
   return isLoadingSavedThemes ? (
-    <div className="flex justify-center items-center flex-1 h-full">
+    <div className="flex justify-center md:justify-start items-center flex-1 h-full gap-4 flex-wrap">
       {new Array(6).fill(0).map((_, index) => (
         <ThemeTileSkeleton key={index} />
       ))}

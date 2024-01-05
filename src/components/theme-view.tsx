@@ -4,7 +4,12 @@ import { ExportThemeDialog } from "@/components/export-theme-dialog";
 import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/typography";
 import { FontProps, GOOGLE_FONTS } from "@/constants/fonts";
-import { ColorsProps, FontObjProps, ShadesProps } from "@/interfaces/theme";
+import {
+  ColorsProps,
+  FontObjProps,
+  GeneratedThemeProps,
+  ShadesProps,
+} from "@/interfaces/theme";
 import { cn, generateAllShades, getLuminance } from "@/lib/utils";
 import {
   ArrowLeftIcon,
@@ -75,14 +80,14 @@ export interface ThemeVeiwProps {
   };
   type?: "view" | "generated";
   prompt?: string;
-  isDark?: boolean;
+  mode?: GeneratedThemeProps["mode"];
 }
 
 export const ThemeView: React.FC<ThemeVeiwProps> = ({
   theme,
   type = "view",
   prompt = "",
-  isDark = false,
+  mode = "Default",
 }) => {
   const router = useRouter();
   const { addToast } = useToast();
@@ -299,7 +304,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                   onClick={() => {
                     setGenerateDialogDefaultValues({
                       prompt,
-                      isDark,
+                      mode,
                     });
                     setGenerateThemeDialog(true);
                   }}
@@ -511,7 +516,6 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
               color_2_reason: theme.color_2_reason,
               color_3_reason: theme.color_3_reason,
               color_4_reason: theme.color_4_reason,
-              isDark: isDark,
               prompt: prompt,
             }}
           />

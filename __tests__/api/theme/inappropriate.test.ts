@@ -94,7 +94,6 @@ describe("Theme Inappropriate API Endpoint", () => {
 
     await handler(req, res);
 
-    console.log(res.json);
     expect(db.insert).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({

@@ -56,15 +56,10 @@ export default function TagPicker({
   }, []);
 
   useEffect(() => {
-    axios
-      .get("/api/tags")
-      .then((res) => {
-        setTags(res.data);
-        setFilteredTags(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    axios.get("/api/tags").then((res) => {
+      setTags(res.data);
+      setFilteredTags(res.data);
+    });
   }, []);
 
   useEffect(() => {

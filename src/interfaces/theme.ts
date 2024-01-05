@@ -101,5 +101,5 @@ export interface GeneratedThemeProps {
   color_4: string;
   color_4_reason: string;
   prompt: string;
-  isDark: boolean;
+  mode: "Light" | "Dark" | "Default";
 }
