@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 
 export default function Home() {
   const router = useRouter();
-  const eventTracker = useAnalytics("Home page");
+  const eventTracker = useAnalytics("Home");
 
   const features: FeatureCardProps[] = [
     {
@@ -30,7 +30,7 @@ export default function Home() {
       title: "Theme Details Unveiled",
       description:
         "Dive into the Nuances: Explore AI-Generated Color Themes, Understand Their Inspirations, and Test with Templates - Export and Celebrate Your Unique Designs",
-      img: "/og/generate.png",
+      img: "/og/theme-view.png",
       orientation: "right",
     },
     {
@@ -83,6 +83,7 @@ export default function Home() {
                     <a
                       href="https://www.producthunt.com/posts/theme-ai?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-theme&#0045;ai"
                       target="_blank"
+                      onClickCapture={() => eventTracker("ProductHunt")}
                     >
                       <img
                         src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=431314&theme=light"
