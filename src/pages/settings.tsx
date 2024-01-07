@@ -1,4 +1,5 @@
 import { ChooseAvatarDialog } from "@/components/choose-avatar-dialog";
+import { DeleteAccountDialog } from "@/components/delete-account-dialog";
 import { NewPasswordDialog } from "@/components/new-password";
 import { RestrictedPage } from "@/components/restricted-page";
 import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
@@ -22,6 +23,7 @@ export default function Settings() {
   const [loading, setLoading] = useState(false);
   const [openAvatar, setOpenAvatar] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
   const [newPasswordOpen, setNewPasswordOpen] = useState(false);
   const [data, setData] = useState({
     title: session?.user?.title || "",
@@ -236,18 +238,19 @@ export default function Settings() {
                 </div>
               </div>
             </div>
-            {session?.user?.provider === "google" ? null : (
-              <>
-                <Typography
-                  element="h2"
-                  as="h2"
-                  className="mx-0 md:mx-10 mt-10 text-2xl"
-                >
-                  Password
-                </Typography>
+
+            <>
+              <Typography
+                element="h2"
+                as="h2"
+                className="mx-0 md:mx-10 mt-10 text-2xl"
+              >
+                Account
+              </Typography>
+              {session?.user?.provider === "google" ? null : (
                 <div className="flex mx-0 md:mx-10 mt-5">
                   <Button
-                    variant={"destructive"}
+                    variant={"outline"}
                     onClick={() =>
                       runIfLoggedInElseOpenLoginDialog(() =>
                         setNewPasswordOpen(true)
@@ -257,13 +260,29 @@ export default function Settings() {
                     Reset Password
                   </Button>
                 </div>
-              </>
-            )}
+              )}
+              <div className="flex mx-0 md:mx-10 mt-5">
+                <Button
+                  variant={"destructive"}
+                  onClick={() =>
+                    runIfLoggedInElseOpenLoginDialog(() =>
+                      setDeleteAccountOpen(true)
+                    )
+                  }
+                >
+                  Delete Account
+                </Button>
+              </div>
+            </>
           </div>
           <ChooseAvatarDialog open={openAvatar} setOpen={setOpenAvatar} />
           <NewPasswordDialog
             open={newPasswordOpen}
             setOpen={setNewPasswordOpen}
+          />
+          <DeleteAccountDialog
+            open={deleteAccountOpen}
+            setOpen={setDeleteAccountOpen}
           />
         </div>
       </div>

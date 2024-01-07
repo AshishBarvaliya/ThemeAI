@@ -430,3 +430,28 @@ export const userViewsRelations = relations(userViews, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export const generatedThemes = pgTable("generated_themes", {
+  id: text("id").notNull().primaryKey(),
+  userId: text("userId").notNull(),
+  prompt: text("prompt").notNull(),
+  mode: text("mode").notNull(),
+  color_1: text("color_1").notNull(),
+  color_1_reason: text("color_1_reason").notNull(),
+  color_2: text("color_2").notNull(),
+  color_2_reason: text("color_2_reason").notNull(),
+  color_3: text("color_3").notNull(),
+  color_3_reason: text("color_3_reason").notNull(),
+  color_4: text("color_4").notNull(),
+  color_4_reason: text("color_4_reason").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+});
+
+export const deactivationRequests = pgTable("deactivation_request", {
+  id: text("id").notNull().primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  reason: text("reason").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+});
