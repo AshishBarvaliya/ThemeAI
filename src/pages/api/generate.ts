@@ -4,9 +4,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 import { getPrompt } from "@/constants/openai";
 import { eq } from "drizzle-orm";
-import { users as usersSchema } from "@/db/schema";
+import { generatedThemes, users as usersSchema } from "@/db/schema";
 import db from "@/db";
 import { USER_LEVELS } from "@/constants/user";
+import { createId } from "@paralleldrive/cuid2";
 
 export default async function handler(
   req: NextApiRequest,
@@ -57,7 +58,7 @@ export default async function handler(
 
     try {
       const gptResponse = await openai.chat.completions.create({
-        model: pupa > 10 ? "gpt-4-1106-preview" : "gpt-3.5-turbo-1106",
+        model: "gpt-4-1106-preview",
         messages: [
           {
             role: "user",
@@ -109,6 +110,22 @@ export default async function handler(
               })
               .where(eq(usersSchema.id, user.id));
           }
+        }, 0);
+        setTimeout(async () => {
+          await db.insert(generatedThemes).values({
+            id: createId(),
+            userId: user.id,
+            color_1: colors.bg,
+            color_2: colors.primary,
+            color_3: colors.accent,
+            color_4: colors.complementary,
+            color_1_reason: colors.bg_reason,
+            color_2_reason: colors.primary_reason,
+            color_3_reason: colors.accent_reason,
+            color_4_reason: colors.complementary_reason,
+            prompt: details,
+            mode,
+          });
         }, 0);
       } catch {
         return res.status(500).json({ error: "Error generating colors" });

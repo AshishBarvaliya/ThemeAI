@@ -120,3 +120,12 @@ export const getPurchaseHistory = async () => {
 
   return response.data as PurchaseHistory[];
 };
+
+export const deactivationRequest = async (reason?: string) => {
+  const apiUrl = `/api/deactivation-request`;
+  const response = await axios.post(apiUrl, {
+    reason,
+  });
+
+  return response.data;
+};

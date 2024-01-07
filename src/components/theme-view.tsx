@@ -28,12 +28,7 @@ import { SaveGeneratedThemeDialog } from "./save-generated-theme-dialog";
 import { Feedback } from "./feedback";
 
 import moment from "moment";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { setMarkAsInappropriate } from "@/services/toggle";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/useToast";
@@ -46,6 +41,7 @@ import MagicWand from "@/assets/svgs/magic-wand";
 import EditorTemplate from "@/assets/templates/editor/editor-mini";
 import FoodieTemplate from "@/assets/templates/foodie/foodie-mini";
 import { ConfirmationDialog } from "./confirmation-dialog";
+import useAnalytics from "@/hooks/useAnalytics";
 
 export interface ThemeVeiwProps {
   theme: {
@@ -91,6 +87,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
   mode = "Default",
 }) => {
   const router = useRouter();
+  const eventTracker = useAnalytics("viewTheme");
   const { addToast } = useToast();
   const {
     setGenerateThemeDialog,
@@ -284,7 +281,10 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                 <Button
                   variant={"outline"}
                   size={"md"}
-                  onClick={() => setOpenExportThemeDialog(true)}
+                  onClick={() => {
+                    setOpenExportThemeDialog(true);
+                    eventTracker("Export-" + theme.id);
+                  }}
                 >
                   <DownloadIcon className="h-4 w-4 mr-1.5" /> Export
                 </Button>
@@ -324,13 +324,17 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                       mode,
                     });
                     setGenerateThemeDialog(true);
+                    eventTracker("Regenerate");
                   }}
                 >
                   <RefreshCcw className="h-3 w-3 mr-1.5" /> Regenerate
                 </Button>
                 <Button
                   size={"md"}
-                  onClick={() => router.push(`/themes/create?generated=1`)}
+                  onClick={() => {
+                    router.push(`/themes/create?generated=1`);
+                    eventTracker("Edit");
+                  }}
                 >
                   <Pen className="h-3 w-3 mr-1.5" />
                   Edit

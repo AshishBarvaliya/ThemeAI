@@ -72,6 +72,7 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
         details: data.prompt,
       })
       .then((res) => {
+        router.push("/themes/generated");
         setGeneratedTheme({
           ...res.data,
           mode: data.mode,
@@ -80,7 +81,6 @@ export const GenerateThemeDialog: React.FC<GenerateThemeDialogProps> = ({
         setOpen(false);
         setGenerateDialogDefaultValues(undefined);
         setIsPromptError(false);
-        router.push("/themes/generated");
         setLoading(false);
         setData({ prompt: "", mode: "Default" });
       })
