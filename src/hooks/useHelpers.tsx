@@ -61,6 +61,8 @@ type Context = {
       type: "verify" | "reset";
     }>
   >;
+  contactUsDialog: boolean;
+  setContactUsDialog: Dispatch<SetStateAction<boolean>>;
 };
 
 const HelpersContext = createContext({
@@ -99,6 +101,8 @@ const HelpersContext = createContext({
     type: "verify",
   },
   setSuccessfulMailDialog: () => {},
+  contactUsDialog: false,
+  setContactUsDialog: () => {},
 } as Context);
 
 export const HelpersProvider = ({
@@ -133,6 +137,7 @@ export const HelpersProvider = ({
     open: false,
     type: "verify",
   });
+  const [contactUsDialog, setContactUsDialog] = useState(false);
   const { data: session, status } = useSession();
 
   const runIfLoggedInElseOpenLoginDialog = (fn: () => void) => {
@@ -179,6 +184,8 @@ export const HelpersProvider = ({
         setTemplate,
         successfulMailDialog,
         setSuccessfulMailDialog,
+        contactUsDialog,
+        setContactUsDialog,
       }}
     >
       {children}

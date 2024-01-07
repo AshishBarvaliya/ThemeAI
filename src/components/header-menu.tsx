@@ -16,11 +16,13 @@ import { useRouter } from "next/router";
 import { getHasNewNotifications, getUser } from "@/services/user";
 import { buyPupa } from "@/services/stripe";
 import { useToast } from "@/hooks/useToast";
+import { useHelpers } from "@/hooks/useHelpers";
 
 interface HeaderMenuProps {}
 
 export const HeaderMenu: React.FC<HeaderMenuProps> = () => {
   const router = useRouter();
+  const { setContactUsDialog } = useHelpers();
   const { addToast } = useToast();
   const { data: session } = useSession();
   const { data: user } = useQuery(["user", session?.user.id], () =>
@@ -116,6 +118,12 @@ export const HeaderMenu: React.FC<HeaderMenuProps> = () => {
             onClick={() => router.push("/settings")}
           >
             Settings
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => setContactUsDialog(true)}
+          >
+            Contact us
           </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer"

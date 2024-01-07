@@ -2,22 +2,33 @@ import Link from "next/link";
 import Image from "next/image";
 import Typography from "./ui/typography";
 import { cn } from "@/lib/utils";
-import { ContactUsDialog } from "./contact-us";
-import { useState } from "react";
+import { useHelpers } from "@/hooks/useHelpers";
 
 export const Footer: React.FC<{ className?: string }> = ({ className }) => {
-  const [open, setOpen] = useState(false);
+  const { setContactUsDialog } = useHelpers();
 
   return (
-    <div className={cn("flex p-5 flex-col", className)}>
-      <div className="flex flex-1 gap-2 justify-between">
-        <div className="flex items-center gap-3 w-[100px] md:w-[200px]">
+    <div
+      className={cn(
+        "flex p-5 py-3 flex-col gap-3 border-t-[0.5px] border-border/40",
+        className
+      )}
+    >
+      <div className="flex flex-1 flex-col lg:flex-row gap-4 lg:gap-2 justify-between items-center">
+        <div className="flex items-center w-[100px] md:w-[170px]">
           <Image src="/logo.svg" alt="logo" width={200} height={40} />
         </div>
-        <div className="flex items-center gap-3">
+        <Typography
+          element="p"
+          as="p"
+          className="text-[10px] md:text-sm text-secondary-foreground/80"
+        >
+          Copyright © 2024 ThemeAI. All rights reserved.
+        </Typography>
+        <div className="flex items-center gap-6">
           <div
             className="text-xs md:text-sm cursor-pointer"
-            onClick={() => setOpen(true)}
+            onClick={() => setContactUsDialog(true)}
           >
             Contact Us
           </div>
@@ -29,10 +40,6 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
           </Link>
         </div>
       </div>
-      <Typography element="p" as="p" className="text-[10px] md:text-sm">
-        Copyright © 2024 ThemeAI. All rights reserved.
-      </Typography>
-      <ContactUsDialog open={open} setOpen={setOpen} />
     </div>
   );
 };
