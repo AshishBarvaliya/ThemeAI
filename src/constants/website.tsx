@@ -111,6 +111,40 @@ export const privacyPolicy: PrivacyPolicyProps[] = [
       "You can manage your account preferences and opt out of promotional emails through your account settings. You may also request the removal of your account and data by contacting our support team.",
   },
   {
+    title: "Advertising",
+    description:
+      "We may use third-party Service Providers to show advertisements to you to help support and maintain our Service, such as Google AdSense. These third-party service providers may use cookies or similar technologies to collect information about your use of the Service and other websites and applications.",
+  },
+  {
+    title: "Third-Party Advertising",
+    description: (
+      <div>
+        We use third-party advertising companies to serve ads when you visit our
+        website. These companies may use information (not including your name,
+        address, email address, or telephone number) about your visits to this
+        and other websites in order to provide advertisements about goods and
+        services of interest to you. If you would like more information about
+        this practice and to know your choices about not having this information
+        used by these companies, please see the following:
+        <ul className="list-disc pl-6 pt-2">
+          <li className="py-1">
+            Google, as a third-party vendor, uses cookies to serve ads on our
+            website.
+          </li>
+          <li className="py-1">
+            {"Google's"} use cookies to serve ads to our users based on their
+            visit to our website and other websites on the internet.
+          </li>
+          <li className="py-1">
+            Note that if you choose to opt out of targeted advertising, you may
+            still see ads on our site, but they will not be based on your
+            browsing behavior.
+          </li>
+        </ul>
+      </div>
+    ),
+  },
+  {
     title: "Changes to Privacy Policy",
     description:
       "This Privacy Policy may be updated from time to time. We will notify you of any significant changes. Continued use of ThemeAI after these changes implies your acceptance of the updated policy.",

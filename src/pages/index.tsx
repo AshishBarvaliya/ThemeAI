@@ -1,51 +1,58 @@
+import { FeatureCard, FeatureCardProps } from "@/components/feature-card";
+import { Footer } from "@/components/footer";
 import GlowingBoxes from "@/components/growing-dots";
-import moment from "moment";
-import dynamic from "next/dynamic";
+import { Button } from "@/components/ui/button";
+import Typography from "@/components/ui/typography";
+import useAnalytics from "@/hooks/useAnalytics";
 import Head from "next/head";
-
-// @ts-ignore
-const Countdown = dynamic(() => import("react-countdown"), {
-  ssr: false,
-});
+import { useRouter } from "next/router";
 
 export default function Home() {
-  const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
-    const data = [
-      { val: days, label: "Days" },
-      { val: hours, label: "Hours" },
-      { val: minutes, label: "Minutes" },
-      { val: seconds, label: "Seconds" },
-    ];
-    if (completed) {
-      return (
-        <div className="flex  justify-center lg:justify-start">Complete</div>
-      );
-    } else {
-      return (
-        <div
-          aria-live="assertive"
-          className="flex gap-3 pt-4  justify-center lg:justify-start"
-        >
-          {data.map((item, index) => (
-            <div
-              className="flex flex-col justify-center items-center p-2 border border-border/20 bg-white/60 w-[80px]"
-              key={index}
-            >
-              <p className="font-bold text-center text-xl">{item.val}</p>
-              <p className="text-xs font-medium text-center uppercase">
-                {item.label}
-              </p>
-            </div>
-          ))}
-        </div>
-      );
-    }
-  };
+  const router = useRouter();
+  const eventTracker = useAnalytics("Home page");
+
+  const features: FeatureCardProps[] = [
+    {
+      title: "The Community Theme Gallery",
+      description:
+        "Explore, Discover, and Implement: Dive into the Community Theme Gallery to Browse, Search, and Utilize AI-Generated Themes. Connect and Follow Talented Creators",
+      img: "/og/themes.png",
+      orientation: "right",
+    },
+    {
+      title: "From Words to Waves",
+      description:
+        "Generating Purposeful Themes Effortlessly: Prompt Your Web Ideas and Create Color Schemes Seamlessly in Just a Few Steps - All for Free",
+      img: "/og/generate.png",
+      orientation: "left",
+    },
+    {
+      title: "Theme Details Unveiled",
+      description:
+        "Dive into the Nuances: Explore AI-Generated Color Themes, Understand Their Inspirations, and Test with Templates - Export and Celebrate Your Unique Designs",
+      img: "/og/generate.png",
+      orientation: "right",
+    },
+    {
+      title: "Your Profile, Your Playground.",
+      description:
+        "Craft, Curate, and Connect: Manage Your Profile, Tailor Your Saved Themes, Follow Users, and Keep Track of Your Creative Journey",
+      img: "/og/profile.png",
+      orientation: "left",
+    },
+    {
+      title: "Design from Scratch",
+      description:
+        "Crafting Your Vision: Utilize Our Color and Font Pickers to Design Your Theme Manually, and Visualize with Our Range of Demo Templates",
+      img: "/og/create.png",
+      orientation: "right",
+    },
+  ];
 
   return (
     <>
       <Head>
-        <title property="og:title">ThemeAI - Coming Soon</title>
+        <title property="og:title">ThemeAI</title>
         <meta
           name="description"
           property="og:description"
@@ -67,10 +74,26 @@ export default function Home() {
         </script>
       </Head>
       <div className="flex flex-1 flex-col overflow-y-auto">
-        <div className="flex relative flex-1 lg:min-h-screen overflow-x-hidden">
+        <div className="flex relative flex-1 lg:min-h-screen">
           <div className="flex backdrop-blur-3xl py-10 px-4 md:px-10 lg:px-0 w-full z-10 items-center flex-col lg:flex-row pt-[100px] gap-8 lg:gap-0">
             <div className="lg:w-[55%] lg:pr-10 pt-10 md:pt-20 lg:pt-0">
-              <div className="flex flex-col gap-2 md:gap-7 lg:ml-7 justify-center lg:justify-start -mt-10">
+              <div className="flex flex-col gap-2 md:gap-7 lg:ml-7 justify-center lg:justify-start -mt-14 lg:-mt-28">
+                <div className="flex flex-col">
+                  <div className="flex justify-center lg:justify-start items-center">
+                    <a
+                      href="https://www.producthunt.com/posts/theme-ai?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-theme&#0045;ai"
+                      target="_blank"
+                    >
+                      <img
+                        src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=431314&theme=light"
+                        alt="Theme&#0032;AI - Select&#0032;AI&#0045;Enhanced&#0032;Meaningful&#0032;Themes&#0032;for&#0032;Your&#0032;Web&#0032;Design | Product Hunt"
+                        style={{ width: "180px", height: "40px" }}
+                        width="180"
+                        height="40"
+                      />
+                    </a>
+                  </div>
+                </div>
                 <h1
                   className="font-[Recoleta] text-[50px] xl:text-[60px] leading-[56px] xl:leading-[68px] text-center lg:text-left"
                   aria-label="Select AI-Enhanced Meaningful Themes for Your Web Design"
@@ -90,38 +113,33 @@ export default function Home() {
                 >
                   Welcome to ThemeAI — where creativity meets artificial
                   intelligence. Choose{" "}
-                  <span className="underline" aria-hidden="true">
+                  <span className="underline font-semibold" aria-hidden="true">
                     GPT4-powered
                   </span>
                   , meaningful themes effortlessly, all for{" "}
-                  <span className="underline" aria-hidden="true">
+                  <span className="underline font-semibold" aria-hidden="true">
                     free
                   </span>
                   . Explore our extensive{" "}
-                  <span className="underline" aria-hidden="true">
+                  <span className="underline font-semibold" aria-hidden="true">
                     theme library
                   </span>{" "}
                   , curate your collection, and manage your profile with ease.
                   Transform your website into a purposeful masterpiece. Join us
                   in redefining web design. Elevate your digital presence today!
                 </p>
-                <div className="flex flex-col">
-                  <div className="flex py-2 justify-center lg:justify-start gap-6 items-center">
-                    <p className="text-3xl font-[500]">Coming soon!</p>
-                    <a
-                      href="https://www.producthunt.com/posts/theme-ai?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-theme&#0045;ai"
-                      target="_blank"
-                    >
-                      <img
-                        src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=431314&theme=light"
-                        alt="Theme&#0032;AI - Select&#0032;AI&#0045;Enhanced&#0032;Meaningful&#0032;Themes&#0032;for&#0032;Your&#0032;Web&#0032;Design | Product Hunt"
-                        style={{ width: "250px", height: "54px" }}
-                        width="250"
-                        height="54"
-                      />
-                    </a>
-                  </div>
-                  <Countdown date={+moment("2024-01-10")} renderer={renderer} />
+                <div className="flex justify-center lg:justify-start mt-6 md:mt-0">
+                  <Button
+                    onClick={() => {
+                      eventTracker("Explore themes");
+                      router.push("/themes");
+                    }}
+                    className="w-fit"
+                    aria-label="Explore themes"
+                    size={"lg"}
+                  >
+                    Explore themes
+                  </Button>
                 </div>
               </div>
             </div>
@@ -156,6 +174,27 @@ export default function Home() {
             <GlowingBoxes />
           </div>
         </div>
+        <div className="flex flex-col bg-white py-20 pb-28 justify-center items-center">
+          <Typography
+            element="h2"
+            as="h2"
+            className="underline decoration-secondary decoration-4 underline-offset-4 text-4xl"
+          >
+            Features
+          </Typography>
+          <div className="flex flex-col items-center justify-center gap-32 mt-20">
+            {features.map((feature, index) => (
+              <FeatureCard
+                key={index}
+                title={feature.title}
+                description={feature.description}
+                img={feature.img}
+                orientation={feature.orientation}
+              />
+            ))}
+          </div>
+        </div>
+        <Footer />
       </div>
     </>
   );

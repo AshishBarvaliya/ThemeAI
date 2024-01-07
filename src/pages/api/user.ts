@@ -361,7 +361,7 @@ export default async function handler(
           name,
           email,
           hashedPassword,
-          isActived: false,
+          isActived: true,
         })
         .returning({ id: usersSchema.id });
 

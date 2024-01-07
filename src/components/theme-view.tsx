@@ -17,6 +17,7 @@ import {
   CopyCheck,
   DownloadIcon,
   Flag,
+  Link,
   Pen,
   RefreshCcw,
 } from "lucide-react";
@@ -286,6 +287,22 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                   onClick={() => setOpenExportThemeDialog(true)}
                 >
                   <DownloadIcon className="h-4 w-4 mr-1.5" /> Export
+                </Button>
+                <Button
+                  size={"circle"}
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `https://themeai.io/themes/${theme.id}`
+                    );
+                    addToast({
+                      title: "Link copied to clipboard",
+                      type: "success",
+                    });
+                  }}
+                  className="h-8 w-8 p-0 bg-transparent"
+                  aria-label="copy to clipboard"
+                >
+                  <Link className="h-3.5 w-3.5" />
                 </Button>
               </div>
             ) : (

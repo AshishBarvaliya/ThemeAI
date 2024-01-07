@@ -245,10 +245,25 @@ export default function Themes() {
           </div>
         ) : (
           <div className="flex w-full flex-1 flex-col justify-center items-center">
-            <Typography
-              as={"p"}
-              element="p"
-            >{`No themes found by searching "${themeSearchQuery}"`}</Typography>
+            {themeSearchQuery.length || filterTags.length ? (
+              <Typography as={"p"} element="p">
+                {`No themes found by search query "${themeSearchQuery}"`}{" "}
+                {filterTags.length ? (
+                  <>
+                    and filter tags{" "}
+                    {filterTags.map((tag) => (
+                      <i key={tag}>#{tag},</i>
+                    ))}
+                  </>
+                ) : (
+                  ""
+                )}
+              </Typography>
+            ) : (
+              <Typography as={"p"} element="p">
+                No themes found
+              </Typography>
+            )}
             <Button
               className="mt-4"
               onClick={() => {

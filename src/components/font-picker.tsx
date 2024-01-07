@@ -113,13 +113,13 @@ const FontPicker: React.FC<FontPickerProps> = ({
             <div className="flex mx-2 mb-1 flex-1 justify-end">
               <Select onValueChange={setCategory} defaultValue={category}>
                 <SelectTrigger className="w-[120px]">
-                  <SelectValue defaultValue="popular" />
+                  <SelectValue defaultValue="all" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">
                     All ({filteredFonts.length})
                   </SelectItem>
-                  <SelectItem value="popular">Popular(0)</SelectItem>
+                  {/* <SelectItem value="popular">Popular(0)</SelectItem> */}
                 </SelectContent>
               </Select>
             </div>

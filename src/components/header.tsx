@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { useRouter } from "next/router";
-import { landingMenu } from "@/constants/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { LoginDialog } from "./login-dialog";
 import { VerificationDialog } from "./verification-dialog";
@@ -22,6 +21,8 @@ import {
   PaymentStatusDialog,
   PaymentStatusDialogProps,
 } from "./payment-status-dialog";
+import { ExternalLink } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const Header = () => {
   const router = useRouter();
@@ -162,19 +163,17 @@ const Header = () => {
       <div className="flex items-center gap-8">
         {router.pathname === "/" && (
           <>
-            {landingMenu.map((item, index) => (
-              <li key={index}>
-                <Link
-                  className="text-primary-foreground text-sm"
-                  href={item.path}
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={"outlineDisabled"}
+                  className="hover:opacity-60 cursor-default"
                 >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-            {/* <Button className="" onClick={() => router.push("/themes")}>
-              Launch
-            </Button> */}
+                  Figma Plugin <ExternalLink className="ml-1 h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Coming Soon!</TooltipContent>
+            </Tooltip>
           </>
         )}
         {status !== "loading" && router.pathname !== "/" ? (
