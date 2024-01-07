@@ -2,11 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import Typography from "./ui/typography";
 import { cn } from "@/lib/utils";
-import { ContactUsDialog } from "./contact-us";
-import { useState } from "react";
+import { useHelpers } from "@/hooks/useHelpers";
 
 export const Footer: React.FC<{ className?: string }> = ({ className }) => {
-  const [open, setOpen] = useState(false);
+  const { setContactUsDialog } = useHelpers();
 
   return (
     <div
@@ -29,7 +28,7 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
         <div className="flex items-center gap-6">
           <div
             className="text-xs md:text-sm cursor-pointer"
-            onClick={() => setOpen(true)}
+            onClick={() => setContactUsDialog(true)}
           >
             Contact Us
           </div>
@@ -41,7 +40,6 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
           </Link>
         </div>
       </div>
-      <ContactUsDialog open={open} setOpen={setOpen} />
     </div>
   );
 };

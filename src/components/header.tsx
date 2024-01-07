@@ -23,6 +23,7 @@ import {
 } from "./payment-status-dialog";
 import { ExternalLink } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { ContactUsDialog } from "./contact-us";
 
 const Header = () => {
   const router = useRouter();
@@ -35,6 +36,8 @@ const Header = () => {
     setGenerateThemeDialog,
     successfulMailDialog,
     setSuccessfulMailDialog,
+    contactUsDialog,
+    setContactUsDialog,
   } = useHelpers();
   const { status, data: session } = useSession();
   const [singupOpen, setSingupOpen] = useState(false);
@@ -239,6 +242,7 @@ const Header = () => {
         data={paymentStatusDialog}
         setData={setPaymentStatusDialog}
       />
+      <ContactUsDialog open={contactUsDialog} setOpen={setContactUsDialog} />
     </div>
   );
 };
