@@ -52,7 +52,9 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title property="og:title">ThemeAI</title>
+        <title property="og:title">
+          ThemeAI - Select AI-Enhanced Meaningful Themes for Your Web Design
+        </title>
         <meta
           name="description"
           property="og:description"
