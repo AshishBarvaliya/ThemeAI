@@ -27,7 +27,7 @@ export default function Theme() {
         <meta
           name="description"
           property="og:description"
-          content="Create your theme with ThemeAI"
+          content={theme?.prompt || "Create your theme with ThemeAI"}
         />
         <meta property="og:image" content="/og/hero.png" />
       </Head>

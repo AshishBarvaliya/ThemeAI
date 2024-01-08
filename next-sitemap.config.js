@@ -1,6 +1,9 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXTAUTH_URL,
-  generateRobotsTxt: true, // (optional)
-  // ...other options
+  siteUrl: "https://www.themeai.io",
+  generateRobotsTxt: true,
+  exclude: ["/server-sitemap.xml"],
+  robotsTxtOptions: {
+    additionalSitemaps: ["https://www.themeai.io/server-sitemap.xml"],
+  },
 };
