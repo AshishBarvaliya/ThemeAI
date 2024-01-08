@@ -7,4 +7,3 @@ Host: https://www.themeai.io
 
 # Sitemaps
 Sitemap: https://www.themeai.io/sitemap.xml
-Sitemap: https://www.themeai.io/server-sitemap.xml
