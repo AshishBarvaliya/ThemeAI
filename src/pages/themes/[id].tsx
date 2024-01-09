@@ -30,6 +30,10 @@ export default function Theme() {
           content={theme?.prompt || "Create your theme with ThemeAI"}
         />
         <meta property="og:image" content="/og/hero.png" />
+        <meta
+          property="og:url"
+          content={`https://themeai.io/themes/${theme.id}`}
+        />
       </Head>
       <ThemeView theme={theme} />
     </>

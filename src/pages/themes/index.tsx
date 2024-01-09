@@ -202,7 +202,7 @@ export default function Themes() {
         <meta
           name="description"
           property="og:description"
-          content="Explore the themes that are trending on ThemeAI."
+          content="Select AI-Enhanced Meaningful Themes for Your Web Design"
         />
         <meta property="og:image" content="/og/themes.png" />
       </Head>

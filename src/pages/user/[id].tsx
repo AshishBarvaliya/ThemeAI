@@ -283,9 +283,13 @@ export default function User() {
         <meta
           name="description"
           property="og:description"
-          content="User profile of ThemeAI."
+          content={`Browse ${user.name} profile and theemes created by ${user.name} on ThemeAI`}
         />
-        <meta property="og:image" content="/og/profile.png" />
+        <meta property="og:image" content="/og/hero.png" />
+        <meta
+          property="og:url"
+          content={`https://themeai.io/user/${user.id}`}
+        />
       </Head>
       <div className="flex w-full flex-col lg:flex-row">
         <div className="flex flex-col relative lg:fixed lg:h-full border-border border-r-[0.5px] w-full lg:w-[300px] items-center shadow-lg">
