@@ -58,7 +58,7 @@ export default function Home() {
         <meta
           name="description"
           property="og:description"
-          content="Select AI-Enhanced Meaningful Themes for Your Web Design"
+          content="Welcome to ThemeAI — where creativity meets artificial intelligence. Choose GPT4-powered, meaningful themes effortlessly, all for free. Explore our extensive theme library, curate your collection, and manage your profile with ease. Transform your website into a purposeful masterpiece. Join us in redefining web design. Elevate your digital presence today!"
         />
         <meta property="og:image" content="/og/home.png" />
         <script type="application/ld+json">
