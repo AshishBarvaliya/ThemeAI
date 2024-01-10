@@ -8,7 +8,7 @@ import {
   getUserStats,
   unfollowUser,
 } from "@/services/user";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import NiceAvatar from "react-nice-avatar";
 import { useRouter } from "next/router";
 import Typography from "@/components/ui/typography";
@@ -276,22 +276,26 @@ export default function User() {
     </div>
   );
 
+  const userInfo = user
+    ? `Browse ${user.name} profile and theemes created by ${
+        user.name
+      } on ThemeAI${user.title ? ` | ${user.title}` : ""} ${
+        user.organization ? ` | ${user.organization}` : ""
+      }${user.location ? ` | ${user.location}` : ""}`
+    : "Browse profile and theemes created on ThemeAI";
+
   return user ? (
     <>
       <Head>
         <title property="og:title">{user.name} - ThemeAI</title>
-        <meta
-          name="description"
-          property="og:description"
-          content={`Browse ${user.name} profile and theemes created by ${user.name} on ThemeAI`}
-        />
+        <meta name="description" property="og:description" content={userInfo} />
         <meta property="og:image" content="/og/hero.png" />
         <meta
           property="og:url"
           content={`https://themeai.io/user/${user.id}`}
         />
       </Head>
-      <div className="flex w-full flex-col lg:flex-row">
+      <div className="flex w-full flex-col lg:flex-row" aria-label={userInfo}>
         <div className="flex flex-col relative lg:fixed lg:h-full border-border border-r-[0.5px] w-full lg:w-[300px] items-center shadow-lg">
           <div className="flex flex-col w-full p-6 pt-4 pb-0 lg:pb-6 items-center overflow-y-auto">
             <div className="relative">

@@ -13,7 +13,7 @@ module.exports = {
       ? urls.map((sitemap) => ({
           loc: `/${sitemap.type}/${sitemap.id}`,
           lastmod: new Date().toISOString(),
-          changefreq: "weekly",
+          changefreq: "daily",
           priority: 0.7,
         }))
       : [];
