@@ -165,15 +165,18 @@ const CreateTheme = () => {
   return (
     <>
       <Head>
-        <title property="og:title">Create theme - ThemeAI</title>
+        <title property="og:title">Generate Theme using AI - ThemeAI</title>
         <meta
           name="description"
           property="og:description"
-          content="Create your theme with ThemeAI"
+          content="Generate your theme with ThemeAI using GPT4-Powered AI, customizable and free!. You can also export your theme and share it with others."
         />
         <meta property="og:image" content="/og/create.png" />
       </Head>
-      <div className="flex flex-1 flex-col">
+      <div
+        className="flex flex-1 flex-col"
+        aria-label="Generate your theme with ThemeAI using GPT4-Powered AI, customizable and free!. You can also export your theme and share it with others."
+      >
         <div
           className="flex fixed flex-col md:flex-row justify-between border-b-[0.5px] border-border bg-background gap-4 p-3 px-5 items-center z-40 shadow-md md:shadow-md"
           style={{

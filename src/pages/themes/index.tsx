@@ -198,15 +198,18 @@ export default function Themes() {
   return (
     <>
       <Head>
-        <title property="og:title">Themes - ThemeAI</title>
+        <title property="og:title">Browse Themes - ThemeAI</title>
         <meta
           name="description"
           property="og:description"
-          content="Select AI-Enhanced Meaningful Themes for Your Web Design"
+          content="Explore and browse themes created by the community. Create your theme with ThemeAI and share it with others."
         />
         <meta property="og:image" content="/og/themes.png" />
       </Head>
-      <div className="flex bg-black/5 w-full">
+      <div
+        className="flex bg-black/5 w-full"
+        aria-label="Explore and browse themes created by the community. Create your theme with ThemeAI and share it with others."
+      >
         {isLoading ? (
           <div className="flex flex-col md:flex-row h-full md:flex-wrap p-5 overflow-y-auto lg:px-10 gap-6 w-full items-center md:items-start">
             {new Array(10).fill(0).map((_, index) => (
