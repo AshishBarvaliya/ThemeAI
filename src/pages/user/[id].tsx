@@ -292,7 +292,7 @@ export default function User() {
         <meta property="og:image" content="/og/hero.png" />
         <meta
           property="og:url"
-          content={`https://themeai.io/user/${user.id}`}
+          content={`https://theme-ai.vercel.app/user/${user.id}`}
         />
       </Head>
       <div className="flex w-full flex-col lg:flex-row" aria-label={userInfo}>

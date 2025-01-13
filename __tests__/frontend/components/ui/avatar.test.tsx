@@ -14,7 +14,7 @@ describe("Avatar Components", () => {
   test.todo("AvatarImage renders with provided className and src");
 
   //   test("AvatarImage renders with provided className and src", () => {
-  //     const testSrc = "https://www.themeai.io/logo2.png";
+  //     const testSrc = "https://theme-ai.vercel.app/logo2.png";
   //     render(
   //       <Avatar>
   //         <AvatarImage

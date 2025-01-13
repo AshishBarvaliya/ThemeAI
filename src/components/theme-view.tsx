@@ -292,7 +292,7 @@ export const ThemeView: React.FC<ThemeVeiwProps> = ({
                   size={"circle"}
                   onClick={() => {
                     navigator.clipboard.writeText(
-                      `https://themeai.io/themes/${theme.id}`
+                      `https://theme-ai.vercel.app/themes/${theme.id}`
                     );
                     addToast({
                       title: "Link copied to clipboard",
