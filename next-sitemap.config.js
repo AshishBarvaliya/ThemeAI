@@ -1,7 +1,7 @@
 const axios = require("axios");
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: "https://www.themeai.io",
+  siteUrl: "https://theme-ai.vercel.app",
   generateRobotsTxt: true,
   exclude: ["/themes/generated", "/settings"],
   additionalPaths: async () => {

@@ -32,7 +32,7 @@ export default function Theme() {
         <meta property="og:image" content="/og/hero.png" />
         <meta
           property="og:url"
-          content={`https://themeai.io/themes/${theme.id}`}
+          content={`https://theme-ai.vercel.app/themes/${theme.id}`}
         />
       </Head>
       <ThemeView theme={theme} />
