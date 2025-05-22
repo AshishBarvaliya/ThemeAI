@@ -21,7 +21,7 @@ import {
   PaymentStatusDialog,
   PaymentStatusDialogProps,
 } from "./payment-status-dialog";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Github } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { ContactUsDialog } from "./contact-us";
 
@@ -166,6 +166,22 @@ const Header = () => {
       <div className="flex items-center gap-8">
         {router.pathname === "/" && (
           <>
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger asChild>
+                <Button
+                  className="cursor-pointer"
+                  onClick={() => {
+                    window.open(
+                      "https://github.com/AshishBarvaliya/ThemeAI",
+                      "_blank"
+                    );
+                  }}
+                >
+                  Project Repo <Github className="ml-1 h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Its open source now!</TooltipContent>
+            </Tooltip>
             <Tooltip delayDuration={100}>
               <TooltipTrigger asChild>
                 <Button
