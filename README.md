@@ -38,19 +38,25 @@
      <figcaption align="center">
         <b>Browse Themes</b>
       </figcaption>
-      <img width="1402" src="public/screenshots/home.avif" alt="Browse Themes" />
+      <img width="300" src="public/screenshots/home.avif" alt="Browse Themes" />
     </figure>
     <figure>
      <figcaption align="center">
         <b>Prompt your Idea</b>
       </figcaption>
-      <img width="1402" src="public/screenshots/create.avif" alt="Prompt your Idea" />
+      <img width="300" src="public/screenshots/create.avif" alt="Prompt your Idea" />
     </figure>
     <figure>
      <figcaption align="center">
         <b>View Theme</b>
       </figcaption>
-      <img width="1402" src="public/screenshots/view.avif" alt="View Theme" />
+      <img width="300" src="public/screenshots/view.avif" alt="View Theme" />
+    </figure>
+    <figure>
+     <figcaption align="center">
+        <b>User Profile</b>
+      </figcaption>
+      <img width="300" src="public/screenshots/profile.avif" alt="View Theme" />
     </figure>
 </p>
 
