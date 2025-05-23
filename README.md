@@ -61,7 +61,7 @@
 </p>
 
 
-## Getting Started
+## 🚀 Getting Started
 
 Follow these instructions to set up a local development environment. Make sure you have Node.js (latest LTS version) and a Firebase account before you start.
 
